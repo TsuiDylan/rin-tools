@@ -511,7 +511,7 @@ body.dragging *{cursor:grabbing !important}
 /* 防误触文本光标：交互/装饰区域不可选中，仅输入框与文字内容保留选取 */
 body{user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
 input,textarea,.about-list,#libTbody td:first-child{user-select:text;-webkit-user-select:text}
-.dev-link{color:var(--accent2);cursor:pointer}
+.dev-link{color:var(--accent2);cursor:pointer;text-decoration:none}
 .ver-link{display:inline-block;margin-left:7px;font-size:.71rem;font-weight:600;color:var(--accent2);background:var(--accent-soft);padding:1px 8px;border-radius:9px;cursor:pointer}
 .egg-modal{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:18px 18px 14px;cursor:pointer;text-align:center;box-shadow:0 18px 50px rgba(0,0,0,.45);max-width:86vw}
 .egg-text{margin-top:12px;font-size:.92rem}
@@ -729,7 +729,7 @@ input,textarea,.about-list,#libTbody td:first-child{user-select:text;-webkit-use
         <div class="panel">
           <h3>关于</h3>
           <div class="about-list">
-            · 开发者：<b class="dev-link" id="devLink">椎黛岚</b>（@tsuidylan_404）<b class="ver-link" id="verLink">v14</b><br>
+            · 开发者：<b class="dev-link" id="devLink">椎黛岚</b>（<a class="dev-link" id="ghLink" href="https://github.com/TsuiDylan" target="_blank" rel="noopener">GitHub · TsuiDylan</a>）<b class="ver-link" id="verLink">v14</b><br>
             · 本工具仅供个人使用，<b class="dev-link" id="shareLink">禁止用于任何商业用途</b><br>
             · 数据都存在<b>本机浏览器</b>里，不联网、不上传，刷新或重开也不会丢<br>
             · 更换浏览器 / 电脑请先导出 CSV 或 JSON 备份再导入
