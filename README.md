@@ -1,7 +1,39 @@
-# rin-tools
+# Rin Tools
 
-一个单文件 HTML 的番剧管理工具。
+番剧管理，一个文件就够了。
 
-- 在线地址：https://tsuidylan.github.io/rin-tools/
-- 下载 index.html 双击即可离线使用
-- 数据只存在浏览器本地，不联网、不上传
+**在线使用 →** https://tsuidylan.github.io/rin-tools/
+
+![番剧库](screenshots/library.png)
+
+## 功能
+
+- **番剧库** — 搜索、评分、题材标签、年份与备注，四种排序
+- **追番周期表** — 按播出日排列本周番剧，条目可拖拽换位或排期
+- **统计仪表盘** — 评分分布、题材标签榜、观看时长换算
+- **待看 / 搁置清单** — 随时归档与调整
+- **导入导出** — CSV 与 JSON 备份
+
+## 界面
+
+### 统计仪表盘
+
+![统计仪表盘](screenshots/stats.png)
+
+### 追番周期表
+
+![追番周期表](screenshots/week.png)
+
+### 设置
+
+![设置](screenshots/settings.png)
+
+## 使用
+
+下载 `index.html` 后双击即可离线使用，也可以直接打开上面的在线地址。
+
+数据保存在浏览器本地，换设备时用 JSON 备份迁移。
+
+---
+
+仅供个人使用，禁止用于任何商业用途。
