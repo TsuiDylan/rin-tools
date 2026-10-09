@@ -4,6 +4,10 @@
 
 **在线使用 →** https://tsuidylan.github.io/rin-tools/
 
+**离线使用 →** 下载 [Rin-Tools.html](https://github.com/TsuiDylan/rin-tools/releases/latest/download/Rin-Tools.html)，双击打开即可，无需联网
+
+数据保存在浏览器本地，换设备时用 JSON 备份迁移。
+
 ![番剧库](screenshots/library.png)
 
 ## 功能
@@ -27,12 +31,6 @@
 ### 设置
 
 ![设置](screenshots/settings.png)
-
-## 使用
-
-下载 `index.html` 后双击即可离线使用，也可以直接打开上面的在线地址。
-
-数据保存在浏览器本地，换设备时用 JSON 备份迁移。
 
 ---
 
