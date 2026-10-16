@@ -540,23 +540,21 @@ body.dragging *{cursor:grabbing !important}
 .about-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px}
 .about-name{font-size:1.3rem;font-weight:700;color:var(--text);display:flex;align-items:center;gap:8px}
 .about-desc{font-size:.8rem;color:var(--muted);margin-top:3px}
-.about-note{
-  display:none;font-size:.78rem;color:var(--muted);line-height:1.8;
-  background:var(--panel2);border:1px solid var(--border);border-radius:10px;
-  padding:9px 12px;margin-bottom:10px;
+/* 检查更新旁边的自动下载进度条 */
+.upd-prog{display:none;align-items:center;gap:7px}
+.upd-prog.show{display:inline-flex}
+.upd-prog i{
+  display:block;width:120px;height:8px;border-radius:5px;flex:none;
+  background:linear-gradient(90deg,var(--accent) 0%,var(--accent2) var(--p,0%),var(--panel3) var(--p,0%));
+  border:1px solid var(--border);
 }
-.about-note b{color:var(--accent2)}
-.about-note .upd-log{
-  font-size:.74rem;color:var(--muted);white-space:pre-line;
-  border-top:1px dashed var(--border);margin-top:7px;padding-top:7px;
-}
-.about-note .btn{margin-top:8px}
-.about-links{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.upd-prog b{font-size:.72rem;font-weight:600;color:var(--muted);min-width:34px}
+.about-links{display:flex;flex-direction:row;gap:8px;margin-bottom:12px}
 .about-row{
-  display:flex;align-items:center;justify-content:space-between;
+  flex:1;display:flex;align-items:center;justify-content:space-between;
   background:var(--panel2);border:1px solid var(--border);border-radius:10px;
   padding:9px 12px;font-size:.85rem;color:var(--text);text-decoration:none;
-  cursor:pointer;font-family:inherit;text-align:left;width:100%;transition:border-color .15s;
+  cursor:pointer;font-family:inherit;text-align:left;transition:border-color .15s;white-space:nowrap;
 }
 .about-row:hover{border-color:var(--accent)}
 .about-row i{font-style:normal;color:var(--faint)}
@@ -1020,8 +1018,8 @@ ${l.stack}`)}else c=o?.stack??"";let f=this.url.toString().length;return o?.name
               <div class="about-desc">一个本地的番剧观看记录与统计工具</div>
             </div>
             <button class="btn sm" id="updBtn">检查更新</button>
+            <span class="upd-prog" id="updProg"><i></i><b>0%</b></span>
           </div>
-          <div class="about-note" id="updNote"></div>
           <div class="about-links">
             <a class="about-row" href="https://github.com/TsuiDylan/rin-tools" target="_blank" rel="noopener"><span>项目主页</span><i>↗</i></a>
             <a class="about-row" href="https://github.com/TsuiDylan/rin-tools/issues" target="_blank" rel="noopener"><span>问题反馈</span><i>↗</i></a>
@@ -1030,7 +1028,6 @@ ${l.stack}`)}else c=o?.stack??"";let f=this.url.toString().length;return o?.name
           <div class="about-list">
             · 开发者：<b class="dev-link" id="devLink">椎黛岚</b>（<a class="dev-link" id="ghLink" href="https://github.com/TsuiDylan" target="_blank" rel="noopener">GitHub · TsuiDylan</a>）<br>
             · 本工具仅供个人使用，<b class="dev-link" id="shareLink">禁止用于任何商业用途</b><br>
-            · 数据保存在<b>本机</b>，不会自动上传；仅在点「检查更新」时向 GitHub 查询一次版本号<br>
             · 更换浏览器 / 电脑请先导出 CSV 或 JSON 备份再导入
           </div>
         </div>
@@ -2639,6 +2636,7 @@ const CHANGELOG = [
     "评分分段的名字可以自己改，点一下就能换",
     "立绘大小可调，默认也更醒目",
     "主题色自定义更顺手",
+    "新增应用内检查更新，有新版本会自动获取安装包",
     "Rin 的语气更贴近日常聊天，陪伴细节更生动",
     "界面细节优化",
   ]},
@@ -5325,55 +5323,113 @@ msSizeApply();
 
 /* ---------- 检查更新 @@MASCOT-UPD@@ ----------
    关于卡的「检查更新」：问一次 GitHub 这个仓库的最新 Release，
-   和手里的版本号比一比；有新版就展示版本号、更新日志前几行和下载入口。
-   只在点击时访问一次，不上传任何数据；失败就静默提示稍后再试。 */
+   和手里的版本号比一比。结果用底部弹条提示（和主题切换一个样式）。
+   发现新版本就自动下载对应的安装包，进度条长在「检查更新」右边；
+   轻壳里直接存进系统的「下载」文件夹，网页 / 其它壳触发浏览器保存。
+   任何一步失败都退回「打开下载页」，绝不在半更新状态运行。 */
 const UPD_REPO = "TsuiDylan/rin-tools";
 function updVerNum(v){
   const m = /v?(\d+)/.exec(String(v || ""));
   return m ? Number(m[1]) : 0;
 }
+function updIsLight(){
+  return !!(typeof RinShell !== "undefined" && RinShell.info && RinShell.info.app === "neutralino");
+}
+/* 按当前环境挑安装包：轻壳 → light；Electron → electron；纯浏览器 → 网页版单文件 */
+function updPickAsset(assets, latest){
+  const want = updIsLight() ? "win-x64-light"
+    : (/electron/i.test(String(navigator.userAgent || "")) ? "win-x64-electron" : "web");
+  return (assets || []).filter(a => a && a.name && a.name.indexOf(latest) >= 0 && a.name.indexOf(want) >= 0)[0] || null;
+}
+function updProg(pct){
+  const el = document.getElementById("updProg");
+  if(!el) return;
+  const pctText = Math.min(100, Math.round(pct * 100)) + "%";
+  el.classList.add("show");
+  el.style.setProperty("--p", pctText);
+  el.querySelector("b").textContent = pctText;
+}
+function updProgHide(){
+  const el = document.getElementById("updProg");
+  if(el) el.classList.remove("show");
+}
+function updBlobToBase64(blob){
+  return new Promise((res, rej) => {
+    const fr = new FileReader();
+    fr.onload = () => res(String(fr.result).slice(String(fr.result).indexOf(",") + 1));
+    fr.onerror = rej;
+    fr.readAsDataURL(blob);
+  });
+}
+/* 轻壳里写进系统「下载」文件夹；两种签名都试（Neutralino 4.x 位置参数 / 5+ 对象参数） */
+async function updSaveNative(fileName, b64){
+  await (RinShell.nativeReady ? RinShell.nativeReady() : Promise.resolve());
+  const N = window.Neutralino;
+  let dir = "";
+  try{ dir = await N.os.getPath("downloads"); }
+  catch(e){ dir = await N.os.getPath({ name: "downloads" }); }
+  dir = String(dir).replace(/[\\/]+$/, "");
+  const p = dir + "/" + fileName;
+  try{ await N.filesystem.writeBinaryFile(p, b64); }
+  catch(e){ await N.filesystem.writeBinaryFile({ fileName: p, data: b64 }); }
+  return dir;
+}
+async function updDownload(asset, latest){
+  try{
+    const res = await fetch(asset.browser_download_url);
+    if(!res.ok) throw new Error("http " + res.status);
+    const total = Number(res.headers.get("content-length")) || (asset.size || 0);
+    const reader = res.body.getReader();
+    const chunks = [];
+    let got = 0;
+    updProg(0.02);
+    while(true){
+      const step = await reader.read();
+      if(step.done) break;
+      chunks.push(step.value);
+      got += step.value.length;
+      if(total) updProg(got / total);
+    }
+    const blob = new Blob(chunks);
+    updProg(1);
+    if(updIsLight()){
+      await updSaveNative(asset.name, await updBlobToBase64(blob));
+      toast(latest + " 已下载，保存在「下载」文件夹");
+    }else{
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url; a.download = asset.name;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 30000);
+      toast(latest + " 安装包已开始保存");
+    }
+  }catch(e){
+    toast("自动下载没成功，已打开下载页");
+    try{ window.open("https://github.com/" + UPD_REPO + "/releases", "_blank"); }catch(err){}
+  }finally{
+    setTimeout(updProgHide, 1200);
+  }
+}
 async function updCheck(){
-  const note = document.getElementById("updNote");
-  if(!note) return;
   let cur = "";
   try{ cur = CHANGELOG[0].v; }catch(e){}
-  note.style.display = "block";
-  note.textContent = "正在检查更新……";
   try{
     const res = await fetch("https://api.github.com/repos/" + UPD_REPO + "/releases/latest",
       { headers: { "Accept": "application/vnd.github+json" } });
-    if(res.status === 404){ note.textContent = "还没有发布过版本"; return; }
+    if(res.status === 404){ toast("还没有发布过版本"); return; }
     if(!res.ok) throw new Error("http " + res.status);
     const j = await res.json();
     const latest = String(j.tag_name || "").trim();
     if(updVerNum(latest) > updVerNum(cur)){
-      note.innerHTML = "";
-      const t = document.createElement("div");
-      t.textContent = "";
-      const b = document.createElement("b");
-      b.textContent = "有新版本 " + latest;
-      t.appendChild(b);
-      t.appendChild(document.createTextNode("（当前 " + cur + "）"));
-      note.appendChild(t);
-      const lines = String(j.body || "").split(/\r?\n/).map(s=>s.trim()).filter(Boolean).slice(0, 6);
-      if(lines.length){
-        const log = document.createElement("div");
-        log.className = "upd-log";
-        log.textContent = lines.join("\n");
-        note.appendChild(log);
-      }
-      const a = document.createElement("a");
-      a.href = "https://github.com/" + UPD_REPO + "/releases";
-      a.target = "_blank";
-      a.rel = "noopener";
-      a.className = "btn sm";
-      a.textContent = "前往下载";
-      note.appendChild(a);
+      const asset = updPickAsset(j.assets, latest);
+      toast("发现新版本 " + latest + (asset ? "，开始自动下载" : ""));
+      if(asset) updDownload(asset, latest);
+      else try{ window.open("https://github.com/" + UPD_REPO + "/releases", "_blank"); }catch(e){}
     }else{
-      note.textContent = "已是最新版本";
+      toast("已是最新版本");
     }
   }catch(e){
-    note.textContent = "检查失败，稍后再试";
+    toast("检查失败，稍后再试");
   }
 }
 document.addEventListener("click", ev=>{
