@@ -28,8 +28,8 @@
 
 | 文件 | 载体 | 体积 | 适合 |
 | --- | --- | --- | --- |
+| `RinTools_v20_win-x64-light.zip` | Windows 桌面版 · 轻量壳 | 约 3 MB | **Windows 日常使用**，免安装 |
 | `RinTools_v20_web.html` | 网页（单文件） | 约 1.4 MB | 双击用浏览器打开；部署为静态站点 |
-| `RinTools_v20_win-x64-light.zip` | Windows 桌面版 · 轻量壳 | 约 3 MB | Windows 日常使用，免安装 |
 | `RinTools_v20_win-x64-electron.zip` | Windows 桌面版 · 完整壳 | 约 100 MB | 备用。自带浏览器内核，不依赖系统 WebView2 |
 
 ## 快速开始
