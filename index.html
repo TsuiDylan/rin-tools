@@ -1019,7 +1019,7 @@ ${l.stack}`)}else c=o?.stack??"";let f=this.url.toString().length;return o?.name
           <h3>关于</h3>
           <div class="about-head">
             <div>
-              <div class="about-name">Rin Tools <b class="ver-link" id="verLink">v20.1.2</b></div>
+              <div class="about-name">Rin Tools <b class="ver-link" id="verLink">v20.1.3</b></div>
               <div class="about-desc">一个本地的番剧观看记录与统计工具</div>
             </div>
             <button class="btn sm" id="updBtn">检查更新</button>
@@ -2630,10 +2630,13 @@ document.getElementById("confirmOkBtn").addEventListener("click", ()=>{
 /* 同一项功能反复调整过的，只保留最终成型的那一版；零碎文案改动并入「页面优化」 */
 const CHANGELOG = [
 /* @@MASCOT-LOG@@ */
+  { v:"v20.1.3", title:"修补", items:[
+    "修正 Windows 桌面版导出时选择保存位置未生效的问题",
+  ]},
   { v:"v20.1.2", title:"顺手与妥帖", items:[
     "聊天窗口在小窗口下的显示与拖动手感优化",
     "新消息自动滚动到最新一行",
-    "备份内容更完整，导出时可以选择保存位置",
+    "备份内容更完整，桌面版导出时可以选择保存位置",
     "其他优化",
   ]},
   { v:"v20.1.1", title:"修补", items:[
@@ -3106,21 +3109,28 @@ window.rinRestoreCfg = function(data){
     if(typeof rinFillCfg === "function") rinFillCfg();
   }catch(e){}
 };
-/* 轻壳里导出改成「另存为」对话框，自己选路径（网页版保持原样） */
+/* 轻壳里导出改成「另存为」对话框，自己选路径（网页版没有原生接口，保持原样）
+   注意：判断必须放在调用时——Neutralino 的客户端与全局变量可能比页面脚本晚注入，
+   写在加载时判断会静默失效（当初就是这么悄悄没生效的）。 */
 (function(){
-  if(typeof Neutralino === "undefined" || typeof window.NL_PATH === "undefined") return;
   const plain = downloadFile;
   downloadFile = function(name, content, mime){
+    const N = window.Neutralino;
+    if(!N || !N.os || typeof N.os.showSaveDialog !== "function" ||
+       !N.filesystem || typeof N.filesystem.writeFile !== "function"){
+      plain(name, content, mime); return;
+    }
+    const ext = (String(name).split(".").pop() || "txt").toLowerCase();
     try{
-      Neutralino.os.showSaveDialog("导出文件", {
-        defaultPath: name,
-        filters: [{ name: "文件", extensions: name.split(".").pop() || "txt" }]
-      }, ()=>{}, ()=>{}).then(res=>{
-        const p = res && (res.selectedFilePath || res.file);
-        if(!p) return;
-        Neutralino.filesystem.writeFile(p, content).then(()=>{ toast("已保存到所选位置"); })
-          .catch(()=>{ plain(name, content, mime); });
-      }).catch(()=>{ plain(name, content, mime); });
+      N.os.showSaveDialog("导出文件", { defaultPath: name, filters: [{ name: "数据文件", extensions: [ext] }] })
+        .then(res=>{
+          const p = res && (res.selectedFilePath || res.file);
+          if(!p) return;
+          return N.filesystem.writeFile(p, content)
+            .then(()=>{ toast("已保存到所选位置"); })
+            .catch(()=>{ plain(name, content, mime); toast("保存失败，已改为下载"); });
+        })
+        .catch(()=>{ plain(name, content, mime); });
     }catch(e){ plain(name, content, mime); }
   };
 })();
