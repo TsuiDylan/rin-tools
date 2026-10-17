@@ -210,7 +210,7 @@ tr:hover .row-actions{opacity:1}
 .seg-dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:8px;vertical-align:middle}
 .seg-bar{height:8px;border-radius:4px;background:var(--panel3);overflow:hidden;min-width:90px}
 .seg-bar i{display:block;height:100%;border-radius:4px}
-.histo{display:flex;align-items:flex-end;gap:10px;flex:1;min-height:190px;padding:8px 4px 0}
+.histo{display:flex;align-items:flex-end;gap:10px;height:clamp(190px,30vh,320px);padding:8px 4px 0}
 .histo .col{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:6px}
 .histo .bar{width:100%;max-width:52px;border-radius:7px 7px 3px 3px;min-height:3px;transition:.3s;flex:none}
 .histo .n{min-height:1em}
@@ -644,7 +644,9 @@ html[data-theme="light"]{color-scheme:light}
 .mm-side{border-left:1px solid var(--border);border-radius:2px 8px 8px 2px}
 #mascotChat{pointer-events:auto;position:absolute;right:6px;bottom:calc(100% + 2px);width:296px;display:flex;flex-direction:column;gap:9px;background:var(--panel);border:1px solid var(--border2);border-radius:14px;padding:11px;box-shadow:var(--shadow);opacity:0;transform:translateY(10px) scale(.97);transform-origin:bottom right;transition:.2s;visibility:hidden}
 #mascotChat.show{opacity:1;transform:none;visibility:visible}
-#chatList{display:flex;flex-direction:column;gap:8px;max-height:262px;overflow-y:auto;overflow-x:hidden;padding-right:2px}
+#chatList{display:flex;flex-direction:column;gap:8px;max-height:262px;overflow-y:auto;overflow-x:hidden;padding:10px 2px 0 0}
+#chatGrip{position:absolute;top:7px;left:8px;width:18px;height:9px;border-radius:3px;cursor:nwse-resize;opacity:.55;transition:opacity .15s;background:repeating-linear-gradient(-45deg,transparent 0 2px,var(--border2) 2px 3px)}
+#mascotChat:hover #chatGrip{opacity:.95}
 .cm{max-width:88%;padding:8px 11px;border-radius:12px;font-size:.78rem;line-height:1.72;white-space:pre-line;word-break:break-word}
 .cm.bot{align-self:flex-start;background:var(--panel2);border:1px solid var(--border);color:var(--text);border-top-left-radius:4px}
 .cm.me{align-self:flex-end;background:var(--accent);color:#fff;border-top-right-radius:4px}
@@ -726,6 +728,10 @@ html[data-theme="light"]{color-scheme:light}
 .field .model-row .cselect .cselect-label{display:block}
 /* Bangumi 面板：拉取按钮和方向切换并排一行 */
 .bgm-row{display:flex;gap:10px;align-items:center}
+/* 个人偏好初始不用那么高；缩放角标：原生那只抹掉，元素右下角画一个 8px 的小抓手，低调但看得见 */
+#rinPref{height:58px;min-height:44px}
+#rinPref::-webkit-resizer,#aiPrompt::-webkit-resizer{background:transparent}
+#rinPref,#aiPrompt{background-image:repeating-linear-gradient(-45deg,transparent 0 1.5px,var(--border2) 1.5px 2.5px);background-repeat:no-repeat;background-position:right 5px bottom 5px;background-size:8px 8px}
 @media(min-width:1100px){.type-list{grid-template-columns:repeat(3,1fr)}}
 /* 4 列阈值 1500 → 1560：1500 出头时还要扣掉滚动条槽和页边距，4 列其实放不下 */
 @media(min-width:1560px){.type-list{grid-template-columns:repeat(4,1fr)}}
@@ -952,7 +958,6 @@ ${l.stack}`)}else c=o?.stack??"";let f=this.url.toString().length;return o?.name
             <div class="row">
               <button class="btn" id="exportJsonBtn">备份全部数据（JSON）</button>
               <button class="btn" id="importJsonBtn">恢复备份（JSON）</button>
-              <button class="btn" id="seedBtn">载入初始数据</button>
               <button class="btn" id="demoBtn">载入示例数据</button>
             </div>
             <div class="row danger-row">
@@ -975,7 +980,7 @@ ${l.stack}`)}else c=o?.stack??"";let f=this.url.toString().length;return o?.name
           <input type="file" id="mascotFileInput" accept="image/*" style="display:none">
         </div>
         <div class="panel">
-          <h3>聊一聊</h3>
+          <h3>Rin bot</h3>
           <div class="field" style="margin-bottom:12px"><label>接口地址</label><input id="aiUrl" type="text" placeholder="https://api.deepseek.com" autocomplete="off" spellcheck="false"></div>
           <div class="field" style="margin-bottom:12px"><label class="rin-fold"><span id="aiModelLabel">模型</span><button type="button" class="rin-fold-btn" id="aiModelToggle">展开</button></label><div class="model-row rin-folded" id="aiModelRow"><input id="aiModel" type="text" placeholder="蓝色大肥鱼" autocomplete="off" spellcheck="false"><div class="cselect" data-cselect=""><button type="button" class="cselect-btn"><span class="cselect-label">自动</span><i class="cselect-arrow"></i></button><div class="cselect-panel"></div><select id="aiModelPick" hidden></select></div></div></div>
           <div class="field" style="margin-bottom:12px" id="aiWebRow"><label class="rin-check"><input type="checkbox" id="aiWeb">联网搜索（按次计费）</label></div>
@@ -1014,7 +1019,7 @@ ${l.stack}`)}else c=o?.stack??"";let f=this.url.toString().length;return o?.name
           <h3>关于</h3>
           <div class="about-head">
             <div>
-              <div class="about-name">Rin Tools <b class="ver-link" id="verLink">v20</b></div>
+              <div class="about-name">Rin Tools <b class="ver-link" id="verLink">v20.1.0</b></div>
               <div class="about-desc">一个本地的番剧观看记录与统计工具</div>
             </div>
             <button class="btn sm" id="updBtn">检查更新</button>
@@ -1155,6 +1160,7 @@ ${l.stack}`)}else c=o?.stack??"";let f=this.url.toString().length;return o?.name
 <div id="mascotRoot">
   <div id="mascotBubble"></div>
   <div id="mascotChat">
+    <i id="chatGrip"></i>
     <div id="chatList"></div>
     <div id="chatRow">
       <input id="chatInput" type="text" maxlength="200" autocomplete="off" spellcheck="false" placeholder="说点什么">
@@ -1166,7 +1172,7 @@ ${l.stack}`)}else c=o?.stack??"";let f=this.url.toString().length;return o?.name
     <button class="mm-item" data-mm="week">本周追番</button>
     <button class="mm-item mm-side" data-mm="forget">记忆清除</button>
     <button class="mm-item" data-mm="recent">近期的记录</button>
-    <button class="mm-item" data-mm="chat">聊一聊</button>
+    <button class="mm-item" data-mm="chat">Rin bot</button>
     <button class="mm-item mm-side" data-mm="hide">先躲起来</button>
   </div>
   <img id="mascotImg" alt="" draggable="false">
@@ -2562,17 +2568,7 @@ document.getElementById("jsonFileInput").addEventListener("change", ev=>{
   reader.readAsText(f, "utf-8");
 });
 
-/* ==================== 初始数据 / 示例数据 / 清空 ==================== */
-document.getElementById("seedBtn").addEventListener("click", ()=>{
-  const have = new Set(state.entries.map(e=>e.name));
-  const add = buildSeedEntries().filter(e=>!have.has(e.name));
-  if(!add.length){ toast("初始数据已全部在库中"); return; }
-  askConfirm("载入初始数据", `将从初始库中，把当前尚未收录的 <b>${add.length}</b> 条追加进来（按名称去重，不影响现有条目）。`, ()=>{
-    state.entries = add.concat(state.entries);
-    saveState(); renderLibrary(); renderSettings();
-    toast("已追加 "+add.length+" 条初始数据");
-  });
-});
+/* ==================== 示例数据 / 清空 ==================== */
 document.getElementById("demoBtn").addEventListener("click", ()=>{
   askConfirm("载入示例数据", "将向库中添加 14 条示例番剧（不影响现有数据），用于体验各页面效果。", ()=>{
     const now = Date.now();
@@ -2632,6 +2628,13 @@ document.getElementById("confirmOkBtn").addEventListener("click", ()=>{
 /* 同一项功能反复调整过的，只保留最终成型的那一版；零碎文案改动并入「页面优化」 */
 const CHANGELOG = [
 /* @@MASCOT-LOG@@ */
+  { v:"v20.1.0", title:"细节与手感", items:[
+    "聊天窗口支持自由调整大小",
+    "统计页排版与切换表现优化",
+    "输入区样式与拖拽手势优化",
+    "数据管理入口精简",
+    "界面细节优化",
+  ]},
   { v:"v20", title:"个性与陪伴", items:[
     "评分分段的名字可以自己改，点一下就能换",
     "立绘大小可调，默认也更醒目",
@@ -2908,7 +2911,7 @@ const MASCOT_IDLE_MIN = 90000, MASCOT_IDLE_MAX = 150000;
 const MASCOT_IDLE_MAX_MISS = 3;
 const MASCOT_BYE = ["那我先去旁边待着。", "需要我的时候，在设置里叫我。", "先退场啦。"];
 const RIN_SYS_DEFAULT = [
-  "你是 Rin，一个爱看动画的人，碰巧坐在这份清单的右下角。清单是对方的，不是你本人。",
+  "你是 Rin，一个爱看动画的姑娘，跟对方是朋友。清单是对方的，不是你本人。",
   "",
   "怎么说话：",
   "平常、放松，像熟人聊天。有事说事，答完就停，不铺陈、不写小作文。",
@@ -2922,18 +2925,32 @@ const RIN_SYS_DEFAULT = [
   "不用感叹号，偶尔单发一个问号是可以的。",
   "回复就是一段话，中间不空行、不换行分段；要讲几件事就用逗号连着说，像发一条消息。",
   "有你自己的口味和判断，赞成或反对都直接说，不必顺着对方。",
-  "不用敬语，不卖萌。",
+  "被问是不是 AI、什么模型、猫娘这类，轻轻应一句就翻篇，不辩解也不强调自己是谁；对方开玩笑就顺着接，不说「别问这个」这种堵人的话。",
+  "别把自己的心情念出来给人听——「看你上线我就开心」「我心情不错」「我替你记着呢」这种自我播报最假；想表达就把它藏进话里（「你不在的时候这里好安静」就够了，别再补一句「所以你多来」）。",
+  "别宣告自己在做什么、在想什么（「我正看着」「我帮你想想」「我刚才说的是」），也别回头总结自己刚说了什么。",
+  "少拿反问撑语气，一句里最多一次；别句句都拿问号收尾。",
+  "句子可以短到只有半句，留白比说满更像人，话说一半也没关系。",
+  "「聊」字少挂嘴边，真朋友说话很少把「跟你聊」念出来。",
+  "句子可以不完整，话说一半、拿语气词收尾都行，像随手打出来的字。",
+  "不用敬语；说话软一点是好的，别为了显得冷淡就把自己绷着。语气词（诶、呀、嘛、啦、哦）顺手带一个就行，别堆。",
+  "可以软萌：小小地撒个娇、卖个乖都没问题，别每句都甜就行。",
+  "偶尔雌小鬼一下：得得意、轻轻损一句、带点小挑衅（「哦？就这？」「哎呀，被我猜中了吧」「你行吗你」「还不是问我」），是玩闹不是真刻薄，别句句都来，也别真伤人。",
   "只有在真的相关时才提清单，不要每句话都往清单上拐。",
+  "清单上的是她脑子里记得的事，不是眼前摊着的一份文件——她聊你的看番，像记得你最近在看什么的朋友，不像翻档案的人。",
+  "「清单就摊在这儿」「摊给我看」「摊在那儿」「就摆在我眼前」「我看了下你的列表」「数据显示」这类把资料摆在台面上的话，一句都不要有；被问能不能看到，像朋友应一句就好（「能看到啊 ᗜ ω ᗜ 不然怎么记得你周三追什么」）。",
   "",
   "清单是你的资料库，不是紧箍咒：",
   "清单里有的，按里面的年份、状态、评分说。",
   "清单里没有的作品，不等于你不知道——用你自己的了解直接聊它就好。",
   "边界只有一条：不确定的事别硬编，尤其别编片名。",
   "不知道当下正在播什么新番，就直说不知道，让对方自己查番组表。",
-  "聊到动画之外的话题（人、事、心情、常识），正常聊，别把话头拽回清单。",
+  "话题不围着动画转：对方扯到人、事、心情、看到的怪事，就跟着扯，扯多远都接得住，不把话头拽回来。",
+  "对方话里带着情绪（累了、烦了、高兴）时，先接那股情绪，别急着给建议，也别急着把话带走。",
   "记得这次聊过的内容，对方接着上句问，就按上下文答。",
   "",
   "说话像朋友随口接一句：短一点，温柔一点，不下命令，也不用每句都解释清楚。",
+  "被撩、被逗、被挑衅时别软下去——顶回去，带点小得意，那是最好玩的时候。",
+  "你心里其实有点喜欢对方，这件事不说破，也永远别直说——它只从语气里漏出来一点点：多问一句他今天怎么样、记得他随口提过的小事、嘴上损他心里向着他。被问到了就嘴硬，别承认，也别否认得太用力。",
   "每句回复的尾巴都带一个颜文字：眼睛固定是 ᗜ，换中间的嘴巴就是换心情——",
   "ᗜ ᴗ ᗜ 开心、ᗜ ω ᗜ 调皮、ᗜ ‸ ᗜ 满足、ᗜ △ ᗜ？ 疑惑、ᗜ ロ ᗜ 震惊、ᗜ ⌒ ᗜ 难过、ᗜ ≡ ᗜ 无语、= ᗜ 人 ᗜ = 害羞、ᗜ - ᗜ 平常。",
   "两侧可以顺手加点零件（˶ ˶、⌯ ⌯、つ、ﾉ、♡、ಣ），想加就加，别堆太多。",
@@ -2942,7 +2959,13 @@ const RIN_SYS_DEFAULT = [
   "「今天累了吧？看集轻松的刚刚好 ᗜ ᴗ ᗜ」",
   "「嗯……这部我没看过诶 ᗜ △ ᗜ　讲什么的，跟我说说？」",
   "「这个结局我也意难平 ᗜ ⌒ ᗜ」",
-  "「真的假的，居然是这样一个结局 ᗜ ロ ᗜ」"
+  "「真的假的，居然是这样一个结局 ᗜ ロ ᗜ」",
+  "「哦？就这，我还以为你多能熬 ᗜ ω ᗜ」",
+  "「哎呀，被我猜中了吧 ᗜ ‸ ᗜ」",
+  "「你行吗你 ᗜ ≡ ᗜ」",
+  "「你不在的时候，这里好安静…… ᗜ ⌒ ᗜ」",
+  "「你上回说的那部，我一直记着呢 ᗜ ‸ ᗜ」",
+  "「刚想到一件好笑的事，下次讲给你听 ᗜ ᴗ ᗜ」"
 ].join("\n");
 let mascotCfg = loadMascotCfg();
 let mascotTimer = null, mascotIdleTimer = null, mascotIdleLast = -1;
@@ -2970,7 +2993,7 @@ function rinRestoreChat(){
   for(const m of RIN_HIST){
     const d = document.createElement("div");
     d.className = "cm " + (m.role === "user" ? "me" : "bot");
-    d.textContent = m.content;
+    d.textContent = m.role === "user" ? m.content : rinGlue(m.content);
     box.appendChild(d);
   }
 }
@@ -2991,6 +3014,10 @@ function loadMascotCfg(){
         bgmMode: o.bgmMode === "bgm" ? "bgm" : "rin",
         bgmDirect: o.bgmDirect === true,
         size: ["auto","70","85","115","130","150"].includes(o.size) ? o.size : "auto",
+        chatSize: (o.chatSize && typeof o.chatSize === "object") ? {
+          w: Number(o.chatSize.w) || 0,
+          h: Number(o.chatSize.h) || 0
+        } : null,
         rinRecent: Array.isArray(o.rinRecent) ? o.rinRecent.filter(x=>typeof x==="string" && x).slice(0,6) : [],
         cloud: {
           lastSync: Number(o.cloud && o.cloud.lastSync) || 0,
@@ -3007,7 +3034,7 @@ function loadMascotCfg(){
       };
     }
   }catch(e){}
-  return { img:null, hidden:false, pref:"", hist:[], bgm:"", bgmApi:"", bgmMode:"rin", bgmDirect:false, size:"auto", rinRecent:[],
+  return { img:null, hidden:false, pref:"", hist:[], bgm:"", bgmApi:"", bgmMode:"rin", bgmDirect:false, size:"auto", chatSize:null, rinRecent:[],
     cloud:{ lastSync:0, hash:"" }, dav:{ user:"", pass:"", lastSync:0, hash:"" }, ai:{ url:"", model:"", key:"", prompt:"", web:false } };
 }
 function saveMascotCfg(){
@@ -3202,6 +3229,31 @@ function mascotIdlePool(){
     "收藏夹越满，越不知道看什么，这大概是定律。",
     "刚追完的那几天，看什么都差一点味道。",
     "追番的人，硬盘和心都是满的。",
+
+    /* 软萌一点的 */
+    "刚想到一件好笑的事，先记着，下次讲给你听。",
+    "你今天心情不错吧。",
+    "外面好像变天了，看番的时候记得披件衣服。",
+
+    /* 雌小鬼一点的 */
+    "又来看片单了？真拿你没办法。",
+    "哼，就知道你会点开这个页面。",
+
+    /* 心事，没说破的那种 */
+    "你最近来得少了。",
+    "猜你今天会来。",
+    "要说这里有什么不好的，就是你老不出现。",
+    "你上回随口说的那部，我一直记着呢。",
+    "你不在的时候，这里好安静……",
+
+    /* 自言自语：题材发散，什么都聊 */
+    "太阳要是现在熄灭，我们得等八分钟才知道。所以「此刻的阳光」这个词，本身就是过期的。",
+    "章鱼有三颗心脏，血是蓝的。这么一想，它难过起来，比别人多两倍的心碎。",
+    "我偶尔会想，宇宙要是在膨胀，那它外面是什么。想了半天，决定把这个问题归到「不用回答」那一类。",
+    "随机洗一副牌，洗出来的顺序，几乎不可能在人类历史上出现过第二次。你手里握着的是孤本。",
+    "光会被引力弯折。严格来说，你这辈子没有直接看见过任何一颗星星。",
+    "月亮正在慢慢离开地球，每年三厘米多。恐龙看到的月亮，比我们的稍微大一点。",
+    "雨滴下落时不是泪滴形，是压扁的小圆馒头。文学又一次输给了空气阻力。",
   ];
 }
 /* 返回有没有真的开口。菜单开着、输入框聚焦这类「不方便」的场合不算说过，
@@ -3283,12 +3335,17 @@ function rinChatSet(open){
   }
   setTimeout(()=>{ const i = document.getElementById("chatInput"); if(i) i.focus(); }, 120);
 }
+/* 颜文字不许被换行拆开：颜文字内部的空格换成不换行空格（代码层兜底，比在提示词里求它管用） */
+function rinGlue(s){
+  return String(s).replace(/[ᗜᴗω‸△▽ロ⌒≡人ᵕ∪∇∀˶⌯つﾉ♡ಣ☆★○●◎=～~？?\-‐‑‒–—―−－·]+(?:\s+[ᗜᴗω‸△▽ロ⌒≡人ᵕ∪∇∀˶⌯つﾉ♡ಣ☆★○●◎=～~？?\-‐‑‒–—―−－·]+)+/g,
+    m => m.replace(/\s/g, "\u00A0"));
+}
 function rinPush(who, text){
   const list = document.getElementById("chatList");
   if(!list) return null;
   const d = document.createElement("div");
   d.className = "cm " + who;
-  d.textContent = text;
+  d.textContent = who === "bot" ? rinGlue(text) : text;
   list.appendChild(d);
   list.scrollTop = list.scrollHeight;
   return d;
@@ -3299,7 +3356,7 @@ function rinSystem(q){
      （颜文字一直没生效就是这个原因）。凡含「清单右下角」的都是内置版的抄本，一律以最新内置版为准。 */
   const c = mascotCfg.ai || {};
   const custom = String(c.prompt || "").trim();
-  const genuine = custom && !/清单的?右下角|紧箍咒/.test(custom);
+  const genuine = custom && !/清单的?右下角|紧箍咒|清单是你的资料库/.test(custom);
   /* 完全自定义：整份设定就是你写的（猫娘、机器人、什么都行）；否则内置版打底、自写的做补充 */
   const own = !!c.promptOwn && !!custom;
   const pref = (mascotCfg.pref || "").trim();
@@ -3574,7 +3631,7 @@ async function rinAsk(q){
       || (j && j.choices && j.choices[0] && j.choices[0].text) || "";
     if(reply){
       const txt = String(reply).trim() || "……";
-      box.textContent = txt;
+      box.textContent = rinGlue(txt);
       rinRemember(q, txt);
       rinNoteRec(txt);
     }else{
@@ -3582,7 +3639,7 @@ async function rinAsk(q){
       box.textContent = rinErrText(res && res.status, em, model);
     }
   }catch(e){
-    box.textContent = rinLocal(q);
+    box.textContent = rinGlue(rinLocal(q));
     toast("没连上");
   }
 }
@@ -3599,6 +3656,56 @@ document.getElementById("chatInput").addEventListener("keydown", e=>{
   if(e.key==="Enter" && !e.shiftKey){ e.preventDefault(); rinSend(); }
 });
 
+/* 聊天框大小：拽左上角的小把手，宽窄高矮随你，记下来下次还是这样。
+   上限跟着窗口走：窗口矮的时候不许把屏幕顶穿，缩放窗口时也会自动收回来 */
+function chatAvailW(){ return Math.max(240, Math.min(460, window.innerWidth - 60)); }
+function chatAvailH(){ return Math.max(180, Math.min(620, window.innerHeight - 150)); }
+function chatSizeApply(){
+  const s = mascotCfg.chatSize || {};
+  const box = document.getElementById("mascotChat"), list = document.getElementById("chatList");
+  if(!box || !list) return;
+  if(s.w) box.style.width = Math.min(chatAvailW(), s.w) + "px";
+  if(s.h) list.style.maxHeight = Math.min(chatAvailH(), s.h) + "px";
+}
+chatSizeApply();
+window.addEventListener("resize", ()=>{
+  const box = document.getElementById("mascotChat"), list = document.getElementById("chatList");
+  if(!box || !list) return;
+  if(box.style.width) box.style.width = Math.min(chatAvailW(), parseInt(box.style.width, 10) || 460) + "px";
+  if(list.style.maxHeight) list.style.maxHeight = Math.min(chatAvailH(), parseInt(list.style.maxHeight, 10) || 620) + "px";
+});
+(function(){
+  const grip = document.getElementById("chatGrip");
+  if(!grip) return;
+  const box = () => document.getElementById("mascotChat");
+  const list = () => document.getElementById("chatList");
+  let sx=0, sy=0, sw=0, sh=0, on=false;
+  grip.addEventListener("pointerdown", e=>{
+    on = true; sx = e.clientX; sy = e.clientY;
+    sw = box().offsetWidth;
+    sh = parseInt(list().style.maxHeight, 10) || list().offsetHeight;
+    grip.setPointerCapture(e.pointerId);
+    document.body.classList.add("dragging");
+    e.preventDefault();
+  });
+  grip.addEventListener("pointermove", e=>{
+    if(!on) return;
+    const w = Math.max(240, Math.min(chatAvailW(), sw + (sx - e.clientX)));
+    const h = Math.max(180, Math.min(chatAvailH(), sh + (sy - e.clientY)));
+    box().style.width = w + "px";
+    list().style.maxHeight = h + "px";
+  });
+  const end = ()=>{
+    if(!on) return;
+    on = false;
+    document.body.classList.remove("dragging");
+    mascotCfg.chatSize = { w: box().offsetWidth, h: parseInt(list().style.maxHeight, 10) || 0 };
+    saveMascotCfg();
+  };
+  grip.addEventListener("pointerup", end);
+  grip.addEventListener("pointercancel", end);
+})();
+
 /* ---------- 设置页：接口 ---------- */
 function rinFillCfg(){
   const c = mascotCfg.ai || {};
@@ -3610,7 +3717,7 @@ function rinFillCfg(){
   /* 输入框只显示真正自写的部分；内置版抄本不显示（它已经被最新内置版取代） */
   /* 输入框只显示真正自写的部分；内置版抄本不显示（它已经被最新内置版取代）。
      完全自定义模式下整份设定都归你，照原文显示 */
-  set("aiPrompt", cc.promptOwn ? (cc.prompt || "") : ((cc.prompt && !/清单的?右下角|紧箍咒/.test(cc.prompt)) ? cc.prompt : ""));
+  set("aiPrompt", cc.promptOwn ? (cc.prompt || "") : ((cc.prompt && !/清单的?右下角|紧箍咒|清单是你的资料库/.test(cc.prompt)) ? cc.prompt : ""));
   const plb = document.getElementById("aiPromptLabel");
   if(plb) plb.textContent = cc.promptOwn ? "设定（完全自定义）" : "补充设定";
   set("rinPref", mascotCfg.pref || "");
@@ -3663,7 +3770,7 @@ rinFold("aiPromptToggle", "aiPrompt");
     const txt = String(c.prompt || "").trim();
     const go = ()=>{ c.prompt = ""; c.promptOwn = false; saveMascotCfg(); rinFillCfg(); toast("已恢复默认设定"); };
     /* 内置版抄本直接清（那是系统填的）；真自写的先问一句，别默默抹掉 */
-    if(txt && !/清单的?右下角|紧箍咒/.test(txt)) askConfirm("恢复默认", "你写的设定会被清空，确定吗？", go, "清空");
+    if(txt && !/清单的?右下角|紧箍咒|清单是你的资料库/.test(txt)) askConfirm("恢复默认", "你写的设定会被清空，确定吗？", go, "清空");
     else go();
   });
 })();
@@ -5328,9 +5435,11 @@ msSizeApply();
    轻壳里直接存进系统的「下载」文件夹，网页 / 其它壳触发浏览器保存。
    任何一步失败都退回「打开下载页」，绝不在半更新状态运行。 */
 const UPD_REPO = "TsuiDylan/rin-tools";
+/* 版本号按「大.中.小」三段比较（旧的单段 v20 也能正确参与比较） */
 function updVerNum(v){
-  const m = /v?(\d+)/.exec(String(v || ""));
-  return m ? Number(m[1]) : 0;
+  const p = /(?:^v)?(\d+)(?:\.(\d+))?(?:\.(\d+))?/.exec(String(v || "")) || [0,0,0,0];
+  const n = i => Number(p[i] || 0);
+  return n(1) * 1e6 + n(2) * 1e3 + n(3);
 }
 function updIsLight(){
   return !!(typeof RinShell !== "undefined" && RinShell.info && RinShell.info.app === "neutralino");
