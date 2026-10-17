@@ -24,12 +24,12 @@
 
 ## 下载
 
-前往 [Releases](../../releases) 页面下载最新版本。三种载体共用同一份页面，功能一致，区别仅在运行环境与体积：
+前往 [Releases](../../releases) 页面下载最新版本。两种载体共用同一份页面，功能一致，区别仅在运行环境与体积：
 
 | 文件 | 载体 | 体积 | 适合 |
 | --- | --- | --- | --- |
-| `RinTools_v20_win-x64-light.zip` | Windows 桌面版 · 轻量壳 | 约 3 MB | **Windows 日常使用**，免安装 |
-| `RinTools_v20_web.html` | 网页（单文件） | 约 1.4 MB | 双击用浏览器打开；部署为静态站点 |
+| `RinTools_v20.1.0_win-x64-light.zip` | Windows 桌面版 · 轻量壳 | 约 3 MB | **Windows 日常使用**，免安装 |
+| `RinTools_v20.1.0_web.html` | 网页（单文件） | 约 1.4 MB | 双击用浏览器打开；部署为静态站点 |
 
 ## 快速开始
 
