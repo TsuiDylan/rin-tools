@@ -28,8 +28,8 @@
 
 | 文件 | 载体 | 体积 | 适合 |
 | --- | --- | --- | --- |
-| `RinTools_v20.1.0_win-x64-light.zip` | Windows 桌面版 · 轻量壳 | 约 3 MB | **Windows 日常使用**，免安装 |
-| `RinTools_v20.1.0_web.html` | 网页（单文件） | 约 1.4 MB | 双击用浏览器打开；部署为静态站点 |
+| `RinTools_v20.1.2_win-x64-light.zip` | Windows 桌面版 · 轻量壳 | 约 3 MB | **Windows 日常使用**，免安装 |
+| `RinTools_v20.1.2_web.html` | 网页（单文件） | 约 1.4 MB | 双击用浏览器打开；部署为静态站点 |
 
 ## 快速开始
 
