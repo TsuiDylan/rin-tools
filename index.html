@@ -642,7 +642,7 @@ html[data-theme="light"]{color-scheme:light}
 .mm-item::before{content:"◆";font-size:.5em;line-height:1;color:var(--accent);flex:none;opacity:.9}
 .mm-item:hover{background:var(--panel2)}
 .mm-side{border-left:1px solid var(--border);border-radius:2px 8px 8px 2px}
-#mascotChat{pointer-events:auto;position:absolute;right:6px;bottom:calc(100% + 2px);width:296px;display:flex;flex-direction:column;gap:9px;background:var(--panel);border:1px solid var(--border2);border-radius:14px;padding:11px;box-shadow:var(--shadow);opacity:0;transform:translateY(10px) scale(.97);transform-origin:bottom right;transition:.2s;visibility:hidden}
+#mascotChat{pointer-events:auto;position:absolute;right:6px;bottom:calc(100% + 2px);width:296px;display:flex;flex-direction:column;gap:9px;background:var(--panel);border:1px solid var(--border2);border-radius:14px;padding:11px;box-shadow:var(--shadow);opacity:0;transform:translateY(10px) scale(.97);transform-origin:bottom right;transition:opacity .2s,transform .2s,visibility .2s;visibility:hidden}
 #mascotChat.show{opacity:1;transform:none;visibility:visible}
 #chatList{display:flex;flex-direction:column;gap:8px;max-height:262px;overflow-y:auto;overflow-x:hidden;padding:10px 2px 0 0}
 #chatGrip{position:absolute;top:7px;left:8px;width:18px;height:9px;border-radius:3px;cursor:nwse-resize;opacity:.55;transition:opacity .15s;background:repeating-linear-gradient(-45deg,transparent 0 2px,var(--border2) 2px 3px)}
@@ -1019,7 +1019,7 @@ ${l.stack}`)}else c=o?.stack??"";let f=this.url.toString().length;return o?.name
           <h3>关于</h3>
           <div class="about-head">
             <div>
-              <div class="about-name">Rin Tools <b class="ver-link" id="verLink">v20.1.0</b></div>
+              <div class="about-name">Rin Tools <b class="ver-link" id="verLink">v20.1.2</b></div>
               <div class="about-desc">一个本地的番剧观看记录与统计工具</div>
             </div>
             <button class="btn sm" id="updBtn">检查更新</button>
@@ -2538,7 +2538,7 @@ document.getElementById("csvTplBtn").addEventListener("click", ()=>{
 document.getElementById("exportJsonBtn").addEventListener("click", ()=>{
   const d = new Date(); const pad = n=>String(n).padStart(2,"0");
   downloadFile(`番剧工具完整备份_${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}.json`,
-    JSON.stringify({ app:"animeManager", version:5, exportedAt:new Date().toISOString(), entries:state.entries, tags:state.tags, theme:state.theme, accent:state.accent, sort:state.sort, homePage:state.homePage, segNames:state.segNames||{} }, null, 2),
+    JSON.stringify((function(){ var base={ app:"animeManager", version:6, exportedAt:new Date().toISOString(), entries:state.entries, tags:state.tags, theme:state.theme, accent:state.accent, sort:state.sort, homePage:state.homePage, segMode: state.segMode||"range", segCuts: state.segCuts||"", segNames:state.segNames||{} }; try{ if(window.rinBackupCfg){ var r = window.rinBackupCfg(); if(r && typeof r==="object") Object.assign(base, r); } }catch(err){} return base; })(), null, 2),
     "application/json;charset=utf-8");
   toast("已导出 JSON 备份");
 });
@@ -2560,6 +2560,7 @@ document.getElementById("jsonFileInput").addEventListener("change", ev=>{
         if(SORTS.includes(data.sort)){ state.sort = data.sort; filters.sort = data.sort; document.getElementById("fSort").value = data.sort; }
         if(PAGES.includes(data.homePage)) state.homePage = data.homePage;
         if(data.segNames && typeof data.segNames==="object") state.segNames = cleanSegNames(data.segNames);
+        try{ if(window.rinRestoreCfg) window.rinRestoreCfg(data); }catch(err){}
         saveState(); applyTheme(); renderLibrary(); renderSettings();
         toast("备份已恢复");
       });
@@ -2597,9 +2598,10 @@ document.getElementById("demoBtn").addEventListener("click", ()=>{
   });
 });
 document.getElementById("wipeBtn").addEventListener("click", ()=>{
-  askConfirm("清空全部数据", "将删除 <b>全部番剧、自定义标签</b> 并恢复默认设置！<br>建议先导出 CSV 或 JSON 备份。确定继续吗？", ()=>{
+  askConfirm("清空全部数据", "将删除 <b>全部番剧、自定义标签、Rin 的配置与聊天记录</b> 并恢复默认设置！<br>建议先导出 CSV 或 JSON 备份。确定继续吗？", ()=>{
     askConfirm("最后确认", "此操作<b>不可撤销</b>，真的要清空吗？", ()=>{
       state = { entries:[], tags:DEFAULT_TAGS.slice(), theme:"dark", accent:"#58B2DC", segMode: segMode==="single"?"single":(segMode==="custom"?"custom":"range"), segCuts: typeof state !== "undefined" && state.segCuts ? state.segCuts : "", segNames: (typeof state !== "undefined" && state.segNames) ? state.segNames : {} };
+      try{ window.rinWipe && window.rinWipe(); }catch(err){ }
       saveState(); applyTheme(); renderLibrary(); renderSettings();
       toast("已清空全部数据");
     });
@@ -2628,6 +2630,15 @@ document.getElementById("confirmOkBtn").addEventListener("click", ()=>{
 /* 同一项功能反复调整过的，只保留最终成型的那一版；零碎文案改动并入「页面优化」 */
 const CHANGELOG = [
 /* @@MASCOT-LOG@@ */
+  { v:"v20.1.2", title:"顺手与妥帖", items:[
+    "聊天窗口在小窗口下的显示与拖动手感优化",
+    "新消息自动滚动到最新一行",
+    "备份内容更完整，导出时可以选择保存位置",
+    "其他优化",
+  ]},
+  { v:"v20.1.1", title:"修补", items:[
+    "修复「清空全部数据」未同步清除 Rin 配置与聊天记录的问题",
+  ]},
   { v:"v20.1.0", title:"细节与手感", items:[
     "聊天窗口支持自由调整大小",
     "统计页排版与切换表现优化",
@@ -3041,6 +3052,78 @@ function saveMascotCfg(){
   try{ localStorage.setItem(MASCOT_KEY, JSON.stringify(mascotCfg)); return true; }
   catch(e){ toast("图片太大了，换一张小一点的吧"); return false; }
 }
+/* 「清空全部数据」联动：把 Rin 的个人内容一起清掉——密钥、接口、Bangumi 用户名、
+   聊天记录、个人偏好、同步账号。外观设置（立绘图片、大小、聊天框尺寸）保留。 */
+window.rinWipe = function(){
+  try{
+    mascotCfg.ai = { url:"", model:"", key:"", prompt:"", web:false, promptOwn:false, models:{} };
+    mascotCfg.bgm = ""; mascotCfg.bgmApi = ""; mascotCfg.bgmMode = "rin"; mascotCfg.bgmDirect = false;
+    mascotCfg.hist = []; mascotCfg.rinRecent = []; mascotCfg.pref = "";
+    mascotCfg.dav = { user:"", pass:"", lastSync:0, hash:"" };
+    mascotCfg.cloud = { lastSync:0, hash:"" };
+    saveMascotCfg();
+    const cl = document.getElementById("chatList");
+    if(cl) cl.innerHTML = "";
+    if(typeof rinFillCfg === "function") rinFillCfg();
+  }catch(e){}
+};
+/* JSON 备份带上 Rin 的设置：立绘图片与大小、聊天框尺寸、个人偏好、聊天记录、Bangumi 用户名与接口、
+   模型名与接口地址。**密钥不进备份**（备份是明文文本）。 */
+window.rinBackupCfg = function(){
+  try{
+    const a = mascotCfg.ai || {};
+    return { rin: {
+      img: mascotCfg.img || "",
+      size: mascotCfg.size || "auto",
+      chatSize: mascotCfg.chatSize || null,
+      hist: Array.isArray(mascotCfg.hist) ? mascotCfg.hist.slice(-60) : [],
+      pref: mascotCfg.pref || "",
+      bgm: mascotCfg.bgm || "",
+      bgmApi: mascotCfg.bgmApi || "",
+      bgmMode: mascotCfg.bgmMode || "rin",
+      ai: { url: a.url || "", model: a.model || "", prompt: a.prompt || "", web: !!a.web, models: (a.models && typeof a.models === "object") ? a.models : {} }
+    }};
+  }catch(e){ return null; }
+};
+window.rinRestoreCfg = function(data){
+  try{
+    const r = data && data.rin;
+    if(!r || typeof r !== "object") return;
+    if(typeof r.img === "string") mascotCfg.img = r.img || null;
+    if(typeof r.size === "string") mascotCfg.size = r.size;
+    if(r.chatSize && typeof r.chatSize === "object") mascotCfg.chatSize = { w: Number(r.chatSize.w)||0, h: Number(r.chatSize.h)||0 };
+    if(Array.isArray(r.hist)) mascotCfg.hist = r.hist.slice(-60);
+    if(typeof r.pref === "string") mascotCfg.pref = r.pref;
+    if(typeof r.bgm === "string") mascotCfg.bgm = r.bgm;
+    if(typeof r.bgmApi === "string") mascotCfg.bgmApi = r.bgmApi;
+    if(r.bgmMode === "bgm" || r.bgmMode === "rin") mascotCfg.bgmMode = r.bgmMode;
+    const ai = (r.ai && typeof r.ai === "object") ? r.ai : {};
+    mascotCfg.ai = Object.assign({}, mascotCfg.ai, {
+      url: ai.url || "", model: ai.model || "", prompt: ai.prompt || "",
+      web: !!ai.web, models: (ai.models && typeof ai.models === "object") ? ai.models : {}
+    });
+    saveMascotCfg(); renderMascot();
+    if(typeof rinFillCfg === "function") rinFillCfg();
+  }catch(e){}
+};
+/* 轻壳里导出改成「另存为」对话框，自己选路径（网页版保持原样） */
+(function(){
+  if(typeof Neutralino === "undefined" || typeof window.NL_PATH === "undefined") return;
+  const plain = downloadFile;
+  downloadFile = function(name, content, mime){
+    try{
+      Neutralino.os.showSaveDialog("导出文件", {
+        defaultPath: name,
+        filters: [{ name: "文件", extensions: name.split(".").pop() || "txt" }]
+      }, ()=>{}, ()=>{}).then(res=>{
+        const p = res && (res.selectedFilePath || res.file);
+        if(!p) return;
+        Neutralino.filesystem.writeFile(p, content).then(()=>{ toast("已保存到所选位置"); })
+          .catch(()=>{ plain(name, content, mime); });
+      }).catch(()=>{ plain(name, content, mime); });
+    }catch(e){ plain(name, content, mime); }
+  };
+})();
 function mascotSrc(){ return mascotCfg.img || MASCOT_DEFAULT; }
 const mascotPick = a => a[Math.floor(Math.random()*a.length)];
 
@@ -3078,6 +3161,8 @@ function renderMascot(){
   const tg = document.getElementById("msToggleBtn");
   if(tg) tg.textContent = mascotCfg.hidden ? "叫出来" : "先躲起来";
   mascotAlign();
+  /* 立绘大小变了，悬浮在其头顶的聊天框可用高度也跟着变 */
+  if(typeof chatSizeApply === "function") chatSizeApply();
 }
 function mascotSay(text, hold){
   const b = document.getElementById("mascotBubble");
@@ -3349,6 +3434,12 @@ function rinPush(who, text){
   list.appendChild(d);
   list.scrollTop = list.scrollHeight;
   return d;
+}
+/* 占位的「…」被真正的回复替换后会变高（两三行），列表得再滚一次才能贴底 */
+function rinScrollBottom(){
+  const list = document.getElementById("chatList");
+  if(!list) return;
+  requestAnimationFrame(()=>{ list.scrollTop = list.scrollHeight; });
 }
 function rinSystem(q){
   /* 提示词字段只当「补充设定」用：内置版永远生效，自写的（且不是从内置版抄出来的旧快照）追加在后面。
@@ -3632,14 +3723,17 @@ async function rinAsk(q){
     if(reply){
       const txt = String(reply).trim() || "……";
       box.textContent = rinGlue(txt);
+      rinScrollBottom();
       rinRemember(q, txt);
       rinNoteRec(txt);
     }else{
       const em = String((j && j.error && j.error.message) || (j && j.message) || "");
       box.textContent = rinErrText(res && res.status, em, model);
+      rinScrollBottom();
     }
   }catch(e){
     box.textContent = rinGlue(rinLocal(q));
+    rinScrollBottom();
     toast("没连上");
   }
 }
@@ -3658,22 +3752,20 @@ document.getElementById("chatInput").addEventListener("keydown", e=>{
 
 /* 聊天框大小：拽左上角的小把手，宽窄高矮随你，记下来下次还是这样。
    上限跟着窗口走：窗口矮的时候不许把屏幕顶穿，缩放窗口时也会自动收回来 */
-function chatAvailW(){ return Math.max(240, Math.min(460, window.innerWidth - 60)); }
-function chatAvailH(){ return Math.max(180, Math.min(620, window.innerHeight - 150)); }
+function chatRootH(){ const r = document.getElementById("mascotRoot"); return r ? r.offsetHeight : 260; }
+function chatAvailW(){ return Math.max(220, Math.min(460, window.innerWidth - 60)); }
+/* 聊天框悬浮在立绘头顶：可用高度 = 窗口高 − 立绘高 − 框自身那截（输入行/内边距）− 顶部余量 */
+function chatAvailH(){ return Math.max(140, window.innerHeight - chatRootH() - 140); }
 function chatSizeApply(){
   const s = mascotCfg.chatSize || {};
   const box = document.getElementById("mascotChat"), list = document.getElementById("chatList");
   if(!box || !list) return;
-  if(s.w) box.style.width = Math.min(chatAvailW(), s.w) + "px";
-  if(s.h) list.style.maxHeight = Math.min(chatAvailH(), s.h) + "px";
+  const defW = window.innerWidth <= 900 ? 258 : 296;
+  box.style.width = Math.min(chatAvailW(), s.w || defW) + "px";
+  list.style.maxHeight = Math.min(chatAvailH(), s.h || 262) + "px";
 }
 chatSizeApply();
-window.addEventListener("resize", ()=>{
-  const box = document.getElementById("mascotChat"), list = document.getElementById("chatList");
-  if(!box || !list) return;
-  if(box.style.width) box.style.width = Math.min(chatAvailW(), parseInt(box.style.width, 10) || 460) + "px";
-  if(list.style.maxHeight) list.style.maxHeight = Math.min(chatAvailH(), parseInt(list.style.maxHeight, 10) || 620) + "px";
-});
+window.addEventListener("resize", chatSizeApply);
 (function(){
   const grip = document.getElementById("chatGrip");
   if(!grip) return;
@@ -3683,7 +3775,10 @@ window.addEventListener("resize", ()=>{
   grip.addEventListener("pointerdown", e=>{
     on = true; sx = e.clientX; sy = e.clientY;
     sw = box().offsetWidth;
-    sh = parseInt(list().style.maxHeight, 10) || list().offsetHeight;
+    /* 关键：把“最大高度”先钉在当前可见高度上，否则内容比它矮时，往上拖看不出变化 */
+    const h0 = list().offsetHeight;
+    list().style.maxHeight = h0 + "px";
+    sh = h0;
     grip.setPointerCapture(e.pointerId);
     document.body.classList.add("dragging");
     e.preventDefault();
