@@ -6678,13 +6678,58 @@ function winSetSize(w, h, preset, immediate){
   return winApi(W => W.isMaximized()
     .then(m => m ? W.unmaximize() : null)
     .catch(() => null)
-    .then(() => W.setSize({ width: ww, height: hh })));
+    .then(() => W.setSize({ width: ww, height: hh })))
+    .then(function(r){ rinFrameGuard(); return r; });
 }
 function winSetMax(){
   winMarkBusy(1500);
   
   winMemoWrite("max", 0, 0);
-  return winApi(W => W.maximize());
+  return winApi(W => W.maximize()).then(function(r){ rinFrameGuard(); return r; });
+}
+
+
+
+
+
+
+var RIN_GUARD_T = null;
+var RIN_T0 = Date.now();          
+var RIN_BOOT_QUIET = true;        
+function rinGuardRoot(){
+  try{
+    if(typeof rinStoProgRoot === "function"){
+      const r = rinStoProgRoot();
+      if(r) return r;
+    }
+  }catch(e){}
+  
+  let p = "";
+  try{ p = String(window.NL_PATH || ""); }catch(e){ p = ""; }
+  if(!p) return "";
+  p = p.split("\\").join("/");
+  if(p.length > 1 && p.slice(-1) === "/") p = p.slice(0, -1);
+  if(p.slice(-6).toLowerCase() === "/shell") p = p.slice(0, -6);
+  return p;
+}
+function rinFrameGuard(){
+  if(!winIsShell()) return;
+  
+
+
+
+
+
+  if(RIN_BOOT_QUIET && Date.now() - RIN_T0 < 8000) return;
+  RIN_BOOT_QUIET = false;
+  if(typeof Neutralino === "undefined" || !Neutralino.os || typeof Neutralino.os.execCommand !== "function") return;
+  const root = rinGuardRoot();
+  if(!root) return;
+  
+  clearTimeout(RIN_GUARD_T);
+  RIN_GUARD_T = setTimeout(function(){
+    try{ Neutralino.os.execCommand('"' + root + '/Rin.exe" --guard'); }catch(e){}
+  }, 260);
 }
 
 
@@ -6866,6 +6911,8 @@ function winWantSize(){
 function winBootDone(){
   if(window.__rinWinReady) return;
   window.__rinWinReady = true;
+  
+  setTimeout(function(){ RIN_BOOT_QUIET = false; }, 5000);
   try{ document.dispatchEvent(new CustomEvent("rinWinReady")); }catch(e){}
 }
 function winBootRestore(){
