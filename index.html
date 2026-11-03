@@ -291,8 +291,8 @@ tr:hover .row-actions{opacity:1}
 }
 .show-card:hover{border-color:var(--accent)}
 .show-card .nm{font-weight:600;display:block;padding-right:16px;word-break:break-all}
-.show-card .tm{color:var(--muted);font-size:.72rem;margin-top:3px;display:flex;align-items:center;gap:5px}
-.show-card .dot{width:7px;height:7px;border-radius:50%;display:inline-block}
+.show-card .tm{color:var(--muted);font-size:.72rem;margin-top:3px;display:flex;align-items:flex-start;gap:5px;line-height:1.5}
+.show-card .dot{width:7px;height:7px;border-radius:50%;display:inline-block;flex:none;margin-top:5px}
 .show-card .rm{
   position:absolute;top:5px;right:6px;border:none;background:transparent;color:var(--faint);
   font-size:13px;padding:2px 4px;border-radius:5px;display:none;
@@ -454,7 +454,9 @@ body.dragging *{cursor:grabbing !important}
 .theme-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 .theme-card{border:2px solid var(--border);border-radius:13px;padding:14px;cursor:pointer;text-align:center;background:var(--panel2);transition:.15s}
 .theme-card.active{border-color:var(--accent);background:var(--accent-soft)}
-.theme-card .preview{height:58px;border-radius:8px;margin-bottom:9px;border:1px solid var(--border)}
+/* 预览块横跨明暗，描边不能跟着主题走：亮色主题下 --border 是近白色，
+   压到黑的那一半就成了一条白边。改成固定的中性灰内描边，两边都看得见、都不刺眼。 */
+.theme-card .preview{height:58px;border-radius:8px;margin-bottom:9px;box-shadow:inset 0 0 0 1px rgba(127,127,127,.38)}
 .theme-card .preview.dark{background:linear-gradient(135deg,#0d1017 55%,#1c2333 55%)}
 .theme-card .preview.light{background:linear-gradient(135deg,#f3f5f9 55%,#ffffff 55%)}
 .theme-card .preview.system{background:linear-gradient(135deg,#0d1017 50%,#ffffff 50%)}
@@ -717,7 +719,7 @@ html[data-theme="light"] #mascotImg{filter:drop-shadow(0 5px 10px rgba(30,45,80,
 .tl-y{flex:0 0 40px;font-size:.72rem;color:var(--muted);font-weight:700}
 .tl-q{flex:1;display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
 .tl-cell{position:relative;height:32px;border-radius:6px;background:var(--panel2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center}
-.tl-cell.l1,.tl-cell.l2,.tl-cell.l3,.tl-cell.l4{cursor:pointer}
+.tl-cell.l0,.tl-cell.l1,.tl-cell.l2,.tl-cell.l3,.tl-cell.l4{cursor:pointer}
 .tl-cell:hover{border-color:var(--accent)}
 .tl-fill{position:absolute;inset:0;border-radius:5px;background:var(--accent);opacity:0}
 .tl-cell.l1 .tl-fill{opacity:.16}
@@ -725,6 +727,10 @@ html[data-theme="light"] #mascotImg{filter:drop-shadow(0 5px 10px rgba(30,45,80,
 .tl-cell.l3 .tl-fill{opacity:.6}
 .tl-cell.l4 .tl-fill{opacity:.88}
 .tl-cnt{position:relative;font-size:.74rem;color:var(--muted)}
+/* l3/l4 的底是强调色实填，灰字压不住 —— 反过来用白字加深色描边，任何主题色都能读 */
+.tl-cell.l3 .tl-cnt,.tl-cell.l4 .tl-cnt{color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.55)}
+/* 括号里的数字：跟主数字同色、淡一档，深底浅底都成立 */
+.tl-sus{font-size:.62rem;opacity:.8;margin-left:1px;font-weight:400}
 .tl-cell.on{outline:2px solid var(--accent);outline-offset:1px}
 .tl-cell.on .tl-cnt{color:var(--text);font-weight:800}
 .tl-axis{display:flex;gap:10px;margin-top:5px}
@@ -992,6 +998,15 @@ input.rin-auto{background:var(--panel2);color:var(--muted);cursor:pointer}
 .disc-own{position:absolute;right:5px;top:5px;font-size:.6rem;font-weight:500;color:var(--accent);background:rgba(0,0,0,.66);padding:1px 5px;border-radius:5px}
 .disc-name{font-size:.7rem;color:var(--muted);padding:5px 6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;width:100%;box-sizing:border-box;text-align:left}
 .disc-empty{padding:44px 0;text-align:center;color:var(--faint);font-size:.85rem;line-height:1.9}
+/* 发现页右上角的连接状态点：灰=没探过/探测中，绿=通，橙=不通（悬停看原因） */
+.rin-net-dot{width:8px;height:8px;border-radius:50%;background:var(--faint);display:inline-block;
+  flex:none;align-self:center;cursor:default;transition:background .2s,box-shadow .2s}
+.rin-net-dot.ok{background:var(--green);box-shadow:0 0 0 3px rgba(52,199,89,.16)}
+/* 橙 = 只能读（镜像通、直连不通，写入会失败）；红 = 彻底连不上 */
+.rin-net-dot.bad{background:var(--orange);box-shadow:0 0 0 3px rgba(255,159,10,.16)}
+.rin-net-dot.err{background:var(--red);box-shadow:0 0 0 3px rgba(248,113,113,.18)}
+.rin-net-dot.wait{animation:rinNetPulse 1.1s ease-in-out infinite}
+@keyframes rinNetPulse{0%,100%{opacity:.35}50%{opacity:1}}
 /* 加载态：转圈标记 + 文字。网络慢时追加一行提示，避免被误认为卡死 */
 .disc-empty.is-loading{color:var(--muted)}
 .disc-spin{display:inline-block;width:14px;height:14px;box-sizing:border-box;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:discspin .75s linear infinite;vertical-align:-2px;margin-right:8px}
@@ -1005,7 +1020,20 @@ input.rin-auto{background:var(--panel2);color:var(--muted);cursor:pointer}
 .disc-view-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
 .disc-view-name{font-size:1.02rem;font-weight:600;color:var(--text);line-height:1.35}
 .disc-view-meta{font-size:.78rem;color:var(--muted)}
-.disc-view-acts{margin-top:auto}
+.disc-view-acts{margin-top:auto;display:flex;align-items:center;gap:8px;position:relative;flex-wrap:wrap}
+/* 状态选择：从按钮下方展开的下拉（和 Kazumi 那个一致） */
+.disc-view-acts .rin-st-pop{position:absolute;left:0;top:100%;margin-top:6px;min-width:136px;padding:5px;
+  display:none;z-index:6;background:var(--panel2);border:1px solid var(--border);border-radius:10px;
+  box-shadow:0 12px 30px rgba(0,0,0,.42)}
+.disc-view-acts .rin-st-pop.show{display:block}
+.rin-st-pop button{display:block;width:100%;text-align:left;border:0;background:transparent;color:var(--muted);
+  font-family:inherit;font-size:.8rem;padding:7px 11px;border-radius:7px;cursor:pointer;transition:.12s}
+.rin-st-pop button:hover{background:var(--panel3);color:var(--text)}
+.rin-st-pop button.sel{color:var(--accent2);font-weight:600}
+/* 移出库：和主按钮同尺寸，只把颜色换成警示红；点了就删，不再二次确认 */
+.rin-del-btn{color:#e05561;border-color:rgba(224,85,97,.45);background:transparent}
+.rin-del-btn:hover{color:#fff;background:#b7282e;border-color:#b7282e}
+.rin-del-btn[hidden]{display:none}
 .disc-view-sum{font-size:.78rem;color:var(--muted);line-height:1.75;max-height:26vh;overflow:auto;white-space:pre-wrap}
 /* 自动备份（2026-10-26）：设置页数据管理里的那块 */
 .rin-bk{margin-top:14px;padding-top:14px;border-top:1px dashed var(--border);display:flex;flex-direction:column;gap:8px}
@@ -1343,6 +1371,10 @@ body.rin-bg-on .page{animation:none}
    下面的正文会直接透上来（截图里透出的是页面文字）。这里给近乎不透明的底 + 同样的模糊。 */
 body.rin-bg-on .cselect-panel{background:rgba(16,21,32,.94);backdrop-filter:blur(10px)}
 html[data-theme="light"] body.rin-bg-on .cselect-panel{background:rgba(252,253,255,.95)}
+/* 状态选择也是浮层：--panel2 在背景图模式下只有 74% 不透明，简介正文会直接穿透菜单
+   （2026-11-03 用户截图）。凡是「必须一眼读清」的浮层都要在这里补实底。 */
+body.rin-bg-on .rin-st-pop{background:rgba(16,21,32,.96);backdrop-filter:blur(10px)}
+html[data-theme="light"] body.rin-bg-on .rin-st-pop{background:rgba(252,253,255,.96)}
 /* 打开下拉的那块面板要整体浮起来。
    body.rin-bg-on 给 .panel 加了 backdrop-filter，而它会创建层叠上下文 ——
    下拉自带的 z-index:60 出不了这一层，会被 DOM 里后面的面板整个盖住
@@ -1479,7 +1511,7 @@ ${l.stack}`)}else c=o?.stack??"";let f=this.url.toString().length;return o?.name
       <span class="filter-label">题材</span>
       <div class="cselect" data-cselect="" id="csTag"><button type="button" class="cselect-btn"><span class="cselect-label">全部题材</span><i class="cselect-arrow"></i></button><div class="cselect-panel"><div class="cselect-opt sel" data-val=""><span class="txt">全部题材</span><i class="ck"></i></div><div class="cselect-opt " data-val="恋爱"><span class="txt">恋爱</span><i class="ck"></i></div><div class="cselect-opt " data-val="校园"><span class="txt">校园</span><i class="ck"></i></div><div class="cselect-opt " data-val="异世界"><span class="txt">异世界</span><i class="ck"></i></div><div class="cselect-opt " data-val="百合"><span class="txt">百合</span><i class="ck"></i></div><div class="cselect-opt " data-val="奇幻"><span class="txt">奇幻</span><i class="ck"></i></div><div class="cselect-opt " data-val="悬疑"><span class="txt">悬疑</span><i class="ck"></i></div><div class="cselect-opt " data-val="体育"><span class="txt">体育</span><i class="ck"></i></div><div class="cselect-opt " data-val="音乐"><span class="txt">音乐</span><i class="ck"></i></div><div class="cselect-opt " data-val="日常"><span class="txt">日常</span><i class="ck"></i></div><div class="cselect-opt " data-val="喜剧"><span class="txt">喜剧</span><i class="ck"></i></div><div class="cselect-opt " data-val="战斗"><span class="txt">战斗</span><i class="ck"></i></div><div class="cselect-opt " data-val="剧情"><span class="txt">剧情</span><i class="ck"></i></div><div class="cselect-opt " data-val="科幻"><span class="txt">科幻</span><i class="ck"></i></div><div class="cselect-opt " data-val="治愈"><span class="txt">治愈</span><i class="ck"></i></div><div class="cselect-opt " data-val="黑暗"><span class="txt">黑暗</span><i class="ck"></i></div><div class="cselect-opt " data-val="欧美"><span class="txt">欧美</span><i class="ck"></i></div><div class="cselect-opt " data-val="国产"><span class="txt">国产</span><i class="ck"></i></div><div class="cselect-opt " data-val="青春"><span class="txt">青春</span><i class="ck"></i></div></div><select id="fTag" hidden=""></select></div>
       <span class="filter-label">状态</span>
-      <div class="cselect" data-cselect="" id="csStatus"><button type="button" class="cselect-btn"><span class="cselect-label">全部状态</span><i class="cselect-arrow"></i></button><div class="cselect-panel"><div class="cselect-opt sel" data-val=""><span class="txt">全部状态</span><i class="ck"></i></div><div class="cselect-opt " data-val="已看"><span class="txt">已看</span><i class="ck"></i></div><div class="cselect-opt " data-val="追番中"><span class="txt">追番中</span><i class="ck"></i></div><div class="cselect-opt " data-val="待看"><span class="txt">待看</span><i class="ck"></i></div><div class="cselect-opt " data-val="搁置"><span class="txt">搁置</span><i class="ck"></i></div></div><select id="fStatus" hidden=""><option value="">全部状态</option><option>已看</option><option>追番中</option><option>待看</option><option>搁置</option></select></div>
+      <div class="cselect" data-cselect="" id="csStatus"><button type="button" class="cselect-btn"><span class="cselect-label">全部状态</span><i class="cselect-arrow"></i></button><div class="cselect-panel"><div class="cselect-opt sel" data-val=""><span class="txt">全部状态</span><i class="ck"></i></div><div class="cselect-opt " data-val="已看"><span class="txt">已看</span><i class="ck"></i></div><div class="cselect-opt " data-val="追番中"><span class="txt">追番中</span><i class="ck"></i></div><div class="cselect-opt " data-val="待看"><span class="txt">待看</span><i class="ck"></i></div><div class="cselect-opt " data-val="搁置"><span class="txt">搁置</span><i class="ck"></i></div><div class="cselect-opt " data-val="抛弃"><span class="txt">抛弃</span><i class="ck"></i></div></div><select id="fStatus" hidden=""><option value="">全部状态</option><option>已看</option><option>追番中</option><option>待看</option><option>搁置</option><option>抛弃</option></select></div>
       <span class="filter-label">排序</span>
       <div class="cselect" data-cselect="" id="csSort"><button type="button" class="cselect-btn"><span class="cselect-label">默认顺序</span><i class="cselect-arrow"></i></button><div class="cselect-panel" style=""><div class="cselect-opt sel" data-val="updatedDesc"><span class="txt">默认顺序</span><i class="ck"></i></div><div class="cselect-opt " data-val="createdDesc"><span class="txt">最近添加</span><i class="ck"></i></div><div class="cselect-opt " data-val="ratingDesc"><span class="txt">评分 高→低</span><i class="ck"></i></div><div class="cselect-opt " data-val="ratingAsc"><span class="txt">评分 低→高</span><i class="ck"></i></div></div><select id="fSort" hidden="">
         <option value="updatedDesc">默认顺序</option>
@@ -1495,7 +1527,7 @@ ${l.stack}`)}else c=o?.stack??"";let f=this.url.toString().length;return o?.name
       <table>
         <thead><tr>
           <th>名称</th><th>集数</th><th>单集</th><th>总时长</th>
-          <th>评分</th><th>状态</th><th>年份</th><th>备注</th><th style="width:96px">操作</th>
+          <th>评分</th><th>状态</th><th>年份</th><th>备注/评论</th><th style="width:96px">操作</th>
         </tr></thead>
         <tbody id="libTbody"></tbody>
       </table>
@@ -1616,6 +1648,7 @@ ${l.stack}`)}else c=o?.stack??"";let f=this.url.toString().length;return o?.name
         <div class="page-sub">这一季正在播的番，直接加进自己的库</div>
       </div>
       <div class="disc-head-right">
+        <span class="rin-net-dot" id="rinNetDot" data-tip="正在检测 Bangumi 连接…"></span>
         <span class="seg-toggle" id="discToggle">
           <button type="button" class="stg" data-m="week">按星期</button>
           <button type="button" class="stg" data-m="rank">排行榜</button>
@@ -1788,7 +1821,7 @@ ${l.stack}`)}else c=o?.stack??"";let f=this.url.toString().length;return o?.name
           <h3>关于</h3>
           <div class="about-head">
             <div>
-              <div class="about-name">Rin Tools <b class="ver-link" id="verLink">4.0.0</b></div>
+              <div class="about-name">Rin Tools <b class="ver-link" id="verLink">4.1.1</b></div>
               <div class="about-desc">一个本地的番剧观看记录与统计工具</div>
             </div>
             <button class="btn sm" id="updBtn">检查更新</button>
@@ -1833,7 +1866,7 @@ ${l.stack}`)}else c=o?.stack??"";let f=this.url.toString().length;return o?.name
         </div>
       </div>
       <div class="form-grid">
-        <div class="field"><label>观看状态</label><div class="cselect block" data-cselect="" id="csEStatus"><button type="button" class="cselect-btn"><span class="cselect-label">已看</span><i class="cselect-arrow"></i></button><div class="cselect-panel" style="visibility: visible; max-height: 320px;"><div class="cselect-opt sel" data-val="已看"><span class="txt">已看</span><i class="ck"></i></div><div class="cselect-opt " data-val="追番中"><span class="txt">追番中</span><i class="ck"></i></div><div class="cselect-opt " data-val="待看"><span class="txt">待看</span><i class="ck"></i></div><div class="cselect-opt " data-val="搁置"><span class="txt">搁置</span><i class="ck"></i></div></div><select id="eStatus" hidden=""><option>已看</option><option>追番中</option><option>待看</option><option>搁置</option></select></div></div>
+        <div class="field"><label>观看状态</label><div class="cselect block" data-cselect="" id="csEStatus"><button type="button" class="cselect-btn"><span class="cselect-label">已看</span><i class="cselect-arrow"></i></button><div class="cselect-panel" style="visibility: visible; max-height: 320px;"><div class="cselect-opt sel" data-val="已看"><span class="txt">已看</span><i class="ck"></i></div><div class="cselect-opt " data-val="追番中"><span class="txt">追番中</span><i class="ck"></i></div><div class="cselect-opt " data-val="待看"><span class="txt">待看</span><i class="ck"></i></div><div class="cselect-opt " data-val="搁置"><span class="txt">搁置</span><i class="ck"></i></div><div class="cselect-opt " data-val="抛弃"><span class="txt">抛弃</span><i class="ck"></i></div></div><select id="eStatus" hidden=""><option>已看</option><option>追番中</option><option>待看</option><option>搁置</option><option>抛弃</option></select></div></div>
         <div class="field"><label>首播年份</label><input id="eYear" type="number" min="1900" max="2100" placeholder="如 2023"></div>
         <div class="field"><label>集数</label><input id="eEpisodes" type="number" min="0" max="99999" placeholder="如 12"></div>
         <div class="field"><label>单集时长（分钟）</label><input id="eMinutes" type="number" min="0" max="9999" placeholder="如 24"></div>
@@ -1855,7 +1888,7 @@ ${l.stack}`)}else c=o?.stack??"";let f=this.url.toString().length;return o?.name
         <div class="field"><label>个人评分</label><div class="cselect block" data-cselect="" id="csERating"><button type="button" class="cselect-btn"><span class="cselect-label">未评分</span><i class="cselect-arrow"></i></button><div class="cselect-panel" style="max-height: 250.812px; visibility: visible;"><div class="cselect-opt sel" data-val=""><span class="txt">未评分</span><i class="ck"></i></div><div class="cselect-opt " data-val="1"><span class="txt">1 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="1.5"><span class="txt">1.5 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="2"><span class="txt">2 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="2.5"><span class="txt">2.5 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="3"><span class="txt">3 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="3.5"><span class="txt">3.5 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="4"><span class="txt">4 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="4.5"><span class="txt">4.5 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="5"><span class="txt">5 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="5.5"><span class="txt">5.5 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="6"><span class="txt">6 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="6.5"><span class="txt">6.5 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="7"><span class="txt">7 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="7.5"><span class="txt">7.5 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="8"><span class="txt">8 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="8.5"><span class="txt">8.5 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="9"><span class="txt">9 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="9.5"><span class="txt">9.5 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="10"><span class="txt">10 分</span><i class="ck"></i></div></div><select id="eRating" hidden=""></select></div></div>
         <div class="field"><label>周播日</label><div class="cselect block" data-cselect="" id="csEWeekday"><button type="button" class="cselect-btn"><span class="cselect-label">无</span><i class="cselect-arrow"></i></button><div class="cselect-panel" style="max-height: 250.812px; visibility: visible;"><div class="cselect-opt sel" data-val=""><span class="txt">无</span><i class="ck"></i></div><div class="cselect-opt " data-val="0"><span class="txt">周日</span><i class="ck"></i></div><div class="cselect-opt " data-val="1"><span class="txt">周一</span><i class="ck"></i></div><div class="cselect-opt " data-val="2"><span class="txt">周二</span><i class="ck"></i></div><div class="cselect-opt " data-val="3"><span class="txt">周三</span><i class="ck"></i></div><div class="cselect-opt " data-val="4"><span class="txt">周四</span><i class="ck"></i></div><div class="cselect-opt " data-val="5"><span class="txt">周五</span><i class="ck"></i></div><div class="cselect-opt " data-val="6"><span class="txt">周六</span><i class="ck"></i></div></div><select id="eWeekday" hidden=""></select></div></div>
         <div class="field"><label>播出时间</label><input id="eAirTime" type="text" maxlength="20"></div>
-        <div class="field full"><label>备注</label><textarea id="eNote"></textarea></div>
+        <div class="field full"><label>备注/评论</label><textarea id="eNote"></textarea></div>
       </div>
     </div>
     <div class="modal-foot">
@@ -2013,7 +2046,7 @@ const LS_KEY = "animeManager.v2";
 const SORTS = ["updatedDesc","createdDesc","ratingDesc","ratingAsc"];
 const PAGES = ["library","stats","week","year","discover","gallery"];
 const DAYS = ["周日","周一","周二","周三","周四","周五","周六"];
-const STATUSES = ["已看","追番中","待看","搁置"];
+const STATUSES = ["已看","追番中","待看","搁置","抛弃"];
 const SEGMENTS = [
   { key:"10",  label:"10.超神作", range:"10",   name:"超神作", color:"var(--gold)"   },
   { key:"9",   label:"9.神作",    range:"9~10", name:"神作",   color:"var(--green)"  },
@@ -2517,7 +2550,7 @@ function renderLibrary(){
     const note = e.note? esc(e.note) : '<span style="color:var(--faint)">—</span>';
     const tagsHtml = (e.tags&&e.tags.length)? `<div class="mini-tags">${e.tags.map(t=>`<i>${esc(t)}</i>`).join("")}</div>` : "";
     return `<tr>
-      <td class="name-cell" data-act="edit" data-id="${e.id}" title="${esc(e.name)}${e.year? '（'+e.year+' 年）':''}">${esc(e.name)}${tagsHtml}</td>
+      <td class="name-cell" data-act="edit" data-id="${e.id}">${esc(e.name)}${tagsHtml}</td>
       <td>${epTxt}</td>
       <td>${minTxt}</td>
       <td title="${e.totalMinutes||0} 分钟">${fmtDur(e.totalMinutes)}</td>
@@ -2909,7 +2942,10 @@ function doSaveEntry(){
   };
   if(editingId){
     const e = state.entries.find(x=>x.id===editingId);
+    const before = e ? { status:e.status, rating:e.rating, note:e.note } : null;
     if(e) Object.assign(e, data, { updatedAt: Date.now() });
+    
+    if(e && window.rinBgmPush1) window.rinBgmPush1(e, before);
     toast("已保存修改");
   }else{
     state.entries.unshift(Object.assign({ id: uid(), createdAt: Date.now(), updatedAt: Date.now() }, data));
@@ -3157,6 +3193,21 @@ function bindYearPage(){
 }
 
 
+
+
+
+function weekAgoText(ts){
+  const t = Number(ts) || 0;
+  if(!t) return "";
+  const d = Date.now() - t;
+  if(d < 60000) return "刚刚改动";
+  if(d < 3600000) return Math.floor(d / 60000) + " 分钟前改动";
+  if(d < 86400000) return Math.floor(d / 3600000) + " 小时前改动";
+  if(d < 86400000 * 30) return Math.floor(d / 86400000) + " 天前改动";
+  const dt = new Date(t), p = n => (n < 10 ? "0" : "") + n;
+  return dt.getFullYear() + "-" + p(dt.getMonth() + 1) + "-" + p(dt.getDate()) + " 改动";
+}
+
 function renderWeek(){
   
 
@@ -3170,18 +3221,19 @@ function renderWeek(){
   const todayIdx = now.getDay(); 
   const sunday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - todayIdx); 
   const stColor = { "已看":"var(--green)", "追番中":"var(--cyan)", "待看":"var(--blue)", "搁置":"var(--orange)" };
-  document.getElementById("weekGrid").innerHTML = DAYS.map((d,i)=>{
-    const dt = new Date(sunday.getFullYear(), sunday.getMonth(), sunday.getDate() + i);
+  document.getElementById("weekGrid").innerHTML = DAYS.map((d,i)=>{    const dt = new Date(sunday.getFullYear(), sunday.getMonth(), sunday.getDate() + i);
     const dd = (dt.getMonth()+1)+"/"+String(dt.getDate()).padStart(2,"0");
     const shows = weekly.filter(e=>e.weekday===i).sort((a,b)=>String(a.airTime||"").localeCompare(String(b.airTime||"")) || String(a.name).localeCompare(String(b.name),"zh"));
     return `<div class="day-col ${i===todayIdx?"today":""}" data-day="${i}">
       <div class="day-head">${d}<span class="dd">${dd}</span>${i===todayIdx?'<span class="dc">今天</span>':""}</div>
-      <div class="day-body">${shows.map(e=>`
-        <div class="show-card" data-id="${e.id}">
+      <div class="day-body">${shows.map(e=>{
+        const ag = weekAgoText(e.updatedAt);
+        return `<div class="show-card" data-id="${e.id}">
           <button class="rm" data-day="${i}" data-id="${e.id}" title="移出${d}">✕</button>
           <span class="nm">${esc(e.name)}</span>
-          <div class="tm"><span class="dot" style="background:${stColor[e.status]||"var(--gray)"}"></span>${e.airTime? esc(e.airTime)+" · ":""}${e.status}${e.rating!=null?" · "+e.rating+"分":""}</div>
-        </div>`).join("")}</div>
+          ${ag ? `<div class="tm"><span class="dot" style="background:${stColor[e.status]||"var(--gray)"}"></span>${e.airTime? esc(e.airTime)+" · ":""}${esc(ag)}</div>` : ""}
+        </div>`;
+      }).join("")}</div>
       <button class="day-add" data-day="${i}">＋</button>
       <div class="drop-tip">松手排入${d}</div>
     </div>`;
@@ -3288,6 +3340,7 @@ function endDrag(){
   dragInfo = null;
   dragJustEnded = performance.now();
 
+  const before = { status: entry.status, rating: entry.rating, note: entry.note };
   let msg = "";
   if(zone && zone.kind === "day"){
     if(entry.weekday !== zone.day || entry.status !== "追番中"){
@@ -3302,7 +3355,10 @@ function endDrag(){
       msg = `「${entry.name}」已移入 ${zone.label}`;
     }
   }
-  if(msg){ entry.updatedAt = Date.now(); saveState(); toast(msg); }
+  if(msg){
+    entry.updatedAt = Date.now(); saveState(); toast(msg);
+    if(window.rinBgmPush1) window.rinBgmPush1(entry, before);
+  }
   renderWeek();                     
   if(msg) renderLibrary();
 }
@@ -3364,11 +3420,13 @@ document.getElementById("pickerList").addEventListener("click", ev=>{
   if(!it) return;
   const e = state.entries.find(x=>x.id===it.dataset.id);
   if(e){
+    const before = { status:e.status, rating:e.rating, note:e.note };
     e.weekday = pickerDay;
     
 
     if(e.status !== "追番中") e.status = "追番中";
     saveState(); renderWeek(); renderLibrary();
+    if(window.rinBgmPush1) window.rinBgmPush1(e, before);
     hideOverlay("pickerOverlay");
     toast(`「${e.name}」已排入${DAYS[pickerDay]}`);
   }
@@ -3380,6 +3438,7 @@ document.getElementById("pickerList").addEventListener("click", ev=>{
 
 
 function renderSettings(){
+  if(window.rinBgmPing) window.rinBgmPing();   
   document.getElementById("homePageSel").value = PAGES.includes(state.homePage)? state.homePage : "library";
   syncSelect("homePageSel"); 
   const usedCnt = t => state.entries.filter(e=>(e.tags||[]).includes(t)).length;
@@ -3727,6 +3786,14 @@ const CHANGELOG = [
 
 
 
+  { v:"4.1.1", title:"逐条同步", items:[
+    "观看状态、加入收藏、追番进度改为逐条同步，不必再走整库同步",
+    "进度可逐集点亮或往回调整；发现页详情可直接改状态、移出库内",
+    "只在确有变化时写入，不产生多余记录；备注与 Bangumi 短评互不覆盖",
+    "观看时间线区分实际观看与一次性补录",
+    "修正启动无响应、主题预览描边、备注列提示、存储路径与版本检查",
+    "其他优化"
+  ]},
   { v:"4.0.0", title:"Rin 的手脚", items:[
     "可检索库内条目、汇总统计、查看单部详情，并回应本工具的操作问题",
     "不确定的信息会明确说明；不支持的修改会提示手动完成",
@@ -3805,12 +3872,6 @@ const CHANGELOG = [
   { v:"2.3.0", title:"窗口", items:[
     "窗口改为无边框自绘，窗口按钮并入页面顶栏",
     "支持边缘缩放、最大化与窗口尺寸记忆",
-    "其他优化"
-  ]},
-  { v:"2.2.0", title:"数据安全", items:[
-    "自动备份与恢复",
-    "数据目录可迁移，链接失效时自动修复",
-    "便携模式：数据随程序目录迁移",
     "其他优化"
   ]},
   { v:"2.0.0", title:"公开发布", items:[
@@ -5931,25 +5992,63 @@ const TL_NAME = { 1: "1 月", 4: "4 月", 7: "7 月", 10: "10 月" };
 const TL_ST = { "已看":"var(--green)", "追番中":"var(--cyan)", "待看":"var(--blue)", "搁置":"var(--orange)" };
 let TL_FILTER = null;                 
 
-function tlParse(ts){
-  if(!ts) return null;
-  const d = new Date(ts);
-  if(isNaN(d.getTime())) return null;
-  const m = d.getMonth() + 1;
-  return { y: d.getFullYear(), q: m < 4 ? 1 : m < 7 ? 4 : m < 10 ? 7 : 10 };
-}
-function tlData(){
-  const map = {};
-  let total = 0, max = 0;
+
+
+
+
+const TL_DAY = 40;
+
+
+
+function tlRows(){
+  const rows = [];
   state.entries.forEach(e=>{
     if(e.status !== "已看") return;
-    const p = tlParse(e.bgmAt);
-    if(!p) return;
-    const row = map[p.y] || (map[p.y] = { 1:[], 4:[], 7:[], 10:[] });
-    row[p.q].push(e);
-    total++;
-    if(row[p.q].length > max) max = row[p.q].length;
+    const ts = Date.parse(String(e.bgmAt || ""));
+    if(!isFinite(ts)) return;
+    const dt = new Date(ts), m = dt.getMonth() + 1;
+    rows.push({ e: e, ts: ts, y: dt.getFullYear(), q: m < 4 ? 1 : m < 7 ? 4 : m < 10 ? 7 : 10 });
   });
+  rows.sort((a, b)=> a.ts - b.ts);
+
+  
+
+  const byDay = {};
+  rows.forEach(r=>{
+    const y0 = Number(r.e.year) || 0;
+    if(!y0) return;
+    const dt = new Date(r.ts);
+    if(dt.getFullYear() <= y0) return;
+    const k = dt.getFullYear() + "-" + (dt.getMonth() + 1) + "-" + dt.getDate();
+    (byDay[k] || (byDay[k] = [])).push(r);
+  });
+  const mark = new Set();
+  Object.keys(byDay).forEach(k=>{
+    if(byDay[k].length >= TL_DAY) byDay[k].forEach(r=>mark.add(r));
+  });
+  rows.forEach(r=>{ r.bat = mark.has(r); });
+  return rows;
+}
+
+function tlData(){
+  const rows = tlRows();
+  const map = {};
+  let total = 0;
+  for(const r of rows){
+    const row = map[r.y] || (map[r.y] = { 1: [], 4: [], 7: [], 10: [] });
+    row[r.q].push({ e: r.e, bat: r.bat });
+    total++;
+  }
+
+  
+  let max = 0;
+  Object.keys(map).forEach(y=>{
+    TL_Q.forEach(q=>{
+      const real = map[y][q].filter(x=>!x.bat).length;
+      if(real > max) max = real;
+    });
+  });
+
   return {
     map: map,
     years: Object.keys(map).map(Number).sort((a, b)=>b - a),
@@ -5970,10 +6069,16 @@ function tlRender(){
   const rows = d.years.map(y=>{
     const cells = TL_Q.map(q=>{
       const arr = d.map[y][q], key = y + "-" + q;
-      const lv = arr.length ? Math.min(4, Math.ceil(arr.length / d.max * 4)) : 0;
-      return `<div class="tl-cell${lv ? " l" + lv : ""}${TL_FILTER === key ? " on" : ""}" data-key="${key}"` +
+      const real = arr.filter(x=>!x.bat).length;
+      const bat = arr.length - real;
+      
+      const lv = real ? Math.min(4, Math.ceil(real / d.max * 4)) : 0;
+      const cls = lv ? " l" + lv : (bat ? " l0" : "");
+      
+      const tag = bat ? `<span class="tl-sus">（${bat}）</span>` : "";
+      return `<div class="tl-cell${cls}${TL_FILTER === key ? " on" : ""}" data-key="${key}"` +
         ` title="${y} 年 ${TL_NAME[q]} · ${arr.length} 部"><span class="tl-fill"></span>` +
-        `<span class="tl-cnt">${arr.length || ""}</span></div>`;
+        `<span class="tl-cnt">${real || ""}${tag}</span></div>`;
     }).join("");
     return `<div class="tl-row"><div class="tl-y">${y}</div><div class="tl-q">${cells}</div></div>`;
   }).join("");
@@ -5984,19 +6089,18 @@ function tlPaintList(){
   const box = document.getElementById("yearList");
   if(!box || !TL_FILTER) return;
   const seg = TL_FILTER.split("-"), y = Number(seg[0]), q = Number(seg[1]);
-  const list = state.entries.filter(e=>{
-    if(e.status !== "已看") return false;
-    const t = tlParse(e.bgmAt);
-    return !!t && t.y === y && t.q === q;
-  });
-  list.sort((a, b)=> String(a.name).localeCompare(String(b.name), "zh"));
+  const list = tlRows().filter(r=> r.y === y && r.q === q);
+  list.sort((a, b)=> String(a.e.name).localeCompare(String(b.e.name), "zh"));
   document.getElementById("yearListHead").innerHTML =
     `${y} 年 ${TL_NAME[q]} · ${list.length} 部` +
     ' <span class="clr" id="tlClearBtn" style="color:var(--accent);cursor:pointer;font-size:.75rem;font-weight:400">· 清除筛选</span>';
   box.innerHTML = list.length
-    ? list.map(e=>`<span class="y-item" data-id="${e.id}" title="${esc(e.name)}">` +
-        `<span style="display:inline-block;width:7px;height:7px;border-radius:50%;` +
-        `background:${TL_ST[e.status] || "var(--gray)"};margin-right:6px"></span>${esc(e.name)}</span>`).join("")
+    ? list.map(r=>{
+        const e = r.e;
+        return `<span class="y-item" data-id="${e.id}" title="${esc(e.name)}">` +
+          `<span style="display:inline-block;width:7px;height:7px;border-radius:50%;` +
+          `background:${TL_ST[e.status] || "var(--gray)"};margin-right:6px"></span>${esc(e.name)}</span>`;
+      }).join("")
     : '<span style="color:var(--faint);font-size:.85rem">该季度暂无记录</span>';
 }
 function tlMount(){
@@ -6014,7 +6118,8 @@ function tlMount(){
     '<div class="tl-wrap" id="tlWrap"></div>';
   panel.addEventListener("click", ev=>{
     const cell = ev.target.closest(".tl-cell");
-    if(!cell || !/\bl[1-4]\b/.test(cell.className)) return;
+    
+    if(!cell || !/\bl[0-4]\b/.test(cell.className)) return;
     const key = cell.dataset.key;
     TL_FILTER = (TL_FILTER === key) ? null : key;
     if(TL_FILTER){ yearFilter = null; tlPaintList(); }
@@ -7525,9 +7630,19 @@ function rinMemBlock(){
   rinBgmBtn.className = "btn primary";
   rinBgmBtn.id = "bgmTokenTestBtn";
   rinBgmBtn.type = "button";
-  rinBgmBtn.textContent = "验证并保存";
+  rinBgmBtn.textContent = "测试连接并保存";
   rinBgmBtns.appendChild(rinBgmGetBtn);
   rinBgmBtns.appendChild(rinBgmBtn);
+  
+
+  var rinBgmDot = document.createElement("span");
+  rinBgmDot.className = "rin-net-dot";
+  rinBgmDot.id = "rinBgmNetDot";
+  rinBgmDot.setAttribute("data-tip", "正在检测 Bangumi 连接…");
+  rinBgmDot.style.marginLeft = "-2px";     
+  var rinBgmHead = rinBgmPanel.querySelector("h3");
+  if(rinBgmHead) rinBgmHead.appendChild(rinBgmDot);
+  else rinBgmBtns.insertBefore(rinBgmDot, rinBgmGetBtn);
   var rinBgmTip = document.createElement("div");
   rinBgmTip.className = "bgm-tip";
   rinBgmTip.id = "bgmTokenTip";
@@ -7544,7 +7659,7 @@ function rinMemBlock(){
   function rinBgmShow(txt, busy){
     if(rinBgmBtn){
       rinBgmBtn.disabled = !!busy;
-      rinBgmBtn.textContent = busy ? "连接中…" : "验证并保存";
+      rinBgmBtn.textContent = busy ? "连接中…" : "测试连接并保存";
     }
     rinBgmTip.textContent = txt || "";
   }
@@ -7707,19 +7822,23 @@ function rinMemBlock(){
   };
 
   
-  window.rinBgmUpload = function(path, bodyObj, token){
+  window.rinBgmUpload = function(path, bodyObj, token, method){
     var tk = token || rinBgmGet();
     var body = JSON.stringify(bodyObj || {});
-    return rinBgmCurl("https://api.bgm.tv" + path, "POST", tk, body).then(function(r){
+    var m = method || "POST";
+    return rinBgmCurl("https://api.bgm.tv" + path, m, tk, body).then(function(r){
       if(r.tried) return r;
-      return rinBgmNative("https://api.bgm.tv" + path, "POST", tk, body);
+      return rinBgmNative("https://api.bgm.tv" + path, m, tk, body);
     });
   };
 
   function rinBgmNetTip(r){
     var e = String(r.error || "");
     if(/curl-exit-(6|7|28|35)/.test(e) || e === "native-net-error" || /NE_NW/.test(e) || e === "net-failed"){
-      return "无法连接 Bangumi 服务器（api.bgm.tv）。请检查网络：若您使用代理软件，开启系统代理或 TUN / 虚拟网卡模式后重试。错误码：" + e;
+      
+
+      return "写入需要直连 api.bgm.tv，当前连不上（镜像只能读取）。" +
+        "若使用代理软件，请开启系统代理或 TUN / 虚拟网卡模式后重试。错误码：" + e;
     }
     return "连接失败（" + e + "）";
   }
@@ -7930,9 +8049,12 @@ function rinMemBlock(){
            (rateSend == null || Number(up.rate) === rateSend) && !noteSend && !epSend){
           skipSame++; continue;
         }
-        todo.push({ e: e, id: id, type: type, rate: rateSend, note: noteSend, ep: epSend });
+        
+
+        var typeSame = String(up.status || "") === String(BGM_TYPE[type] || "");
+        todo.push({ e: e, id: id, type: type, rate: rateSend, note: noteSend, ep: epSend, typeSame: typeSame });
       }
-      var summary = { total: todo.length, done: 0, fail: [], failWhy: {}, failSay: "", roundHalf: roundHalf,
+      var summary = { total: todo.length, done: 0, onlyEp: 0, rateN: 0, fail: [], failWhy: {}, failSay: "", roundHalf: roundHalf,
                       skipSame: skipSame, skipBgNew: skipBgNew, skipNoId: skipNoId, skipGone: skipGone };
       if(!todo.length){
         rinSyncing = false;
@@ -7949,10 +8071,11 @@ function rinMemBlock(){
     }).then(function(res){
       rinSyncing = false;
       if(!res) return;
-      var parts = ["推送成功 " + res.done + " 条"];
+      var parts = ["推送成功 " + res.done + " 条" + (res.rateN ? "（含评分 " + res.rateN + " 条）" : "")];
       if(res.skipSame) parts.push(res.skipSame + " 条无变化跳过");
       if(res.skipBgNew) parts.push(res.skipBgNew + " 条 Bangumi 有更新已跳过（Bangumi 优先）");
-      if(res.epDone) parts.push("推送进度 " + res.epDone + " 条");
+      if(res.onlyEp) parts.push("仅推进度 " + res.onlyEp + " 条");
+      if(res.epDone) parts.push("写入进度 " + res.epDone + " 条");
       if(res.roundHalf) parts.push(res.roundHalf + " 个 0.5 分已四舍五入");
       if(res.skipNoId) parts.push(res.skipNoId + " 条未关联 Bangumi（请先拉取认领）");
       if(res.skipGone) parts.push(res.skipGone + " 条在 Bangumi 上没有收藏记录（已跳过）");
@@ -8014,6 +8137,7 @@ function rinMemBlock(){
   }
 
   
+
   function rinUpEpsAll(list, summary, myBatch){
     return new Promise(function(resolve){
       var k = 0;
@@ -8024,7 +8148,7 @@ function rinMemBlock(){
         rinUpEpIds(t.id).then(function(ids){
           if(!ids){ summary.fail.push(t.e.name + "（进度）"); rinUpNote(summary, { ok:true, status:0, text:"读不到章节列表" }); return; }
           var body = { episode_id: ids.slice(0, t.ep), type: 2 };
-          return window.rinBgmUpload("/v0/users/-/collections/" + t.id + "/episodes", body, "").then(function(r){
+          return window.rinBgmUpload("/v0/users/-/collections/" + t.id + "/episodes", body, "", "PATCH").then(function(r){
             if(r && r.ok && r.status >= 200 && r.status < 300){
               summary.epDone = (summary.epDone || 0) + 1;
               t.e.bgmEp = t.ep;
@@ -8058,6 +8182,14 @@ function rinMemBlock(){
         }
         var t = todo[i];
         
+
+        if(t.typeSame && t.rate == null && !t.note){
+          summary.onlyEp++;
+          i++;
+          setTimeout(next, 0);
+          return;
+        }
+        
         var bodyObj = { type: t.type };
         if(t.rate != null) bodyObj.rate = t.rate;
         if(t.note) bodyObj.comment = t.note;
@@ -8069,6 +8201,7 @@ function rinMemBlock(){
           if(myBatch !== rinSyncBatch){ resolve(summary); return; }
           if(r && r.ok && (r.status === 200 || r.status === 201 || r.status === 202)){
             summary.done++;
+            if(t.rate != null) summary.rateN++;
             
             t.e.bgmSt = BGM_TYPE[t.type] || t.e.bgmSt;
             if(t.rate != null){ t.e.bgmRt = t.rate; t.e.rateAt = Date.now(); }
@@ -8086,6 +8219,7 @@ function rinMemBlock(){
             }).then(function(r2){
               if(r2 && r2.ok && (r2.status === 200 || r2.status === 201 || r2.status === 202)){
                 summary.done++;
+                if(t.rate != null) summary.rateN++;
                 t.e.bgmSt = BGM_TYPE[t.type] || t.e.bgmSt;
                 if(t.rate != null){ t.e.bgmRt = t.rate; t.e.rateAt = Date.now(); }
                 if(t.note){ t.e.bgmCmt = t.note; t.e.noteAt = Date.now(); }
@@ -8119,6 +8253,217 @@ function rinMemBlock(){
     if(!rinUpMount()) return;
     rinUpShow("");
   });
+})();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+(function(){
+  if(typeof state === "undefined") return;
+
+  var RIN2BGM = { "待看": 1, "追番中": 3, "已看": 2, "搁置": 4, "抛弃": 5 };
+
+  function bgmTokenOf(){
+    try{ return localStorage.getItem("rin.bgm.token") || ""; }catch(e){ return ""; }
+  }
+  
+  function whySkip(e){
+    if(!e) return "none";
+    if(!Number(e.bgmId)) return "nobgm";
+    if(!bgmTokenOf()) return "notoken";
+    if(typeof window.rinBgmUpload !== "function" || typeof bgmApi !== "function") return "noready";
+    return "";
+  }
+  function canPush(e){
+    return !whySkip(e);
+  }
+
+  function pushOne(e, before){
+    var why = whySkip(e);
+    if(why) return Promise.resolve("skip:" + why);
+    
+
+
+
+    var body = { type: RIN2BGM[String(e.status)] || 3 };
+    var rt = Number(e.rating);
+    var nt = String(e.note || "").trim();
+    var rtChanged = !before || String(before.rating) !== String(e.rating);
+    var ntChanged = !before || String(before.note || "") !== nt;
+    var pushNote = (typeof mascotCfg !== "undefined") && mascotCfg.bgmNotePush === true;
+    if(rtChanged && rt > 0) body.rate = rt;
+    if(ntChanged && nt && pushNote) body.comment = nt;
+    if(before && String(before.status || "") === String(e.status || "") && !body.rate && !body.comment){
+      return Promise.resolve("skip:same");   
+    }
+
+    return window.rinBgmUpload("/v0/users/-/collections/" + Number(e.bgmId), body, "")
+      .then(function(r){
+        if(!(r && r.ok && r.status >= 200 && r.status < 300)) return "fail";
+        e.bgmSt = String(e.status || "");
+        if(body.rate != null) e.bgmRt = body.rate;
+        if(body.comment) e.bgmCmt = body.comment;
+        if(typeof saveState === "function") saveState();
+        return "ok";
+      })
+      .catch(function(){ return "fail"; });
+  }
+
+  
+
+
+
+  var EP_IDS = {}, EP_PEND = null, EP_T = null;
+
+  function epIds(sid){
+    if(EP_IDS[sid]) return Promise.resolve(EP_IDS[sid]);
+    if(typeof bgmFetch !== "function") return Promise.resolve(null);
+    return bgmFetch(bgmApi() + "/v0/episodes?subject_id=" + sid + "&type=0&limit=100&offset=0").then(function(j){
+      var arr = (j && j.data) ? j.data.slice() : [];
+      if(!arr.length) return null;
+      arr.sort(function(a, b){ return (Number(a.sort) || 0) - (Number(b.sort) || 0); });
+      var ids = arr.map(function(x){ return Number(x.id) || 0; }).filter(function(x){ return x > 0; });
+      if(ids.length) EP_IDS[sid] = ids;
+      return ids.length ? ids : null;
+    }).catch(function(){ return null; });
+  }
+
+  
+
+  function paintEps(state, msg){
+    try{ localStorage.setItem("rin.eps.lastState", String(state || "")); }catch(err){}
+    try{ localStorage.setItem("rin.eps.lastErr", String(msg || "")); }catch(err){}
+    if(typeof window.__rinEpsLog === "function") window.__rinEpsLog(state, msg);
+    if(state === "ok" && typeof toast === "function") toast("已同步");
+    else if(state === "fail" && typeof toast === "function") toast("同步失败");
+    var el = document.getElementById("rinEpSync");
+    if(!el) return;
+    el.classList.toggle("bad", state === "fail");
+    el.textContent = state === "fail" ? ("进度同步失败" + (msg ? " · " + msg : "")) : "";
+  }
+  window.rinBgmPaintEps = paintEps;
+
+  function pushEps(e){
+    var why = whySkip(e);
+    if(why) return Promise.resolve("skip:" + why);
+    var seen = Math.max(0, Math.round(Number(e.watched) || 0));
+    var prev = Math.max(0, Math.round(Number(e.bgmEp) || 0));
+    if(!seen && !prev) return Promise.resolve("skip:none");
+    if(seen === prev) return Promise.resolve("skip:same");
+    var sid = Number(e.bgmId);
+    return epIds(sid).then(function(ids){
+      if(!ids){ paintEps("fail", "取不到章节"); return "fail"; }
+      var n = Math.min(seen, ids.length);
+      var p = Math.min(prev, ids.length);
+      var url = "/v0/users/-/collections/" + sid + "/episodes";
+      
+      if(n > p){
+        return window.rinBgmUpload(url, { episode_id: ids.slice(0, n), type: 2 }, "", "PATCH")
+          .then(function(r){
+            if(!(r && r.ok && r.status >= 200 && r.status < 300)){
+              paintEps("fail", "HTTP " + ((r && r.status) || 0));
+              return "fail";
+            }
+            e.bgmEp = n;
+            if(typeof saveState === "function") saveState();
+            paintEps("ok");
+            return "ok";
+          });
+      }
+      
+
+      return window.rinBgmUpload(url, { episode_id: ids.slice(n, p), type: 0 }, "", "PATCH")
+        .then(function(r){
+          if(!(r && r.ok && r.status >= 200 && r.status < 300)){
+            paintEps("fail", "HTTP " + ((r && r.status) || 0));
+            return "fail";
+          }
+          e.bgmEp = n;
+          if(typeof saveState === "function") saveState();
+          paintEps("ok");
+          return "ok";
+        });
+    }).catch(function(err){ paintEps("fail", String(err && err.message || "异常").slice(0, 40)); return "fail"; });
+  }
+
+  function flushEps(){
+    clearTimeout(EP_T); EP_T = null;
+    var e = EP_PEND; EP_PEND = null;
+    if(!e) return Promise.resolve("skip:none");
+    return pushEps(e);
+  }
+  window.rinBgmFlushEps = flushEps;
+
+  
+  window.rinBgmPush1 = function(e, arg){
+    if(!e) return Promise.resolve("skip:none");
+    if(arg === "eps"){
+      var why = whySkip(e);
+      if(why) return Promise.resolve("skip:" + why);
+      EP_PEND = e;
+      clearTimeout(EP_T);
+      EP_T = setTimeout(function(){ flushEps(); }, 1200);
+      return Promise.resolve("queued");
+    }
+    if(arg === "flush") return flushEps();
+    return pushOne(e, arg);
+  };
+
+  
+
+
+  var NET_OK = null, NET_AT = 0, NET_WAIT = null;
+
+  function paintNet(state, tip){
+    
+    var list = document.querySelectorAll(".rin-net-dot");
+    if(!list.length) return;
+    Array.prototype.forEach.call(list, function(d){
+      d.classList.remove("ok", "bad", "err", "wait");
+      if(state) d.classList.add(state);
+      if(tip) d.setAttribute("data-tip", tip); else d.removeAttribute("data-tip");
+    });
+  }
+
+  function probe(){
+    if(typeof bgmApi !== "function") return Promise.resolve(false);
+    var ctrl = (typeof AbortController === "function") ? new AbortController() : null;
+    var timer = setTimeout(function(){ if(ctrl) ctrl.abort(); }, 7000);
+    return fetch(bgmApi() + "/v0/subjects/1", ctrl ? { signal: ctrl.signal } : {})
+      .then(function(r){ return !!(r && r.ok); })
+      .catch(function(){ return false; })
+      .then(function(v){ clearTimeout(timer); return v; });
+  }
+
+  window.rinBgmPing = function(force){
+    var now = Date.now();
+    if(!force && NET_OK !== null && now - NET_AT < 60000) return Promise.resolve(NET_OK);
+    if(NET_WAIT) return NET_WAIT;
+    paintNet("wait", "正在检测 Bangumi 连接…");
+    NET_WAIT = probe().then(function(ok){
+      NET_OK = ok; NET_AT = Date.now(); NET_WAIT = null;
+      
+      var hasTk = false;
+      try{ hasTk = !!localStorage.getItem("rin.bgm.token"); }catch(err){}
+      var viaMirror = true;
+      try{ viaMirror = String(bgmApi() || "").indexOf("api.bgm.tv") < 0; }catch(err){}
+      paintNet(ok ? (hasTk && viaMirror ? "bad" : "ok") : "err", ok
+        ? (hasTk && viaMirror ? "Bangumi 可读取（镜像只读，写入需直连）" : "已连接 Bangumi")
+        : "连不上 Bangumi —— 检查网络或代理");
+      return ok;
+    });
+    return NET_WAIT;
+  };
 })();
 
 
@@ -9769,6 +10114,74 @@ function rinDiscStatusShort(st){
 
 
 
+
+const RIN_DISC_ST_ALL = ["待看", "追番中", "已看", "搁置", "抛弃"];
+const RIN_DISC_ST_LABEL = { "待看": "想看", "追番中": "在看", "已看": "看过", "搁置": "搁置", "抛弃": "弃番" };
+
+function rinDiscPickFill(entry, open){
+  const box = document.getElementById("discStPick");
+  if(!box) return;
+  if(!entry){ box.innerHTML = ""; box.classList.remove("show", "up"); return; }
+  box.innerHTML = RIN_DISC_ST_ALL.map(s =>
+    "<button type='button'" + (String(entry.status) === s ? " class='sel'" : "") +
+    " data-st='" + s + "'>" + (RIN_DISC_ST_LABEL[s] || s) + "</button>").join("");
+  box.classList.toggle("show", !!open);
+  box.classList.remove("up");
+}
+
+function rinDiscSetStatus(st){
+  const e = (state.entries || []).find(x => Number(x.bgmId) === rinDiscOpenId);
+  if(!e || !st) return;
+  
+  if(String(e.status) === st){ rinDiscPickFill(e, false); return; }
+  const was = e.status;
+  const before = { status: was, rating: e.rating, note: e.note };
+  e.status = st;
+  e.statusAt = Date.now();
+  e.updatedAt = Date.now();
+  saveState();
+  renderLibrary();
+  const btn = document.getElementById("discAddBtn");
+  if(btn) btn.textContent = "已在库 · " + rinDiscStatusShort(st) + "  ▾";
+  rinDiscPickFill(e, false);
+  rinDiscPaint();                       
+
+  
+  const lbNew = RIN_DISC_ST_LABEL[st] || st;
+  if(window.rinBgmPush1){
+    window.rinBgmPush1(e, before).then(function(r){
+      const tail = r === "ok" ? " · 已同步" : r === "fail" ? " · 同步失败" : "";
+      toast("已改为「" + lbNew + "」" + tail);
+    });
+  }else{
+    toast("已改为「" + lbNew + "」");
+  }
+}
+
+
+
+
+function rinDiscDelReset(show){
+  const b = document.getElementById("discDelBtn");
+  if(!b) return;
+  b.hidden = !show;
+}
+
+function rinDiscDelDo(){
+  const i = (state.entries || []).findIndex(e => Number(e.bgmId) === rinDiscOpenId);
+  if(i < 0) return;
+  const nm = state.entries[i].name;
+  state.entries.splice(i, 1);
+  saveState();
+  renderLibrary();
+  rinDiscPaint();
+  const ov = document.getElementById("discOverlay");
+  if(ov) ov.classList.remove("show");
+  toast("已移出「" + nm + "」");
+}
+
+
+
 (function(){
   try{
     const kill = [];
@@ -9783,6 +10196,7 @@ function rinDiscStatusShort(st){
 function renderDiscover(){
   const body = document.getElementById("discBody");
   if(!body) return;
+  if(window.rinBgmPing) window.rinBgmPing();   
   if(rinDiscSearch){ rinDiscPaint(); return; }
   if(rinDiscData){ rinDiscPaint(); return; }
   
@@ -9939,15 +10353,41 @@ function rinDiscEnsureBig(){
         "<div class='disc-view-info'>" +
           "<div class='disc-view-name' id='discName'></div>" +
           "<div class='disc-view-meta' id='discMeta'></div>" +
-          "<div class='disc-view-acts'><button class='btn' id='discAddBtn'>加入我的库</button></div>" +
+          "<div class='disc-view-acts'><button class='btn' id='discAddBtn'>加入我的库</button>" +
+            "<div class='rin-st-pop' id='discStPick'></div>" +
+            "<button type='button' class='btn rin-del-btn' id='discDelBtn' hidden>移出我的库</button></div>" +
         "</div>" +
       "</div>" +
       "<div class='disc-view-sum' id='discSum'></div>" +
     "</div>";
   document.body.appendChild(ov);
-  ov.addEventListener("click", ev => { if(ev.target === ov) ov.classList.remove("show"); });
+  ov.addEventListener("click", ev => {
+    if(ev.target === ov){ ov.classList.remove("show"); return; }
+    
+    const pop = document.getElementById("discStPick");
+    if(pop && pop.classList.contains("show") &&
+       !ev.target.closest("#discStPick") && !ev.target.closest("#discAddBtn")){
+      pop.classList.remove("show");
+    }
+  });
   const btn = ov.querySelector("#discAddBtn");
-  if(btn) btn.addEventListener("click", () => { if(rinDiscOpenId) rinDiscAdd(rinDiscOpenId); });
+  if(btn) btn.addEventListener("click", () => {
+    const own = (state.entries || []).find(e => Number(e.bgmId) === rinDiscOpenId);
+    const box = document.getElementById("discStPick");
+    const open = !(box && box.classList.contains("show"));
+    
+    rinDiscPickFill(own || { status: "待看" }, open);
+  });
+  const pick = ov.querySelector("#discStPick");
+  if(pick) pick.addEventListener("click", ev => {
+    const b = ev.target.closest("button[data-st]");
+    if(!b || !b.dataset.st) return;
+    const own = (state.entries || []).find(e => Number(e.bgmId) === rinDiscOpenId);
+    if(own){ rinDiscSetStatus(b.dataset.st); return; }
+    if(rinDiscOpenId) rinDiscAdd(rinDiscOpenId, b.dataset.st);
+  });
+  const del = ov.querySelector("#discDelBtn");
+  if(del) del.addEventListener("click", () => rinDiscDelDo());
   rinDiscBig = ov;
   return ov;
 }
@@ -9962,7 +10402,12 @@ function rinDiscOpen(id){
   const meta = document.getElementById("discMeta");
   const sum = document.getElementById("discSum");
   if(nm) nm.textContent = x.name;
-  if(nm) nm.title = x.jp || x.name;
+  
+  if(nm){
+    const jp = String(x.jp || "").trim();
+    if(jp && jp !== String(x.name || "").trim()) nm.title = jp;
+    else nm.removeAttribute("title");
+  }
   const bits = [];
   if(x.date) bits.push(String(x.date).slice(0, 4) + " 年");
   if(x.score) bits.push(x.score.toFixed(1) + " 分");
@@ -9979,27 +10424,31 @@ function rinDiscOpen(id){
     });
   }
   const btn = document.getElementById("discAddBtn");
+  const ownEntry = (state.entries || []).find(e => Number(e.bgmId) === x.id);
   if(btn){
-    const ownEntry = (state.entries || []).find(e => Number(e.bgmId) === x.id);
     if(ownEntry){
-      btn.textContent = "已在库 · " + rinDiscStatusShort(ownEntry.status);
-      btn.disabled = true;
+      btn.textContent = "已在库 · " + rinDiscStatusShort(ownEntry.status) + "  ▾";
+      btn.disabled = false;              
     }else{
       btn.textContent = "加入我的库";
       btn.disabled = false;
     }
   }
+  rinDiscPickFill(ownEntry || null, false);   
+  rinDiscDelReset(!!ownEntry);                
   ov.classList.add("show");
 }
 
-function rinDiscAdd(id){
+function rinDiscAdd(id, want){
   const x = rinDiscFind(id);
   if(!x) return;
+  const st = RIN_DISC_ST_ALL.includes(want) ? want : "待看";
   const dup = (state.entries || []).find(e => Number(e.bgmId) === x.id);
   if(dup){
     toast("「" + x.name + "」已在库（" + rinDiscStatusShort(dup.status) + "）");
     const btn = document.getElementById("discAddBtn");
-    if(btn){ btn.textContent = "已在库 · " + rinDiscStatusShort(dup.status); btn.disabled = true; }
+    if(btn){ btn.textContent = "已在库 · " + rinDiscStatusShort(dup.status) + "  ▾"; btn.disabled = false; }
+    rinDiscDelReset(true);
     return;
   }
   const btn = document.getElementById("discAddBtn");
@@ -10009,7 +10458,7 @@ function rinDiscAdd(id){
     const n = Number(eps) || 0;
     const m = rinDefaultMin(n);
     state.entries.unshift({
-      id: uid(), name: x.name, year: Number(String(date || "").slice(0, 4)) || null, status: "待看",
+      id: uid(), name: x.name, year: Number(String(date || "").slice(0, 4)) || null, status: st,
       episodes: n, minutesPerEp: m, totalMinutes: m ? n * m : 0,
       cover: x.cover || "",
       
@@ -10019,8 +10468,20 @@ function rinDiscAdd(id){
     });
     saveState();
     renderLibrary();
-    if(btn){ btn.textContent = "已在库 · " + rinDiscStatusShort("待看"); btn.disabled = true; }
-    toast("已加入「" + x.name + "」");
+    if(btn){ btn.textContent = "已在库 · " + rinDiscStatusShort(st) + "  ▾"; btn.disabled = false; }
+    rinDiscPickFill((state.entries || []).find(e => Number(e.bgmId) === x.id) || null, false);
+    rinDiscDelReset(true);            
+    
+
+
+    const say = function(tail){ toast("已加入「" + x.name + "」" + (tail ? " · " + tail : "")); };
+    if(window.rinBgmPush1){
+      window.rinBgmPush1(state.entries[0]).then(function(r){
+        say(r === "ok" ? "已同步" : r === "fail" ? "同步失败" : "");
+      });
+    }else{
+      say("");
+    }
     rinDiscPaint();
   };
 
@@ -10815,6 +11276,8 @@ function rinStoMountUI(){
       "<div class='rin-sto-note'>" +
         "记录与图片都留在本机，断网也能正常查看。" +
         "换电脑请用 JSON 备份导出再导入；直接搬动数据目录会让应用读到一个空库。" +
+        "<br>上面的合计只算记录、封面与备份；目录里另有一块网页缓存（图片与脚本的本地副本，通常上百 MB），" +
+        "删掉不影响任何记录，程序下次启动会自己重建。" +
       "</div>" +
     "</div>";
   main.parentNode.insertBefore(panel, main.nextSibling);
@@ -10854,7 +11317,7 @@ function rinStoRender(){
     rows.push(rinStoRow("封面缩略图", coverN + " 张",
       "<button class='btn sm danger' id='stoClearImg'>清空</button>"));
     rows.push(rinStoRow("自动备份", (snaps || []).length + " 份 · " + rinStoFmt(bkBytes)));
-    if(est && est.usage) rows.push(rinStoRow("合计", rinStoFmt(est.usage)));
+    if(est && est.usage) rows.push(rinStoRow("合计（不含网页缓存）", rinStoFmt(est.usage)));
     listEl.innerHTML = rows.join("");
     const clr = document.getElementById("stoClearImg");
     if(clr) clr.addEventListener("click", rinStoClearImages);
@@ -10875,12 +11338,22 @@ function rinStoRender(){
         .then(p => rinStoTrim(String(p || "").replace(/[\\/][^\\/]+$/, "")))
         .catch(() => "");
     };
-    Promise.all([Neutralino.os.getEnv("APPDATA").catch(() => ""), getProg()]).then(([appdata, prog]) => {
+    
+
+    const getData = () => {
+      const mig = rinStoMigPaths();
+      if(!mig) return Promise.resolve("");
+      return Neutralino.filesystem.getStats(mig.target)
+        .then(() => mig.target)
+        .catch(() => "");
+    };
+    Promise.all([Neutralino.os.getEnv("APPDATA").catch(() => ""), getProg(), getData()]).then(([appdata, prog, dataDir]) => {
       const root = rinStoTrim(appdata);
+      const web = dataDir ? dataDir + "\\EBWebView" : (root ? root + "\\Rin Tools.exe\\EBWebView" : "");
       rinStoPaths = {
-        webview: root ? root + "\\Rin Tools.exe\\EBWebView" : "",
-        ls: root ? root + "\\Rin Tools.exe\\EBWebView\\Default\\Local Storage" : "",
-        idb: root ? root + "\\Rin Tools.exe\\EBWebView\\Default\\IndexedDB" : "",
+        webview: web,
+        ls: web ? web + "\\Default\\Local Storage" : "",
+        idb: web ? web + "\\Default\\IndexedDB" : "",
         prog: prog || ""
       };
       rinStoRender();
@@ -12060,16 +12533,36 @@ async function updDownload(asset, latest){
     setTimeout(updProgHide, 1200);
   }
 }
+
+
+
+async function updApiJson(url){
+  if(updIsLight()){
+    try{
+      await (RinShell.nativeReady ? RinShell.nativeReady() : Promise.resolve());
+      const N = window.Neutralino;
+      if(N && N.os && typeof N.os.execCommand === "function"){
+        const cmd = 'curl -sS -m 8 --noproxy "*" -H "Accept: application/vnd.github+json" "' + url + '"';
+        let r = null;
+        try{ r = await N.os.execCommand(cmd); }
+        catch(e){ r = await N.os.execCommand({ command: cmd }); }
+        const txt = String((r && (r.stdOut || r.stdout)) || "").trim();
+        if(txt) return JSON.parse(txt);
+      }
+    }catch(e){  }
+  }
+  const res = await fetch(url, { headers: { "Accept": "application/vnd.github+json" } });
+  if(res.status === 404) return { __notFound: true };
+  if(!res.ok) throw new Error("http " + res.status);
+  return res.json();
+}
 async function updCheck(){
   let cur = "";
   try{ cur = CHANGELOG[0].v; }catch(e){}
   try{
-    const res = await fetch("https://api.github.com/repos/" + UPD_REPO + "/releases/latest",
-      { headers: { "Accept": "application/vnd.github+json" } });
-    if(res.status === 404){ toast("还没有发布过版本"); return; }
-    if(!res.ok) throw new Error("http " + res.status);
-    const j = await res.json();
-    const latest = String(j.tag_name || "").trim();
+    const j = await updApiJson("https://api.github.com/repos/" + UPD_REPO + "/releases/latest");
+    if(j && j.__notFound){ toast("还没有发布过版本"); return; }
+    const latest = String((j && j.tag_name) || "").trim();
     if(updVerNum(latest) > updVerNum(cur)){
       const asset = updPickAsset(j.assets, latest);
       toast("发现新版本 " + latest + (asset ? "，开始自动下载" : ""));
@@ -12079,7 +12572,8 @@ async function updCheck(){
       toast("已是最新版本");
     }
   }catch(e){
-    toast("检查失败，稍后再试");
+    const msg = String((e && e.message) || e || "");
+    toast(/403/.test(msg) ? "GitHub 拒绝了请求（多半是代理），关掉代理再试" : "连不上 GitHub，检查网络后重试");
   }
 }
 document.addEventListener("click", ev=>{
@@ -12167,12 +12661,27 @@ document.addEventListener("click", ev=>{
     cur = el;
     timer = setTimeout(function(){ if(cur === el) place(el); }, DELAY);
   }
+  
+
+
+
+  var RIN_TIP_TRIM = ".note-cell,.name-cell";
+  function rinTipTrimmed(el){
+    if(!el.matches || !el.matches(RIN_TIP_TRIM)) return true;
+    if(!el.clientWidth) return true;                  
+    return el.scrollWidth > el.clientWidth + 1;
+  }
   function anchor(e){
     var el = (e.target && e.target.closest) ? e.target.closest("[title],[data-tip]") : null;
     if(!el || !el.isConnected) return null;
     
 
     if(rinTipSkip(el)) return null;
+    if(!rinTipTrimmed(el)){
+      if(el.hasAttribute("title")) el.removeAttribute("title");
+      if(el.hasAttribute("data-tip")) el.removeAttribute("data-tip");
+      return null;
+    }
     return el;
   }
   function rinTipSkip(el){
@@ -15290,6 +15799,8 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
       '.rin-ep-cnt{font-size:.74rem;color:var(--muted);font-variant-numeric:tabular-nums}',
       '.rin-ep-cnt b{color:var(--accent2);font-size:.92rem}',
       '.rin-ep-ago{font-size:.7rem;color:var(--muted);margin-top:1px;font-variant-numeric:tabular-nums}',
+      '.rin-ep-sync{font-size:.7rem;color:var(--muted);margin-top:1px}',
+      '.rin-ep-sync.bad{color:var(--orange)}',
       '.rin-ep-sec{font-size:.76rem;color:var(--muted);margin:15px 0 7px}',
       '.rin-ep-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}',
       '.rin-ep-cell{height:32px;border:1px solid var(--border);background:var(--panel2);color:var(--muted);border-radius:8px;font-family:inherit;font-size:.76rem;font-variant-numeric:tabular-nums;cursor:pointer;transition:background .12s,border-color .12s,color .12s}',
@@ -15340,6 +15851,7 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
               '<div class="rin-ep-cnt" id="rinEpCnt"></div>' +
               '<div class="rin-ep-bar"><i id="rinEpBar"></i></div>' +
               '<div class="rin-ep-ago" id="rinEpAgo"></div>' +
+              '<div class="rin-ep-sync" id="rinEpSync"></div>' +
             '</div>' +
           '</div>' +
           '<div id="rinEpBody">' +
@@ -15399,11 +15911,13 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
       if(!rinEpCur) return;
       var e = rinEpCur;
       if(e.status !== "已看"){
+        var before = { status: e.status, rating: e.rating, note: e.note };
         e.status = "已看";
         e.statusAt = Date.now();
         e.updatedAt = Date.now();
         rinEpDirty = true;
         saveState();
+        if(window.rinBgmPush1) window.rinBgmPush1(e, before);
       }
       rinEpClose();
       if(typeof toast === "function") toast("已标记为「已看」");
@@ -15431,19 +15945,13 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
   }
 
   
+
   function rinEpAgo(ts){
-    var t = Number(ts) || 0;
-    if(!t) return "尚无改动记录";
-    var d = Date.now() - t;
-    if(d < 60000) return "刚刚改动";
-    if(d < 3600000) return Math.floor(d / 60000) + " 分钟前改动";
-    if(d < 86400000) return Math.floor(d / 3600000) + " 小时前改动";
-    if(d < 86400000 * 30) return Math.floor(d / 86400000) + " 天前改动";
-    var dt = new Date(t), p = function(n){ return (n < 10 ? "0" : "") + n; };
-    return dt.getFullYear() + "-" + p(dt.getMonth() + 1) + "-" + p(dt.getDate()) + " 改动";
+    var s = (typeof weekAgoText === "function") ? weekAgoText(ts) : "";
+    return s || "尚无改动记录";
   }
-  function rinEpAgoPaint(){
-    var el = document.getElementById("rinEpAgo");
+  window.rinEpAgo = rinEpAgo;
+  function rinEpAgoPaint(){    var el = document.getElementById("rinEpAgo");
     if(!el || !rinEpCur) return;
     el.textContent = rinEpAgo(rinEpCur.updatedAt);
     var t = Number(rinEpCur.updatedAt) || 0;
@@ -15565,6 +16073,8 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
       if(!rinEpCur) return;
       saveState();
     }, 260);
+    
+    if(window.rinBgmPush1) window.rinBgmPush1(e, "eps");
   }
 
   function rinEpFlush(){
@@ -15573,6 +16083,7 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
     if(!rinEpCur) return;
     if(!rinEpDirty) return;          
     saveState();
+    if(window.rinBgmFlushEps) window.rinBgmFlushEps();   
   }
 
   function rinEpPaintCard(e){
@@ -15617,6 +16128,7 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
     }
     if(!e) return;
     rinEpEnsure();
+    if(window.rinBgmPaintEps) window.rinBgmPaintEps("");   
     rinEpCur = e;
     rinEpDirty = false;              
     document.getElementById("rinEpOverlay").style.setProperty("--rin-ep-ink", rinEpInk());
