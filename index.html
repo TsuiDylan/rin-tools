@@ -631,6 +631,41 @@ input,textarea,.about-list,#libTbody td:first-child{user-select:text;-webkit-use
 .ver-link{display:inline-block;margin-left:7px;font-size:.71rem;font-weight:600;color:var(--accent2);background:var(--accent-soft);padding:1px 8px;border-radius:9px;cursor:pointer}
 .egg-modal{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:18px 18px 14px;cursor:pointer;text-align:center;box-shadow:0 18px 50px rgba(0,0,0,.45);max-width:86vw}
 .egg-text{margin-top:12px;font-size:.92rem}
+
+/* ============ 窄屏（手机浏览器） ============
+   2026-11-04：有用户直接在手机上打开网页版，页签被切掉、表格右边的列看不见、立绘压住内容。
+   这一层只解决「能不能用」：放不下的改成可横滑、占地方的收起来。桌面端一律不受影响。 */
+@media (max-width:920px){
+  /* 顶栏页签：一行放不下就横着滑，不换行也别裁掉 */
+  .tabs{overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch;min-width:0}
+  .tabs::-webkit-scrollbar{display:none}
+  .tab-btn{flex:none;padding:9px 11px}
+}
+@media (max-width:760px){
+  main{padding:16px 12px 40px}
+  .page-title{font-size:1.15rem}
+  .toolbar{gap:8px}
+  .toolbar .btn{flex:1 1 auto;justify-content:center;white-space:nowrap}
+  /* 番剧库右上那四个按钮：整块占满一行、等分，文字不许折成两行 */
+  .page-head > div:last-child{flex:1 1 100%}
+  .page-head .btn{flex:1 1 auto;justify-content:center;white-space:nowrap;padding-left:8px;padding-right:8px}
+  .search-box{flex:1 1 100%}
+  .search-box input{width:100%}
+  /* 表格：宁可整块左右滑，也别把列名压成两行、右侧列直接消失 */
+  .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .table-wrap table{min-width:700px}
+  /* 数字列不许折行（「24 分钟」断成两行最难读）；名称和备注照旧可以换行 */
+  .table-wrap tbody td:not(.name-cell):not(.note-cell){white-space:nowrap}
+  /* 立绘固定占着右下角，手机屏小会盖住表格和按钮 */
+  #mascotRoot{display:none}
+  .gal-grid{grid-template-columns:repeat(auto-fill,minmax(92px,1fr))}
+}
+@media (max-width:560px){
+  .topbar{padding:0 10px;gap:6px}
+  .panel{padding:14px}
+  .form-grid{grid-template-columns:1fr}
+  .modal-body{padding:14px}
+}
 /* @@MASCOT-CSS@@ */
 /* ==================== Rin ==================== */
 /* 切页时页面长短不一，滚动条出现/消失会让右侧元素左右跳；固定预留这条槽。
@@ -642,6 +677,9 @@ html[data-theme="dark"]{color-scheme:dark}
 html[data-theme="light"]{color-scheme:light}
 #mascotRoot{position:fixed;right:24px;bottom:-8px;z-index:70;width:256px;display:flex;justify-content:flex-end;pointer-events:none;transition:right .25s ease}
 #mascotRoot.hidden{display:none}
+/* 手机屏幕窄，她固定占着右下角会压住表格和按钮（2026-11-04 用户反馈）。
+   这条必须写在立绘自己的样式块里 —— 母版里的同名规则被这里的 display:flex 盖住。 */
+@media (max-width:760px){#mascotRoot{display:none}}
 #mascotImg{pointer-events:auto;height:clamp(204px,20.4vw,300px);width:auto;display:block;cursor:pointer;user-select:none;-webkit-user-drag:none;filter:drop-shadow(0 12px 24px rgba(0,0,0,.38));transition:height .25s ease}
 /* 浅色主题下这层 38% 的投影会变成一圈灰晕（2026-10-29 用户：像贴纸贴在页面上）。
    浅色单独减淡、收窄，深色维持原样 —— 深色背景需要一点影子才有层次。 */
@@ -767,7 +805,11 @@ html[data-theme="light"] #mascotImg{filter:drop-shadow(0 5px 10px rgba(30,45,80,
 .bgm-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 /* 同一行里的按钮与分段按钮高度对齐（2026-10-28：原先高矮不一看着乱） */
 .bgm-row .btn,.bgm-row .seg-toggle .stg{height:32px;display:inline-flex;align-items:center;justify-content:center;box-sizing:border-box}
-.bgm-row .seg-toggle .stg{padding:0 12px}
+/* 拉取中会多出转圈和三个字，宽度一变就把这一行挤换行、下面那块整体下移一格
+   （2026-11-04 用户反馈）。固定宽度 + 三个方向按钮收窄一点，两种状态都不换行。 */
+.bgm-row #bgmPullBtn{min-width:92px;padding-left:0;padding-right:0}
+.bgm-row .seg-toggle .stg{padding:0 10px;white-space:nowrap}
+.bgm-row .seg-toggle{gap:5px}
 .bgm-row .seg-toggle{height:32px;align-items:center}
 /* 「接口」这类标签：文字与选项靠左连排，不做两端对齐 */
 .field label.rin-fold.rin-inline{justify-content:flex-start;gap:10px}
@@ -848,6 +890,9 @@ input[type="password"]::-ms-clear{display:none;width:0;height:0}
 #entryOverlay .eh-rename{flex:none;border:1px solid var(--border);background:var(--panel2);color:var(--muted);border-radius:7px;font-size:.72rem;padding:4px 8px;cursor:pointer;font-family:inherit;transition:.12s}
 #entryOverlay .eh-rename:hover{color:var(--text);border-color:var(--accent)}
 #entryOverlay .form-grid{grid-template-columns:repeat(3,1fr);gap:9px 12px}
+/* 手机上三列会把每个格压到 100px 出头，年份、集数这种短字段也挤；
+   降到两列，.full 仍然整行。 */
+@media (max-width:560px){#entryOverlay .form-grid{grid-template-columns:1fr 1fr}}
 #entryOverlay .form-grid .span2{grid-column:span 2}
 #entryOverlay .form-grid .full{grid-column:1 / -1}
 #entryOverlay .eh-foot{min-height:0}
@@ -998,9 +1043,11 @@ input.rin-auto{background:var(--panel2);color:var(--muted);cursor:pointer}
 .disc-own{position:absolute;right:5px;top:5px;font-size:.6rem;font-weight:500;color:var(--accent);background:rgba(0,0,0,.66);padding:1px 5px;border-radius:5px}
 .disc-name{font-size:.7rem;color:var(--muted);padding:5px 6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;width:100%;box-sizing:border-box;text-align:left}
 .disc-empty{padding:44px 0;text-align:center;color:var(--faint);font-size:.85rem;line-height:1.9}
-/* 发现页右上角的连接状态点：灰=没探过/探测中，绿=通，橙=不通（悬停看原因） */
+/* 发现页右上角的连接状态点：灰=没探过/探测中，绿=可读可写，橙=只能读，红=连不上。
+   点一下可以重新检测（2026-11-04 用户要求：开了代理不想等 60 秒缓存）。 */
 .rin-net-dot{width:8px;height:8px;border-radius:50%;background:var(--faint);display:inline-block;
-  flex:none;align-self:center;cursor:default;transition:background .2s,box-shadow .2s}
+  flex:none;align-self:center;cursor:pointer;transition:background .2s,box-shadow .2s}
+.rin-net-dot:hover{box-shadow:0 0 0 3px var(--accent-soft)}
 .rin-net-dot.ok{background:var(--green);box-shadow:0 0 0 3px rgba(52,199,89,.16)}
 /* 橙 = 只能读（镜像通、直连不通，写入会失败）；红 = 彻底连不上 */
 .rin-net-dot.bad{background:var(--orange);box-shadow:0 0 0 3px rgba(255,159,10,.16)}
@@ -1821,7 +1868,7 @@ ${l.stack}`)}else c=o?.stack??"";let f=this.url.toString().length;return o?.name
           <h3>关于</h3>
           <div class="about-head">
             <div>
-              <div class="about-name">Rin Tools <b class="ver-link" id="verLink">4.1.1</b></div>
+              <div class="about-name">Rin Tools <b class="ver-link" id="verLink">4.1.2</b></div>
               <div class="about-desc">一个本地的番剧观看记录与统计工具</div>
             </div>
             <button class="btn sm" id="updBtn">检查更新</button>
@@ -2951,7 +2998,10 @@ function doSaveEntry(){
     state.entries.unshift(Object.assign({ id: uid(), createdAt: Date.now(), updatedAt: Date.now() }, data));
     toast("已添加「"+name+"」");
   }
-  saveState(); renderLibrary(); hideOverlay("entryOverlay");
+  saveState(); renderLibrary();
+  
+  if(document.getElementById("page-week").classList.contains("active")) renderWeek();
+  hideOverlay("entryOverlay");
 }
 document.getElementById("saveEntryBtn").addEventListener("click", ()=>{
   const name = document.getElementById("eName").value.trim();
@@ -3193,6 +3243,46 @@ function bindYearPage(){
 }
 
 
+
+
+
+
+
+
+
+
+
+function weekFinishedByDate(dateStr, total){
+  const t = Number(total) || 0;
+  if(!t) return false;
+  const s = String(dateStr || "").trim();
+  
+
+  let d = NaN;
+  if(s.length >= 10 && s.charAt(4) === "-" && s.charAt(7) === "-") d = Date.parse(s.slice(0, 10));
+  if(!isFinite(d)){
+    const y = Number(s.slice(0, 4)) || 0;
+    if(!y) return false;
+    d = Date.parse(y + "-12-31");       
+  }
+  return Date.now() > d + (t * 7 + 14) * 86400000;
+}
+
+
+
+
+function rinFixFinished(){
+  let n = 0;
+  (state.entries || []).forEach(function(e){
+    if(e.finished !== true) return;
+    if(!(Number(e.episodes) > 0)) return;
+    if(!weekFinishedByDate(e.airDate || (e.year ? String(e.year) : ""), e.episodes)){
+      e.finished = false;
+      n++;
+    }
+  });
+  return n;
+}
 
 
 
@@ -3786,6 +3876,14 @@ const CHANGELOG = [
 
 
 
+  { v:"4.1.2", title:"细节修正", items:[
+    "手机浏览器打开时页签与表格可横向滑动，不再被裁切",
+    "Bangumi 连接状态点可点击重测，颜色按实际能否写入判断",
+    "修正「正在播的番被判成已完结」，标了周播日就能出现在周期表",
+    "封面墙打开即显示，网络恢复后自动补上，不必再切页刷新",
+    "拉取后差异面板不再卡顿，编辑保存后周期表立即刷新",
+    "关窗时按设置里的档位对齐，下次启动不会先全屏再缩回"
+  ]},
   { v:"4.1.1", title:"逐条同步", items:[
     "观看状态、加入收藏、追番进度改为逐条同步，不必再走整库同步",
     "进度可逐集点亮或往回调整；发现页详情可直接改状态、移出库内",
@@ -3869,11 +3967,6 @@ const CHANGELOG = [
     "强调色与深色、浅色两套配色调整",
     "其他优化"
   ]},
-  { v:"2.3.0", title:"窗口", items:[
-    "窗口改为无边框自绘，窗口按钮并入页面顶栏",
-    "支持边缘缩放、最大化与窗口尺寸记忆",
-    "其他优化"
-  ]},
   { v:"2.0.0", title:"公开发布", items:[
     "首个公开发布版本，提供脱敏版供他人使用",
     "番剧库、统计仪表盘、周期表、年份回顾",
@@ -3907,6 +4000,7 @@ window.addEventListener("resize", ()=>{ if(document.getElementById("page-stats")
 
 window.matchMedia("(prefers-color-scheme: light)").addEventListener("change", ()=>{ if(state.theme==="system") applyTheme(); });
 applyTheme();
+rinFixFinished();  
 saveState(); 
 document.getElementById("fSort").value = filters.sort; 
 { 
@@ -5363,14 +5457,38 @@ function bgmApi(){
   if(mascotCfg.bgmDirect === true) return "https://api.bgm.tv";
   return String(mascotCfg.bgmApi || "").trim() || BGM_DEFAULT_API;
 }
-async function bgmFetch(url){
-  for(let i=0;i<3;i++){
+
+
+function rinBgmFetchT(url, ms){
+  return new Promise(function(res){
+    var done = false;
+    var ctl = (typeof AbortController === "function") ? new AbortController() : null;
+    var t = setTimeout(function(){
+      if(done) return;
+      done = true;
+      try{ if(ctl) ctl.abort(); }catch(e){}
+      res(null);
+    }, ms || 8000);
     try{
-      const r = await fetch(url);
-      if(r.ok) return await r.json();
-      if(r.status === 404) return null;
+      fetch(url, ctl ? { signal: ctl.signal } : {}).then(function(r){
+        if(done) return;
+        done = true; clearTimeout(t); res(r);
+      }).catch(function(){
+        if(done) return;
+        done = true; clearTimeout(t); res(null);
+      });
+    }catch(e){ clearTimeout(t); done = true; res(null); }
+  });
+}
+async function bgmFetch(url){
+  
+  for(let i=0;i<2;i++){
+    try{
+      const r = await rinBgmFetchT(url, 8000);
+      if(r && r.ok) return await r.json();
+      if(r && r.status === 404) return null;
     }catch(e){}
-    await new Promise(x=>setTimeout(x, 1200));
+    if(i === 0) await new Promise(x=>setTimeout(x, 700));
   }
   return null;
 }
@@ -5650,17 +5768,44 @@ function bgmShowDiff(d){
 
 
 
-  const sameKey = s => String(s || "").trim().replace(/\s+/g, "").replace(/[\uFF01-\uFF5E]/g, c => String.fromCharCode(c.charCodeAt(0) - 0xFEE0));
+  
+
+
+  const keyCache = new Map();
+  const sameKey = s => {
+    const raw = String(s || "");
+    const hit = keyCache.get(raw);
+    if(hit !== undefined) return hit;
+    const v = raw.trim().replace(/\s+/g, "").replace(/[\uFF01-\uFF5E]/g, c => String.fromCharCode(c.charCodeAt(0) - 0xFEE0));
+    keyCache.set(raw, v);
+    return v;
+  };
+  const bySame = new Map(), byNorm = new Map();
+  state.entries.forEach(e => {
+    const a = sameKey(e.name), b = normName(e.name);
+    if(!bySame.has(a)) bySame.set(a, []);
+    bySame.get(a).push(e);
+    if(!byNorm.has(b)) byNorm.set(b, []);
+    byNorm.get(b).push(e);
+  });
   
   const liveIds = d.liveIds || new Map();
+  
+
+  const byLiveNorm = new Map();
+  state.entries.forEach(e => {
+    if(!(Number(e.bgmId) > 0 && liveIds.has(Number(e.bgmId)))) return;
+    const k = normName(e.name);
+    if(!byLiveNorm.has(k)) byLiveNorm.set(k, e);   
+  });
   
 
 
 
 
   const localSame = x => {
-    const exact = state.entries.filter(e => sameKey(e.name) === sameKey(x.name));
-    const cand = exact.length ? exact : state.entries.filter(e => normName(e.name) === normName(x.name));
+    const exact = bySame.get(sameKey(x.name)) || [];
+    const cand = exact.length ? exact : (byNorm.get(normName(x.name)) || []);
     if(cand.length !== 1) return null;
     const e = cand[0];
     if(Number(e.bgmId) > 0 && liveIds.has(Number(e.bgmId))) return null;   
@@ -5684,8 +5829,7 @@ function bgmShowDiff(d){
           "<span class='bd-note'>关联已失效，将替换本地同名（评分保留）</span></div>";
       }
       const cb = "<input type='checkbox' class='bd-add-item' value='" + x.id + "' checked>";
-      const near = state.entries.find(e => Number(e.bgmId) > 0 && liveIds.has(Number(e.bgmId))
-        && normName(e.name) === normName(x.name));
+      const near = byLiveNorm.get(normName(x.name)) || null;
       if(near){
         
 
@@ -5971,10 +6115,17 @@ function bgmApply(d){
   else finish();
 }
 async function bgmRun(){
+  
+
+  if(typeof window.rinBgmPing === "function"){
+    let reachable = null;
+    try{ reachable = await Promise.race([window.rinBgmPing(), new Promise(r => setTimeout(() => r(null), 1500))]); }catch(e){}
+    if(reachable === false){ toast("连不上 Bangumi，先检查网络或代理"); return; }
+  }
   bgmTip(BGM_TIP, true);
   const r = await bgmPull((got, tot)=>{ bgmTip(tot ? "已读取 " + got + " / " + tot : "已读取 " + got + " 部", true); });
   bgmTip(BGM_TIP, false);
-  if(!r){ toast("未获取到数据，请检查用户名"); return; }
+  if(!r){ toast("未获取到数据，请检查用户名或网络"); return; }
   bgmShowDiff(bgmDiff(r));
 }
 const bgmBtn = document.getElementById("bgmPullBtn");
@@ -6759,7 +6910,6 @@ const WIN_PRESETS = [
 const WIN_MIN_W = 1000, WIN_MIN_H = 640;
 
 let WIN_BUSY_UNTIL = 0;          
-let WIN_RESIZE_T = null;
 
 function winIsShell(){
   
@@ -6871,7 +7021,6 @@ function rinWinMaxToggle(){
   }).then(function(m){
     setTimeout(function(){ rinWinVeil(false); }, 60);
     
-    setTimeout(function(){ winRememberNow(); }, 260);
     return m;
   });
 }
@@ -6945,18 +7094,48 @@ function winLooksMax(){
 
 
 
-
 function winRememberNow(){
-  return winApi(W => W.isMaximized())
+  return Promise.resolve(false);
+}
+
+
+
+
+
+
+function winExitAlign(){
+  if(!winIsShell()) return Promise.resolve(false);
+  const want = winWantSize();
+  if(!want) return Promise.resolve(false);
+  let hid = false;
+  return winApi(W => W.isMaximized().catch(() => false))
     .then(function(m){
-      if(m === null || m === undefined) return false;     
-      if(m === true || winLooksMax()) return winMemoWrite("max", 0, 0);
-      if(!(mascotCfg.win && mascotCfg.win.v === "max")) return false;
+      if(m === null || m === undefined) return false;
+      
+      const isMax = m === true || winLooksMax();
+      if(want.mode === "max"){
+        if(isMax) return true;                              
+        return winApi(W => (typeof W.hide === "function" ? (hid = true, W.hide()) : null))
+          .catch(() => null)
+          .then(() => winApi(W => W.maximize()))
+          .then(() => true);
+      }
       const s = winInnerSize();
-      if(!rinWinSane(s.w, s.h)) return false;
-      return winMemoWrite(winPresetOf(s.w, s.h) || WIN_PRESETS[1].v, 0, 0);
+      const near = s.w && s.h &&
+        Math.abs(s.w - want.w) <= 24 && Math.abs(s.h - want.h) <= 24;
+      if(!isMax && near) return true;                        
+      return winApi(W => (typeof W.hide === "function" ? (hid = true, W.hide()) : null))
+        .catch(() => null)
+        .then(() => winApi(W => (isMax ? W.unmaximize() : null)))
+        .then(() => winApi(W => W.setSize({ width: want.w, height: want.h })))
+        .then(() => true);
     })
-    .catch(function(){ return false; });
+    .catch(function(){ return false; })
+    .then(function(ok){
+      
+      if(hid) setTimeout(function(){ try{ winApi(W => W.show()); }catch(e){} }, 2200);
+      return ok;
+    });
 }
 
 
@@ -7177,15 +7356,7 @@ function winTipSync(){
     .then(() => {
       
 
-      document.addEventListener("visibilitychange", () => {
-        if(document.visibilityState === "hidden") winRememberNow();
-      });
-      window.addEventListener("resize", () => {
-        if(Date.now() < WIN_BUSY_UNTIL) return;
-        clearTimeout(WIN_RESIZE_T);
-        
-        WIN_RESIZE_T = setTimeout(() => { winRememberNow(); }, 900);
-      });
+
     })
     .catch(() => { winRowEl.style.display = "none"; winBootDone(); });
 })();
@@ -7283,9 +7454,14 @@ window.rinFrameCalc = rinFrameCalc;
       }
       
 
-      if(typeof winRememberNow === "function"){
+
+
+      if(typeof winExitAlign === "function"){
+        winExitAlign().then(function(){ setTimeout(doExit, 80); });
+        setTimeout(doExit, 1200);     
+      }else if(typeof winRememberNow === "function"){
         winRememberNow().then(function(){ setTimeout(doExit, 60); });
-        setTimeout(doExit, 500);      
+        setTimeout(doExit, 500);
       }else{
         doExit();
       }
@@ -8445,25 +8621,59 @@ function rinMemBlock(){
       .then(function(v){ clearTimeout(timer); return v; });
   }
 
+  
+
+  function probeWrite(){
+    if(typeof window.rinBgmGetJson !== "function") return Promise.resolve(null);
+    return window.rinBgmGetJson("/v0/subjects/1")
+      .then(function(r){ return !!(r && r.ok); })
+      .catch(function(){ return false; });
+  }
+
+  var NET_TIP_TAIL = " · 点击重测";
+
   window.rinBgmPing = function(force){
     var now = Date.now();
     if(!force && NET_OK !== null && now - NET_AT < 60000) return Promise.resolve(NET_OK);
     if(NET_WAIT) return NET_WAIT;
     paintNet("wait", "正在检测 Bangumi 连接…");
     NET_WAIT = probe().then(function(ok){
-      NET_OK = ok; NET_AT = Date.now(); NET_WAIT = null;
-      
+      if(!ok){
+        NET_OK = false; NET_AT = Date.now(); NET_WAIT = null;
+        paintNet("err", "连不上 Bangumi，检查网络或代理" + NET_TIP_TAIL);
+        return false;
+      }
       var hasTk = false;
       try{ hasTk = !!localStorage.getItem("rin.bgm.token"); }catch(err){}
       var viaMirror = true;
       try{ viaMirror = String(bgmApi() || "").indexOf("api.bgm.tv") < 0; }catch(err){}
-      paintNet(ok ? (hasTk && viaMirror ? "bad" : "ok") : "err", ok
-        ? (hasTk && viaMirror ? "Bangumi 可读取（镜像只读，写入需直连）" : "已连接 Bangumi")
-        : "连不上 Bangumi —— 检查网络或代理");
-      return ok;
+      
+      if(!hasTk || !viaMirror){
+        NET_OK = true; NET_AT = Date.now(); NET_WAIT = null;
+        paintNet("ok", "已连接 Bangumi" + NET_TIP_TAIL);
+        return true;
+      }
+      
+
+      return probeWrite().then(function(canWrite){
+        NET_OK = true; NET_AT = Date.now(); NET_WAIT = null;
+        if(canWrite === true) paintNet("ok", "已连接 Bangumi（可读可写）" + NET_TIP_TAIL);
+        else paintNet("bad", "只能读取，写入需直连" + NET_TIP_TAIL);
+        return true;
+      });
     });
     return NET_WAIT;
   };
+
+  
+  document.addEventListener("click", function(ev){
+    var t = ev.target;
+    var d = (t && t.closest) ? t.closest(".rin-net-dot") : null;
+    if(!d) return;
+    ev.preventDefault();
+    ev.stopPropagation();
+    window.rinBgmPing(true);
+  }, true);
 })();
 
 
@@ -9134,6 +9344,32 @@ function rinGalPut(key, blob){
 
 
 
+
+function rinGalFetch(url){
+  return new Promise(function(res){
+    var done = false;
+    var ctl = (typeof AbortController === "function") ? new AbortController() : null;
+    function fin(v){
+      if(done) return;
+      done = true;
+      clearTimeout(t);
+      res(v);
+    }
+    var t = setTimeout(function(){
+      try{ if(ctl) ctl.abort(); }catch(e){}
+      fin(null);
+    }, 12000);
+    try{
+      fetch(url, ctl ? { cache: "force-cache", signal: ctl.signal } : { cache: "force-cache" })
+        .then(function(r){ return r.ok ? r.blob() : null; })
+        .then(fin)
+        .catch(function(){ fin(null); });
+    }catch(e){ fin(null); }
+  });
+}
+
+
+
 function rinGalImg(url){
   if(!url) return Promise.resolve("");
   if(rinGalURLs.has(url)) return Promise.resolve(rinGalURLs.get(url));
@@ -9143,16 +9379,79 @@ function rinGalImg(url){
       rinGalURLs.set(url, u);
       return u;
     }
-    return fetch(url, { cache: "force-cache" })
-      .then(r => (r.ok ? r.blob() : null))
-      .then(b => {
-        if(!b) return url;                     
-        rinGalPut(url, b);
-        const u = URL.createObjectURL(b);
-        rinGalURLs.set(url, u);
-        return u;
-      })
-      .catch(() => url);                       
+    return rinGalFetch(url).then(function(b){
+      if(!b) return url;   
+      rinGalPut(url, b);
+      const u = URL.createObjectURL(b);
+      rinGalURLs.set(url, u);
+      return u;
+    });
+  });
+}
+
+
+
+const RIN_GAL_RETRY = 5;
+function rinGalRetrySoon(img, n){
+  if(!img || !img.isConnected) return;
+  if(n >= RIN_GAL_RETRY){ img.dataset.gaveup = "1"; return; }
+  const delay = Math.min(6000, 700 * Math.pow(1.7, n)) + Math.round(Math.random() * 250);
+  setTimeout(function(){
+    if(!img.isConnected || img.dataset.loaded === "1") return;
+    rinGalLoadImg(img, n + 1);
+  }, delay);
+}
+
+
+
+const rinGalWarming = new Set();
+function rinGalWarm(url){
+  if(!url || rinGalWarming.has(url) || rinGalURLs.has(url)) return;
+  rinGalWarming.add(url);
+  rinGalEnqueue(function(){
+    return rinGalImg(url).then(function(){ rinGalWarming.delete(url); })
+      .catch(function(){ rinGalWarming.delete(url); });
+  });
+}
+
+
+
+
+
+
+function rinGalLoadImg(img, attempt){
+  if(!img || !img.isConnected) return;
+  if(img.dataset.loaded === "1" || img.dataset.loading === "1") return;
+  const src = img.getAttribute("data-src");
+  if(!src) return;
+  img.dataset.loading = "1";
+  img.onerror = function(){
+    if(!img.isConnected) return;
+    img.removeAttribute("src");          
+    img.dataset.loaded = "";
+    img.dataset.loading = "";
+    rinGalRetrySoon(img, attempt || 0);
+  };
+  const show = function(u){
+    img.dataset.loading = "";
+    if(!img.isConnected) return;
+    img.dataset.loaded = "1";
+    img.src = u;
+  };
+  const mem = rinGalURLs.get(src);
+  if(mem){ show(mem); return; }                     
+  rinGalGet(src).then(function(blob){
+    if(blob){
+      const u = URL.createObjectURL(blob);
+      rinGalURLs.set(src, u);
+      show(u);
+      return;
+    }
+    show(src);                                      
+    rinGalWarm(src);                                
+  }).catch(function(){
+    show(src);
+    rinGalWarm(src);
   });
 }
 
@@ -9184,10 +9483,33 @@ window.addEventListener("resize", function(){
   rinGalMarkLongNames.__t = setTimeout(rinGalMarkLongNames, 160);
 });
 
+
+
+function rinGalRecheck(){
+  const page = document.getElementById("page-gallery");
+  if(!page || !page.classList.contains("active")) return;
+  const grid = document.getElementById("galGrid");
+  if(!grid || !grid.querySelector("img[data-src]")) return;
+  grid.querySelectorAll("img[data-src]").forEach(function(img){
+    if(img.dataset.loaded === "1") return;
+    delete img.dataset.gaveup;
+    rinGalLoadImg(img, 0);
+  });
+}
+window.addEventListener("online", function(){ setTimeout(rinGalRecheck, 600); });
+document.addEventListener("visibilitychange", function(){
+  if(document.visibilityState === "visible") setTimeout(rinGalRecheck, 600);
+});
+
 let rinGalIO = null;
 function renderGallery(){
   const grid = document.getElementById("galGrid");
   if(!grid) return;
+  
+
+
+
+  if(!window.RIN_GAL_READY) return;
   const all = (state.entries || []).filter(e => e && e.cover);
   rinGalRefreshBar();                          
   const list = rinGalApply(all);
@@ -9217,12 +9539,7 @@ function renderGallery(){
 
   if(rinGalIO){ rinGalIO.disconnect(); rinGalIO = null; }
   const imgs = grid.querySelectorAll("img[data-src]");
-  const load = img => {
-    const src = img.getAttribute("data-src");
-    if(!src || img.dataset.loaded) return;
-    img.dataset.loaded = "1";
-    rinGalEnqueue(() => rinGalImg(src).then(u => { if(u) img.src = u; }));
-  };
+  const load = img => rinGalLoadImg(img, 0);
   if("IntersectionObserver" in window){
     rinGalIO = new IntersectionObserver(entries => {
       for(const en of entries){
@@ -9482,6 +9799,10 @@ function rinGalRefreshBar(){
     rinGalBuildBar();
     
     rinGalRefreshBar();
+    
+    window.RIN_GAL_READY = true;
+    var page = document.getElementById("page-gallery");
+    if(page && page.classList.contains("active")) renderGallery();
   };
   if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
   else boot();
@@ -12965,7 +13286,8 @@ function rinMetaParse(s){
   
   const summary = String((s && s.summary) || "").trim();
   return { year, eps, plat, isFilm, weekday: wd, cover, date,
-    aired, total, finished: (total > 0 && aired >= total), score, scoreCount, pubTags, nsfw, summary };
+    aired, total, finished: (typeof weekFinishedByDate === "function" ? weekFinishedByDate(date, total) : false),
+    score, scoreCount, pubTags, nsfw, summary };
 }
 async function rinMetaSubject(id){
   const key = Number(id) || 0;
