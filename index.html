@@ -1501,6 +1501,13 @@ body.rin-tab-dragging *{cursor:grabbing !important}
 .mono-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:16px 12px}
 .mono-item{display:flex;flex-direction:column;align-items:center;gap:7px;min-width:0;text-decoration:none;color:inherit}
 .mono-item img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:12px;background:var(--panel2);display:block}
+/* 加载失败时的首字占位。两条 [hidden] 必须显式写：上面的 display:block/flex 会压过
+   UA 的 [hidden]{display:none}（和 .btn[hidden] 同一个坑，2026-11-05 踩过）。 */
+.mono-item img[hidden]{display:none}
+.mono-ph{width:100%;aspect-ratio:1/1;border-radius:12px;background:var(--panel2);
+  display:flex;align-items:center;justify-content:center;color:var(--muted);
+  font-size:1.6rem;font-weight:600;user-select:none}
+.mono-ph[hidden]{display:none}
 .mono-item span{width:100%;font-size:.74rem;line-height:1.35;color:var(--muted);text-align:center;
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
 .mono-item:hover img{outline:2px solid var(--accent);outline-offset:-2px}
@@ -2015,7 +2022,7 @@ ${l.stack}`)}else c=o?.stack??"";let f=this.url.toString().length;return o?.name
           <h3>关于</h3>
           <div class="about-head">
             <div>
-              <div class="about-name">Rin Tools <b class="ver-link" id="verLink">4.2.0</b></div>
+              <div class="about-name">Rin Tools <b class="ver-link" id="verLink">4.2.1</b></div>
               <div class="about-desc">一个本地的番剧观看记录与统计工具</div>
             </div>
             <button class="btn sm" id="updBtn">检查更新</button>
@@ -4051,6 +4058,12 @@ const CHANGELOG = [
 
 
 
+  { v:"4.2.1", title:"离线、检测与同步", items:[
+    "人物页头像存于本地，断网时仍可显示；取不到时显示名字首字",
+    "连接检测改由浏览器通道完成，检测期间窗口可正常拖动",
+    "拉取与写入同样改由浏览器通道完成，同步过程中窗口可正常拖动",
+    "设置页 Bangumi 面板显示距上次同步的天数"
+  ]},
   { v:"4.2.0", title:"人物、隐私与同步", items:[
     "运行环境改用 Windows 自带的 .NET Framework 4.8，无需另装运行库",
     "设置页新增「隐私」：可隐藏受限条目，并可自定义顶栏显示哪些页签与顺序",
@@ -4091,20 +4104,12 @@ const CHANGELOG = [
     "右键删除的菜单点完即收起；窗口大小只按设置里的档位记忆",
     "只看不动的进度面板不再被记成「刚刚改动」"
   ]},
-  { v:"3.9.4", title:"开屏与窗口", items:[
+  { v:"3.9.4", title:"封面墙、开屏与窗口", items:[
+    "新增封面墙：只含封面，可按评分与题材筛选，也可手动挑选",
+    "封面墙有独立导出面板，不受统计页导出条件影响",
     "启动时先显示开屏，挡住首帧白底与初始抖动",
-    "窗口会记住设置里选的尺寸，关掉再打开照旧",
-    "上次是全屏时打开即全屏，最大化与还原也补了过渡",
-    "启动界面与窗口尺寸并排显示",
-    "Rin 记下的小事不会再一关就忘",
-    "其他优化"
-  ]},
-  { v:"3.9.2", title:"封面墙与导出", items:[
-    "新增封面墙：只含封面，每页 72 部，可按评分与题材筛选、手动挑选",
-    "封面墙有独立的导出面板，不受统计页导出条件影响",
-    "拉取收藏时自动认出受限条目，设置页也可单独识别全部条目",
+    "窗口会记住设置里选的尺寸；上次全屏时打开即全屏",
     "最小窗口 1000 × 640，窄窗口下关闭键不会再被挤掉",
-    "概览图评分区重排：直方图加宽、题材雷达放大，封面墙名字居中",
     "其他优化"
   ]},
   { v:"3.7.0", title:"信息与简介", items:[
@@ -6310,6 +6315,8 @@ async function bgmRun(){
   const r = await bgmPull((got, tot)=>{ bgmTip(tot ? "已读取 " + got + " / " + tot : "已读取 " + got + " 部", true); });
   bgmTip(BGM_TIP, false);
   if(!r){ toast("未获取到数据，请检查用户名或网络"); return; }
+  
+  if(typeof window.rinBgmMarkSync === "function") window.rinBgmMarkSync();
   bgmShowDiff(bgmDiff(r));
 }
 const bgmBtn = document.getElementById("bgmPullBtn");
@@ -8180,6 +8187,56 @@ function rinMemBlock(){
       });
     });
   }
+  
+
+
+
+  var RIN_BGM_FETCH_FAIL = 0;      
+  var RIN_BGM_FETCH_OFF = false;   
+  function rinBgmFetchOnce(url, method, token, body, ms){
+    return new Promise(function(resolve){
+      if(RIN_BGM_FETCH_OFF || typeof fetch !== "function"){ resolve({ tried:false }); return; }
+      var ctl = null, timer = null, t0 = Date.now();
+      try{ if(typeof AbortController === "function") ctl = new AbortController(); }catch(e){}
+      var opt = { method: method, cache: "no-store" };
+      var h = {};
+      if(token) h.Authorization = "Bearer " + token;
+      if(body != null && body !== ""){ h["Content-Type"] = "application/json"; opt.body = String(body); }
+      opt.headers = h;
+      if(ctl){
+        opt.signal = ctl.signal;
+        timer = setTimeout(function(){ try{ ctl.abort(); }catch(e){} }, ms || 10000);
+      }
+      var done = function(v){ if(timer) clearTimeout(timer); resolve(v); };
+      fetch(url, opt).then(function(r){
+        return r.text().then(function(txt){
+          RIN_BGM_FETCH_FAIL = 0;
+          done({ tried:true, ok:true, status:r.status, text:txt, error:null, ms:Date.now() - t0 });
+        });
+      }).catch(function(e){
+        RIN_BGM_FETCH_FAIL++;
+        if(RIN_BGM_FETCH_FAIL >= 2) RIN_BGM_FETCH_OFF = true;
+        done({ tried:true, ok:false, status:0, text:"",
+          error:"fetch-" + ((e && (e.name || e.message)) || "failed"), ms:Date.now() - t0 });
+      });
+    });
+  }
+  
+
+
+  function rinBgmTransport(url, method, token, body){
+    var ms = (method === "GET") ? 9000 : 12000;
+    return rinBgmFetchOnce(url, method, token, body, ms).then(function(r){
+      var quick = r.tried && !r.ok && (r.ms || 0) < 3000;
+      if(!r.tried || quick){
+        return rinBgmCurl(url, method, token, body).then(function(c){
+          return (c && c.tried) ? c : r;
+        });
+      }
+      return r;
+    });
+  }
+  window.rinBgmTransport = rinBgmTransport;
   function rinBgmNative(url, method, token, body){
     return new Promise(function(resolve){
       var N = window.Neutralino;
@@ -8200,17 +8257,18 @@ function rinMemBlock(){
     });
   }
   function rinBgmProbe(token){
-    return rinBgmCurl("https://api.bgm.tv/v0/me", "GET", token).then(function(r){
+    return rinBgmTransport("https://api.bgm.tv/v0/me", "GET", token, null).then(function(r){
       if(r.tried) return r;
       return rinBgmNative("https://api.bgm.tv/v0/me", "GET", token);
     });
   }
+  window.rinBgmProbe = rinBgmProbe;   
   
   window.rinBgmGetJson = function(path){
     var tk = rinBgmGet();
     if(!tk) return Promise.resolve({ ok:false, status:0, data:null });
     var url = "https://api.bgm.tv" + path;
-    return rinBgmCurl(url, "GET", tk).then(function(r){
+    return rinBgmTransport(url, "GET", tk, null).then(function(r){
       if(!r.tried) return rinBgmNative(url, "GET", tk);
       return r;
     }).then(function(r){
@@ -8225,11 +8283,16 @@ function rinMemBlock(){
     var tk = token || rinBgmGet();
     var body = JSON.stringify(bodyObj || {});
     var m = method || "POST";
-    return rinBgmCurl("https://api.bgm.tv" + path, m, tk, body).then(function(r){
+    return rinBgmTransport("https://api.bgm.tv" + path, m, tk, body).then(function(r){
       if(r.tried) return r;
       return rinBgmNative("https://api.bgm.tv" + path, m, tk, body);
     });
   };
+  
+  window.rinBgmFetchState = function(){
+    return { fails: RIN_BGM_FETCH_FAIL, off: RIN_BGM_FETCH_OFF };
+  };
+  window.rinBgmFetchReset = function(){ RIN_BGM_FETCH_FAIL = 0; RIN_BGM_FETCH_OFF = false; };
 
   function rinBgmNetTip(r){
     var e = String(r.error || "");
@@ -8485,6 +8548,8 @@ function rinMemBlock(){
         failLine = res.fail.length + " 条失败" + (why ? "（" + why + "）" : "")
           + (res.failSay ? "：" + res.failSay : "") + "，可再点一次重试。";
       }
+      
+      if(typeof window.rinBgmMarkSync === "function") window.rinBgmMarkSync();
       saveState();
       try{ renderLibrary(); }catch(e){}
       rinUpShow("同步完成：" + parts.join("；") + "。" + (failLine ? "\n" + failLine : ""));
@@ -8882,16 +8947,32 @@ function rinMemBlock(){
 
 
 
+
+
+
+
+
+
+
+
   function probeWrite(){
-    if(typeof window.rinBgmGetJson !== "function") return Promise.resolve("none");
-    return window.rinBgmGetJson("/v0/users/-/collections/1")
+    var token = "";
+    try{ token = localStorage.getItem("rin.bgm.token") || ""; }catch(e){}
+    if(!token) return Promise.resolve("none");
+    var ctl = null;
+    try{ ctl = (typeof AbortController === "function") ? new AbortController() : null; }catch(e){}
+    var timer = setTimeout(function(){ try{ if(ctl) ctl.abort(); }catch(e){} }, 5000);
+    var opts = { headers: { "Authorization": "Bearer " + token }, cache: "no-store" };
+    if(ctl) opts.signal = ctl.signal;
+    return fetch("https://api.bgm.tv/v0/users/-/collections/1", opts)
       .then(function(r){
-        var st = Number(r && r.status) || 0;
+        var st = r ? (Number(r.status) || 0) : 0;
         if(!st) return "net";                       
         if(st === 401 || st === 403) return "token"; 
-        return "ok";                                 
+        return "ok";                                
       })
-      .catch(function(){ return "net"; });
+      .catch(function(){ return "net"; })
+      .then(function(v){ clearTimeout(timer); return v; });
   }
 
   var NET_TIP_TAIL = " · 点击重测";
@@ -8900,14 +8981,9 @@ function rinMemBlock(){
     var now = Date.now();
     
 
-
     if(!force && NET_OK !== null && now - NET_AT < 300000) return Promise.resolve(NET_OK);
     if(NET_WAIT) return NET_WAIT;
     paintNet("wait", "正在检测 Bangumi 连接…");
-    
-
-
-    document.body.classList.add("rin-netting");
     NET_WAIT = probe().then(function(ok){
       if(!ok){
         NET_OK = false; NET_AT = Date.now(); NET_WAIT = null;
@@ -8934,11 +9010,56 @@ function rinMemBlock(){
         return true;
       });
     });
-    
-    NET_WAIT.then(function(){ document.body.classList.remove("rin-netting"); },
-                   function(){ document.body.classList.remove("rin-netting"); });
     return NET_WAIT;
   };
+
+  
+
+
+  var LAST_KEY = "rin.bgm.lastSync";
+  function rinBgmMarkSync(){
+    try{ localStorage.setItem(LAST_KEY, String(Date.now())); }catch(e){}
+    try{ rinBgmFreshPaint(); }catch(e){}
+  }
+  function rinBgmFreshText(){
+    var at = 0;
+    try{ at = Number(localStorage.getItem(LAST_KEY)) || 0; }catch(e){}
+    if(!at) return "Bangumi 同步：尚未同步";
+    var d = Math.floor((Date.now() - at) / 86400000);
+    if(d <= 0) return "Bangumi 同步：今天已同步";
+    return "Bangumi 同步：已有 " + d + " 天未同步";
+  }
+  function rinBgmFreshPaint(){
+    var el = document.getElementById("bgmFresh");
+    if(!el){
+      
+
+      var anchor = document.getElementById("bgmTip");
+      if(!anchor || !anchor.parentNode) return;
+      el = document.createElement("div");
+      el.id = "bgmFresh";
+      
+      el.style.cssText = "font-size:.76rem;color:var(--muted);margin-top:6px;line-height:1.6";
+      anchor.parentNode.appendChild(el);
+    }
+    el.textContent = rinBgmFreshText();
+  }
+  window.rinBgmMarkSync = rinBgmMarkSync;
+  window.rinBgmFreshPaint = rinBgmFreshPaint;
+  window.rinBgmFreshText = rinBgmFreshText;
+
+  
+  (function(){
+    try{ rinBgmFreshPaint(); }catch(e){}
+    if(typeof goPage === "function"){
+      var rinFreshGoPage = goPage;
+      goPage = function(p){
+        var r = rinFreshGoPage.apply(this, arguments);
+        if(p === "settings"){ try{ rinBgmFreshPaint(); }catch(e){} }
+        return r;
+      };
+    }
+  })();
 
   
   document.addEventListener("click", function(ev){
@@ -10501,6 +10622,24 @@ function rinGalRefreshBar(){
   let rinMonoErr = "";        
   let rinMonoAt = 0;          
 
+  
+
+
+
+
+
+
+
+
+
+
+  const PROBE_MS  = 3000;     
+  const PROBE_GAP = 60000;    
+  let rinMonoProbeState = null;   
+  let rinMonoProbeAt = 0;
+  let rinMonoProbing = false;
+  let rinMonoBooted = false;      
+
   function rinMonoSleep(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
 
   function rinMonoLoad(){
@@ -10718,9 +10857,112 @@ function rinGalRefreshBar(){
     return d + " 天前读取";
   }
 
+  
+
+
+
+
+
+
+
+
+
+  const RIN_MONO_RETRY = 4;
+  const rinMonoWarming = new Set();
+
+  function rinMonoMirror(u){
+    return String(u || "").replace(/^https?:\/\/(?:lain|bgm|bgmimg)\.bgm\.tv\//i,
+                                  "https://bgmimg.anibt.net/");
+  }
+  function rinMonoCacheGet(url){
+    if(typeof rinGalGet !== "function") return Promise.resolve(null);
+    try{ return Promise.resolve(rinGalGet(url)).catch(function(){ return null; }); }
+    catch(e){ return Promise.resolve(null); }
+  }
+  function rinMonoCachePut(url, blob){
+    if(!blob || typeof rinGalPut !== "function") return;
+    try{ rinGalPut(url, blob); }catch(e){}
+  }
+  
+
+  function rinMonoWarm(url){
+    if(!url || rinMonoWarming.has(url) || typeof rinGalFetch !== "function") return;
+    rinMonoWarming.add(url);
+    const run = function(){
+      const mirror = rinMonoMirror(url);
+      const first = (mirror !== url) ? rinGalFetch(mirror) : Promise.resolve(null);
+      return Promise.resolve(first).catch(function(){ return null; }).then(function(b){
+        if(b) return b;
+        return Promise.resolve(rinGalFetch(url)).catch(function(){ return null; });
+      }).then(function(b){
+        if(b) rinMonoCachePut(url, b);
+      }).catch(function(){}).then(function(){ rinMonoWarming.delete(url); });
+    };
+    
+
+    if(typeof rinGalEnqueue === "function") rinGalEnqueue(run);
+    else run();
+  }
+  function rinMonoFallback(img){
+    const a = img.closest ? img.closest(".mono-item") : null;
+    if(!a) return;
+    const ph = a.querySelector(".mono-ph");
+    img.hidden = true;
+    if(ph) ph.hidden = false;
+    a.classList.add("mono-fail");
+  }
+  
+  function rinMonoImgBind(box){
+    if(!box || box.dataset.monoImgBound) return;
+    box.dataset.monoImgBound = "1";
+    box.addEventListener("load", function(ev){
+      const img = ev.target;
+      if(!img || img.tagName !== "IMG") return;
+      img.dataset.monoOk = "1";
+      const url = img.getAttribute("data-src");
+      if(url) rinMonoWarm(url);
+    }, true);
+    box.addEventListener("error", function(ev){
+      const img = ev.target;
+      if(!img || img.tagName !== "IMG") return;
+      const url = img.getAttribute("data-src");
+      if(!url) return;
+      const n = Number(img.dataset.monoTry || 0);
+      if(n >= RIN_MONO_RETRY){ rinMonoFallback(img); return; }
+      img.dataset.monoTry = String(n + 1);
+      const alt = (n % 2 === 0) ? rinMonoMirror(url) : url;
+      const sep = alt.indexOf("?") >= 0 ? "&" : "?";
+      setTimeout(function(){
+        if(!img.isConnected || img.dataset.monoOk === "1" || img.dataset.monoCached === "1") return;
+        img.src = alt + sep + "r=" + (n + 1);
+      }, Math.min(3200, 700 * Math.pow(1.6, n)));
+    }, true);
+  }
+  function rinMonoImgInit(){
+    const boxes = [document.getElementById("monoCharGrid"), document.getElementById("monoPersonGrid")];
+    for(const box of boxes){
+      if(!box) continue;
+      rinMonoImgBind(box);
+      const imgs = box.querySelectorAll("img[data-src]");
+      for(const img of imgs){
+        const url = img.getAttribute("data-src");
+        if(!url) continue;
+        rinMonoCacheGet(url).then(function(blob){
+          if(!blob || !img.isConnected || img.dataset.monoOk === "1") return;
+          try{
+            img.src = URL.createObjectURL(blob);
+            img.dataset.monoCached = "1";
+          }catch(e){}
+        }).catch(function(){});
+      }
+    }
+  }
+
   function rinMonoItem(x, kind){
+    const initial = String((x && x.name) || "?").trim().charAt(0) || "?";
     return "<a class='mono-item' href='https://bgm.tv/" + kind + "/" + x.id + "' target='_blank' rel='noopener'>" +
-      "<img src=\"" + esc(x.img) + "\" alt=\"\" loading=\"lazy\" decoding=\"async\" referrerpolicy=\"no-referrer\">" +
+      "<img src=\"" + esc(x.img) + "\" data-src=\"" + esc(x.img) + "\" alt=\"\" loading=\"lazy\" decoding=\"async\" referrerpolicy=\"no-referrer\">" +
+      "<div class='mono-ph' hidden>" + esc(initial) + "</div>" +
       "<span>" + esc(x.name) + "</span></a>";
   }
 
@@ -10750,6 +10992,8 @@ function rinGalRefreshBar(){
       btn.textContent = (chars.length || persons.length) ? "重新读取" : "读取";
       btn.disabled = !!rinMonoBusy;
     }
+    
+    rinMonoImgInit();
   }
 
   
@@ -10758,6 +11002,39 @@ function rinGalRefreshBar(){
 
 
 
+  
+
+
+  const PROBE_URL = "https://bgm.tv/";
+
+  function rinMonoProbe(force){
+    const now = Date.now();
+    if(rinMonoProbing) return Promise.resolve(rinMonoProbeState);
+    if(!force && rinMonoProbeState !== null && now - rinMonoProbeAt < PROBE_GAP)
+      return Promise.resolve(rinMonoProbeState);
+    rinMonoProbing = true;
+    rinMonoProbeState = null;
+    rinMonoDot();
+    let ctl = null;
+    try{ ctl = (typeof AbortController === "function") ? new AbortController() : null; }catch(e){}
+    const timer = setTimeout(function(){ try{ if(ctl) ctl.abort(); }catch(e){} }, PROBE_MS);
+    const opts = { mode: "no-cors", cache: "no-store" };
+    if(ctl) opts.signal = ctl.signal;
+    return fetch(PROBE_URL, opts)
+      .then(function(r){ return r ? "ok" : "fail"; })
+      .catch(function(){ return "fail"; })
+      .then(function(st){
+        clearTimeout(timer);
+        rinMonoProbeState = st;
+        rinMonoProbeAt = Date.now();
+        rinMonoProbing = false;
+        rinMonoDot();
+        return st;
+      });
+  }
+
+  
+  function rinMonoErrTip(msg){ return "仅人物页读取失败：" + msg + " · 点击重试"; }
   function rinMonoDot(){
     const d = document.getElementById("monoNetDot");
     if(!d) return;
@@ -10770,25 +11047,28 @@ function rinGalRefreshBar(){
     }
     if(rinMonoErr){
       d.classList.add("err");
-      d.setAttribute("data-tip", rinMonoErr + " · 点击重试");
+      d.setAttribute("data-tip", rinMonoErrTip(rinMonoErr));
       return;
     }
-    if(rinMono && ((rinMono.chars || []).length || (rinMono.persons || []).length)){
-      d.classList.add("ok");
-      d.setAttribute("data-tip", "已读取 · 点击重新读取");
+    if(rinMonoProbing){
+      d.classList.add("wait");
+      d.setAttribute("data-tip", "正在检测连接…");
       return;
     }
-    const st = window.rinBgmNetState;
-    if(st === "ok"){
+    
+
+    if(rinMonoProbeState === "ok"){
       d.classList.add("ok");
-      d.setAttribute("data-tip", "还没读取 · 点击读取");
-    }else if(st === "bad" || st === "err"){
+      d.setAttribute("data-tip", "当前可连接 · 点击重测");
+      return;
+    }
+    if(rinMonoProbeState === "fail"){
       d.classList.add("bad");
-      d.setAttribute("data-tip", window.rinBgmNetTip || "直连不通，读取需要开启代理 · 点击重试");
-    }else{
-      d.classList.add("idle");
-      d.setAttribute("data-tip", "还没读取 · 点击读取");
+      d.setAttribute("data-tip", "当前连不上 bgm.tv，需要开启代理 · 点击重测");
+      return;
     }
+    d.classList.add("idle");
+    d.setAttribute("data-tip", "未验证当前连接 · 点击重测");
   }
 
   function renderMono(){
@@ -10836,6 +11116,10 @@ function rinGalRefreshBar(){
         rinMonoSave(rinMono);
         
 
+
+
+        rinMonoProbeState = "ok";
+        rinMonoProbeAt = Date.now();
         rinMonoErr = "";
         toast("已读取 " + rinMono.chars.length + " 位角色 · " + rinMono.persons.length + " 位人物" +
           (rc.err || rp.err ? "（有一边没读全）" : ""));
@@ -10858,13 +11142,47 @@ function rinGalRefreshBar(){
   window.rinMonoRun = rinMonoRun;
   window.rinMonoParse = rinMonoParse;       
   window.rinMonoDot = rinMonoDot;           
+  window.rinMonoMirror = rinMonoMirror;     
+  window.rinMonoImgInit = rinMonoImgInit;   
+  window.rinMonoFallback = rinMonoFallback;
+  window.rinMonoErrTip = rinMonoErrTip;
+  window.rinMonoProbe = rinMonoProbe;       
+  window.rinMonoProbeInfo = function(){
+    return { state: rinMonoProbeState, at: rinMonoProbeAt, probing: rinMonoProbing, booted: rinMonoBooted };
+  };
 
   (function(){
     const b = document.getElementById("monoRefresh");
     if(b) b.addEventListener("click", rinMonoRun);
     
+
+
+
     const d = document.getElementById("monoNetDot");
-    if(d) d.addEventListener("click", function(){ if(!rinMonoBusy) rinMonoRun(); });
+    if(d) d.addEventListener("click", function(){
+      if(!rinMonoBusy) rinMonoProbe(true);
+    });
+    
+
+    rinMonoDot();
+  })();
+
+  
+
+
+  (function(){
+    let prev = null;
+    if(typeof goPage !== "function") return;
+    const orig = goPage;
+    goPage = function(p){
+      const r = orig.apply(this, arguments);
+      try{
+        if(p === "mono" && prev !== "mono" && rinMonoBooted && !rinMonoBusy) rinMonoProbe(false);
+        prev = p;
+      }catch(e){}
+      return r;
+    };
+    setTimeout(function(){ rinMonoBooted = true; }, 0);
   })();
 })();
 
