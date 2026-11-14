@@ -5,6 +5,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="mobile-web-app-capable" content="yes"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script type="text/javascript">(function(){try{var t="",raw=localStorage.getItem("animeManager.v2");if(raw){var s=JSON.parse(raw);if(s&&(s.theme==="light"||s.theme==="dark"||s.theme==="system"))t=s.theme;}if(t===""||t==="system")t=(window.matchMedia&&window.matchMedia("(prefers-color-scheme: light)").matches)?"light":"dark";document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Rin Tools</title>
@@ -2072,7 +2073,7 @@ ${l.stack}`)}else c=o?.stack??"";let f=this.url.toString().length;return o?.name
           <h3>关于</h3>
           <div class="about-head">
             <div>
-              <div class="about-name">Rin Tools <b class="ver-link" id="verLink">4.2.2</b></div>
+              <div class="about-name">Rin Tools <b class="ver-link" id="verLink">4.2.3</b></div>
               <div class="about-desc">一个本地的番剧观看记录与统计工具</div>
             </div>
             <button class="btn sm" id="updBtn">检查更新</button>
@@ -2626,6 +2627,12 @@ function goPage(pg, focusTab){
   TAB_BTNS.forEach(b=>b.classList.toggle("active", b===btn));
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
   document.getElementById("page-"+pg).classList.add("active");
+  
+
+
+
+  try{ window.scrollTo(0, 0); }catch(e){}
+  if(pg==="library") rinVirtualRepaint();   
   if(pg==="stats") renderStats();
   
   if(pg==="week"){ renderWeek(); requestAnimationFrame(weekScrollToToday); }
@@ -2848,17 +2855,133 @@ function setHtmlIfChanged(el, html){
   return true;
 }
 
+
+
+
+
+const RIN_VL_MIN = 80;      
+const RIN_VL_BUF = 24;      
+let rinVlRow = 57;          
+let rinVl = null;           
+let rinVlTick = false, rinVlBound = false;
+
+function rinVlMobile(){
+  return window.matchMedia("(max-width:560px)").matches &&
+         !document.body.classList.contains("rin-framed");
+}
+function rinVlPad(h){
+  
+  return `<tr class="rin-vpad" style="display:block;height:${Math.round(h)}px;padding:0;border:0;content-visibility:visible;contain-intrinsic-size:none;cursor:default"></tr>`;
+}
+function rinVlHtml(start, end){
+  let s = "";
+  if(start > 0) s += rinVlPad(start * rinVlRow);
+  
+
+  const rowStyle = "content-visibility:visible;contain-intrinsic-size:none";
+  for(let i = start; i < end; i++){
+    s += rinVl.rowFn(rinVl.list[i]).replace("<tr>", `<tr style="${rowStyle}">`);
+  }
+  if(end < rinVl.list.length) s += rinVlPad((rinVl.list.length - end) * rinVlRow);
+  return s;
+}
+function rinVlRange(){
+  const tb = document.getElementById("libTbody");
+  if(!tb || !rinVl) return null;
+  
+  const top = window.scrollY + tb.getBoundingClientRect().top;
+  const view = window.scrollY - top;
+  const visible = Math.ceil((window.innerHeight || 780) / rinVlRow) + 2;
+  let start = Math.max(0, Math.floor(view / rinVlRow) - RIN_VL_BUF);
+  start = Math.min(start, Math.max(0, rinVl.list.length - 1));
+  const end = Math.min(rinVl.list.length, start + visible + RIN_VL_BUF * 2);
+  return { start, end };
+}
+function rinVlPaint(){
+  const tb = document.getElementById("libTbody");
+  const r = rinVlRange();
+  if(!tb || !r || !rinVl) return "";
+  rinVl.start = r.start; rinVl.end = r.end;
+  const html = rinVlHtml(r.start, r.end);
+  setHtmlIfChanged(tb, html);
+  return html;
+}
+
+
+
+let rinVlCalPending = false;
+function rinVlCalibrateOnce(){
+  rinVlCalPending = false;
+  if(!rinVl || !rinVlMobile()) return;
+  const tb = document.getElementById("libTbody");
+  const probe = tb && tb.querySelector("tr:not(.rin-vpad)");
+  if(!probe) return;
+  const h = probe.getBoundingClientRect().height;
+  if(h < 40 || h > 120 || Math.abs(h - rinVlRow) <= 3) return;
+  rinVlRow = h;
+  rinVlPaint();
+}
+function rinVirtualRepaint(){
+  if(rinVl && rinVlMobile()) rinVlPaint();
+}
+
+
+function rinVlOutside(){
+  if(!rinVl || rinVl.start < 0 || !rinVlMobile()) return false;
+  const lib = document.getElementById("page-library");
+  if(lib && !lib.classList.contains("active")) return false;
+  const tb = document.getElementById("libTbody");
+  if(!tb) return false;
+  const top = window.scrollY + tb.getBoundingClientRect().top;
+  const view = window.scrollY - top;
+  const first = Math.floor(view / rinVlRow);
+  const last = Math.ceil((view + (window.innerHeight || 780)) / rinVlRow);
+  return first < rinVl.start || last > rinVl.end;
+}
+function rinVlOnScroll(){
+  if(rinVlOutside()){ rinVlPaint(); return; }   
+  if(rinVlTick) return;
+  rinVlTick = true;
+  requestAnimationFrame(()=>{
+    rinVlTick = false;
+    if(!rinVl || !rinVlMobile()) return;
+    const lib = document.getElementById("page-library");
+    if(lib && !lib.classList.contains("active")) return;   
+    const r = rinVlRange();
+    if(!r || (r.start === rinVl.start && r.end === rinVl.end)) return;
+    rinVlPaint();
+  });
+}
+function rinVirtualSlice(list, rowFn){
+  if(!rinVlMobile() || list.length < RIN_VL_MIN){
+    rinVl = null;
+    return list.map(rowFn).join("");
+  }
+  rinVl = { list, rowFn, start:-1, end:-1 };
+  if(!rinVlBound){
+    window.addEventListener("scroll", rinVlOnScroll, { passive:true });
+    window.addEventListener("resize", rinVlOnScroll, { passive:true });
+    rinVlBound = true;
+  }
+  
+  const html = rinVlPaint();
+  if(!rinVlCalPending){ rinVlCalPending = true; requestAnimationFrame(rinVlCalibrateOnce); }
+  return html;
+}
+
 function renderLibrary(){
   refreshFilterSelects();
   const list = getFiltered();
   const tbody = document.getElementById("libTbody");
   
+  
+
   const rinHid = (typeof rinPrivHiddenCount === "function") ? rinPrivHiddenCount() : 0;
+  const showTotal = !rinHid && list.length !== state.entries.length;
   document.getElementById("libCount").textContent = `共 ${list.length} 条` +
-    (list.length!==state.entries.length || rinHid
-      ? `（全部 ${state.entries.length} 条${rinHid? `，${rinHid} 部已隐藏`:""}）` : "");
+    (showTotal ? `（全部 ${state.entries.length} 条）` : "");
   document.getElementById("libEmpty").style.display = list.length? "none":"block";
-  setHtmlIfChanged(tbody, list.map(e=>{
+  setHtmlIfChanged(tbody, rinVirtualSlice(list, e=>{
     const yearTxt = e.year? String(e.year) : '<span style="color:var(--faint)">—</span>';
     const epTxt = e.episodes? e.episodes+" 集" : "—";
     const minTxt = e.minutesPerEp? e.minutesPerEp+" 分钟" : "—";
@@ -2878,7 +3001,7 @@ function renderLibrary(){
         <button class="btn sm danger" data-act="del" data-id="${e.id}">删除</button>
       </div></td>
     </tr>`;
-  }).join(""));
+  }));
 }
 document.getElementById("libTbody").addEventListener("click", ev=>{
   const t = ev.target.closest("[data-act]");
@@ -3371,11 +3494,7 @@ function renderStats(){
   const watchedMin = base.filter(e=>e.status==="已看").reduce((a,e)=>a+(e.totalMinutes||0),0);
   const allMin = base.reduce((a,e)=>a+(e.totalMinutes||0),0);
   
-  const privNote = document.getElementById("rinPrivStatsNote");
-  if(privNote){
-    const hid = (typeof rinPrivHiddenCount === "function") ? rinPrivHiddenCount() : 0;
-    privNote.textContent = hid ? ("隐私模式 · 已排除 " + hid + " 部") : "";
-  }
+
   const cards = [
     { k:"已看总时长", v:fmtDur(watchedMin), c:"var(--accent2)", s: durPoetry(watchedMin) },
     { k:"已看作品", v:cnt("已看"), c:"var(--green)", s:`追番中 ${cnt("追番中")} · 待看 ${cnt("待看")} · 搁置 ${cnt("搁置")}` },
@@ -3517,9 +3636,9 @@ function renderYearPage(){
     ? list.map(e=>`<span class="y-item" data-id="${e.id}" title="${esc(e.name)} · ${e.year} 年 · ${e.status}">
         <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${stColor[e.status]||"var(--gray)"};margin-right:6px"></span>${esc(e.name)}<span class="yr">${e.year}</span></span>`).join("")
     : '<span style="color:var(--faint);font-size:.85rem">该范围内暂无作品</span>';
-  const privHid = (typeof rinPrivHiddenCount === "function") ? rinPrivHiddenCount() : 0;
+  
   document.getElementById("yearTotal").textContent =
-    `共 ${privBase.filter(e=>Number(e.year)>=1900).length} 部有年份` + (privHid ? ` · 已隐藏 ${privHid} 部` : "");
+    `共 ${privBase.filter(e=>Number(e.year)>=1900).length} 部有年份`;
 }
 function bindYearPage(){
   const grid = document.getElementById("yearGrid");
@@ -3651,6 +3770,9 @@ function renderWeek(){
 
 
 function weekScrollToToday(){
+  
+  const wp = document.getElementById("page-week");
+  if(!wp || !wp.classList.contains("active")) return;
   const el = document.querySelector("#weekGrid .day-col.today");
   if(!el) return;
   const r = el.getBoundingClientRect();
@@ -4268,6 +4390,11 @@ const CHANGELOG = [
 
   
 
+  { v:"4.2.3", title:"细节优化", items:[
+    "启动与界面细节优化"
+  ], mobile:{ title:"移动端适配", items:[
+    "启动画面与主题显示适配优化"
+  ]} },
   { v:"4.2.2", title:"细节优化", items:[
     "界面与使用体验的细节优化"
   ], mobile:{ title:"移动端适配", items:[
@@ -4363,14 +4490,6 @@ const CHANGELOG = [
     "封面墙：本地缓存封面，可查看大图",
     "周期表只保留在追的周播番，并可从清单拖入排期",
     "补全支持中断续传，另有稳定性修正",
-    "其他优化"
-  ]},
-  { v:"2.0.0", title:"公开发布", items:[
-    "首个公开发布版本，提供脱敏版供他人使用",
-    "番剧库、统计仪表盘、周期表、年份回顾",
-    "CSV 与 JSON 导入导出",
-    "WebDAV 备份与恢复、观看时间线",
-    "Rin 对话：可围绕库内清单闲聊与推荐",
     "其他优化"
   ]},
 
@@ -6633,9 +6752,8 @@ function tlRender(){
   if(!wrap) return;
   const d = tlData();
   const cnt = document.getElementById("tlCount");
-  const hid = (typeof rinPrivHiddenCount === "function") ? rinPrivHiddenCount() : 0;
-  if(cnt) cnt.textContent = (d.total ? `共 ${d.total} 部` : "") +
-    (hid ? (d.total ? " · " : "") + `已隐藏 ${hid} 部` : "");
+  
+  if(cnt) cnt.textContent = d.total ? `共 ${d.total} 部` : "";
   if(!d.years.length){
     wrap.innerHTML = '<div class="tl-empty">同步 Bangumi 后按看完时间统计</div>';
     return;
@@ -9588,27 +9706,30 @@ function rinMemBlock(){
     if(!rinAndroidCap("saveFiles")) return Promise.resolve({ ok:false, reason:"unsupported" });
 
     var batchId = "b" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
-    var at = 0, written = 0, names = [], presented = false;
+    
+    var mode = (opt && opt.mode === "gallery") ? "gallery" : "share";
+    var at = 0, written = 0, saved = 0, names = [], presented = false;
     var total = files.length;
 
     function step(){
       var chunk = files.slice(at, at + RIN_ANDROID_BATCH);
       at += chunk.length;
       var last = at >= total;
-      return call("saveFiles", { batchId: batchId, files: chunk, present: last }).then(function(r){
+      return call("saveFiles", { batchId: batchId, files: chunk, present: last, mode: mode }).then(function(r){
         if(!r.ok){
           return { ok:false, reason: r.reason || "unknown", message: r.message || "",
             written: written, names: names };
         }
         written += (typeof r.written === "number") ? r.written : chunk.length;
+        if(typeof r.saved === "number") saved += r.saved;
         if(Object.prototype.toString.call(r.names) === "[object Array]") names = names.concat(r.names);
         if(last){
           presented = r.presented === true;
           if(written < total){
-            return { ok:false, reason:"partial", written: written, names: names, presented: presented,
+            return { ok:false, reason:"partial", written: written, saved: saved, names: names, presented: presented,
               message:"只生成 " + written + "/" + total + " 张，其余写入失败" };
           }
-          return { ok:true, written: written, presented: presented, names: names };
+          return { ok:true, written: written, saved: saved, presented: presented, names: names };
         }
         return step();
       });
@@ -10355,6 +10476,15 @@ function rinMemBlock(){
     "  body:not(.rin-framed) .page-sub{display:none}",
 
     
+
+
+
+
+
+
+    "  body:not(.rin-framed) #page-library{animation:none}",
+
+    
     "  body:not(.rin-framed) #page-library .page-head{flex-wrap:nowrap;align-items:center}",
     "  body:not(.rin-framed) #page-library .page-head > div:first-child{flex:1;min-width:0}",
     "  body:not(.rin-framed) #page-library .page-head > div:last-child{flex:none;gap:0}",
@@ -10850,6 +10980,9 @@ function rinMemBlock(){
     "  @media (prefers-reduced-motion:reduce){",
     "    " + MQ + ".overlay," + MQ + ".overlay.show .modal," + MQ + "#page-settings.rin-mset-in .panel:not(.rin-mset-hide)," + MQ + ".rin-msheet.show .rin-mgrid," + MQ + "#page-discover .disc-card," + MQ + "#qaList .qa-item{animation:none;transition:none}}",
     "  body.rin-ov-lock{position:fixed;left:0;right:0;width:100%;overflow:hidden}",
+    
+
+    "  html.rin-android.rin-ov-locked::before{content:'';position:fixed;left:0;right:0;top:0;height:var(--rin-top,24px);background:var(--rin-solid-bg,#0d1017);z-index:99999;pointer-events:none}",
 
     
     "  " + MQ + "#rinNetDot{display:none}",
@@ -10890,9 +11023,11 @@ function rinMemBlock(){
       savedY = window.scrollY || (document.scrollingElement ? document.scrollingElement.scrollTop : 0) || 0;
       document.body.style.top = (-savedY) + "px";
       document.body.classList.add("rin-ov-lock");
+      document.documentElement.classList.add("rin-ov-locked");
       locked = true;
     }else if(n === 0 && locked){
       document.body.classList.remove("rin-ov-lock");
+      document.documentElement.classList.remove("rin-ov-locked");
       document.body.style.top = "";
       locked = false;
       try{ window.scrollTo(0, savedY); }catch(e){}
@@ -10911,11 +11046,16 @@ function rinMemBlock(){
 
 
 
+  
+
+
+  var RIN_TAP_CLOSE = { discOverlay: 1, qaDetailOverlay: 1 };
   document.addEventListener("click", function(ev){
     if(!window.matchMedia || !window.matchMedia("(max-width:560px)").matches) return;
     if(document.body.classList.contains("rin-framed")) return;
     var t = ev.target;
     if(t && t.classList && t.classList.contains("overlay") && t.classList.contains("show")){
+      if(RIN_TAP_CLOSE[t.id]) return;
       ev.stopPropagation();
     }
   }, true);
@@ -12578,8 +12718,7 @@ function renderGallery(){
 
     var hid = (typeof rinPrivHiddenCount === "function") ? rinPrivHiddenCount(all) : 0;
     var tail = [];
-    if(list.length !== all.length) tail.push("共 " + all.length + " 部有封面");
-    if(hid) tail.push(hid + " 部已隐藏");
+    if(!hid && list.length !== all.length) tail.push("共 " + all.length + " 部有封面");
     head.textContent = "封面墙 · " + list.length + " 部" + (tail.length ? "（" + tail.join("，") + "）" : "");
   }
   if(empty){
@@ -13755,20 +13894,23 @@ function rinDiscFetchSeason(season, onFirst){
 
     
     let all = first.slice();
+    let okPages = 1;                 
     const batches = [];
     for(let i = 0; i < offs.length; i += 3) batches.push(offs.slice(i, i + 3));
     const run = idx => {
       if(idx >= batches.length) return Promise.resolve();
       
       return Promise.all(batches[idx].map(off => page(off).catch(() => null))).then(list => {
-        for(const p of list) if(p && Array.isArray(p.data)) all = all.concat(p.data);
+        for(const p of list) if(p && Array.isArray(p.data)){ all = all.concat(p.data); okPages++; }
         return run(idx + 1);
       });
     };
 
     return run(0).then(() => {
       const items = all.map(mapOne).filter(x => x.id && x.name);
-      return { total: total, groups: rinDiscGroup(items) };
+      
+
+      return { total: total, groups: rinDiscGroup(items), complete: okPages >= offs.length + 1 };
     });
   });
 }
@@ -13809,9 +13951,12 @@ function rinDiscShortBad(x){
 }
 function rinDiscEcchi(x){ return !!x.nsfw || rinDiscHasTag(x, RIN_DISC_ECCHI); }
 function rinDiscCnWeb(x){
+  
+
   const m = x.metaTags || [];
-  return m.indexOf("中国") >= 0 && m.indexOf("WEB") >= 0 &&
-         (Number(x.eps) || 0) >= 20 && rinDiscHeat(x) < 50;
+  const cn = m.indexOf("中国") >= 0;
+  const web = m.indexOf("WEB") >= 0 || m.indexOf("动态漫画") >= 0;
+  return cn && web && (Number(x.eps) || 0) >= 12 && rinDiscHeat(x) < 120;
 }
 
 function rinDiscYoung(x){
@@ -13821,21 +13966,30 @@ function rinDiscYoung(x){
   return (Date.now() - t) / 86400000 < RIN_DISC_YOUNG_DAYS;
 }
 
-function rinDiscClean(x){  const mode = rinDiscPref.clean || "off";
-  if(mode === "off") return false;
-  
-  if(rinDiscForm(x)) return true;
-  if(mode === "lite") return false;
-  
-  if(rinDiscShortBad(x)) return true;
-  const heat = rinDiscHeat(x);
+function rinDiscClean(x){
+  const id = Number(x.id) || 0;
   
 
+
+  if(id && (rinDiscPref.always || []).indexOf(id) >= 0) return false;
+  if(id && (rinDiscPref.never || []).indexOf(id) >= 0) return true;
+  const mode = rinDiscPref.clean || "off";
+  if(mode === "off") return false;
+  if(rinDiscForm(x)) return true;
+  if(mode === "lite") return false;
+  if(rinDiscShortBad(x)) return true;
+  const heat = rinDiscHeat(x);
+  const score = Number(x.score) || 0;
   if(rinDiscEcchi(x) && heat < 120) return true;
-  if(rinDiscYoung(x)) return false;
-  if(heat < 5) return true;                                     
-  if(heat < 50 && Number(x.score) > 0 && Number(x.score) < 6.0) return true;   
   if(rinDiscCnWeb(x)) return true;
+  
+
+  if(score > 0 && score < 5.0 && heat < 200) return true;
+  if(score === 0 && heat < 20) return true;
+  
+  if(rinDiscYoung(x)) return false;
+  if(heat < 5) return true;
+  if(heat < 50 && score > 0 && score < 6.0) return true;
   return false;
 }
 
@@ -13844,7 +13998,8 @@ function rinDiscHiddenLabel(n){
 }
 
 
-let rinDiscPref = { sort: "def", hideOwn: false, genres: [], clean: "off" };
+
+let rinDiscPref = { sort: "def", hideOwn: false, genres: [], clean: "off", never: [], always: [] };
 function rinDiscPrefLoad(){
   try{
     const o = JSON.parse(localStorage.getItem(RIN_DISC_PREF_KEY) || "{}");
@@ -13854,6 +14009,8 @@ function rinDiscPrefLoad(){
     if(Array.isArray(o.genres)){
       rinDiscPref.genres = o.genres.filter(g => RIN_DISC_GENRE_ORDER.indexOf(g) >= 0);
     }
+    rinDiscPref.never = Array.isArray(o.never) ? o.never.map(Number).filter(n => n > 0) : [];
+    rinDiscPref.always = Array.isArray(o.always) ? o.always.map(Number).filter(n => n > 0) : [];
   }catch(e){}
 }
 function rinDiscPrefSave(){
@@ -13923,9 +14080,14 @@ function rinDiscReadCache(season, allowStale){
     if(!raw) return null;
     const o = JSON.parse(raw);
     if(!o || !Array.isArray(o.groups) || !o.groups.length) return null;
-    const stale = Date.now() - Number(o.ts || 0) > RIN_DISC_TTL;
+    
+
+    const complete = o.complete === true;
+    const stale = !complete || Date.now() - Number(o.ts || 0) > RIN_DISC_TTL;
     if(stale && !allowStale) return null;
-    return { groups: o.groups, stale: stale };
+    
+
+    return { groups: o.groups, stale: stale, complete: complete };
   }catch(e){ return null; }
 }
 
@@ -13933,9 +14095,20 @@ function rinDiscReadCache(season, allowStale){
 function rinDiscWriteCache(season, groups, stale){
   try{
     localStorage.setItem(rinDiscSeasonKey(season), JSON.stringify({
-      ts: Date.now() - (stale ? RIN_DISC_TTL + 1000 : 0), groups: groups
+      ts: Date.now() - (stale ? RIN_DISC_TTL + 1000 : 0), groups: groups,
+      complete: !stale
     }));
   }catch(e){}
+}
+
+
+function rinDiscHasFullCache(season){
+  try{
+    const raw = localStorage.getItem(rinDiscSeasonKey(season));
+    if(!raw) return false;
+    const o = JSON.parse(raw);
+    return !!(o && o.complete === true && Array.isArray(o.groups) && o.groups.length);
+  }catch(e){ return false; }
 }
 
 
@@ -13970,6 +14143,7 @@ function rinDiscEmpty(txt, loading){
 }
 
 let rinDiscSeq = 0;   
+let rinDiscNeedFull = false;   
 
 function rinDiscLoad(force){
   if(!rinDiscSeason) rinDiscSeason = rinDiscNowSeason();
@@ -13983,11 +14157,17 @@ function rinDiscLoad(force){
     const c = rinDiscReadCache(season, true);
     if(c && seq === rinDiscSeq){
       rinDiscData = c.groups;
+      rinDiscNeedFull = !c.complete;   
       rinDiscPaint();       
       
       if(!c.stale) return Promise.resolve(c.groups);
     }
   }
+
+  
+
+
+  const hadFull = !!rinDiscData && !rinDiscNeedFull;
 
   rinDiscLoading = true;
   
@@ -13999,14 +14179,18 @@ function rinDiscLoad(force){
   rinDiscEmpty("正在读取 " + rinDiscSeasonLabel(season) + " 的番组…", true);
 
   return rinDiscFetchSeason(season, groups => {
-    
     if(seq !== rinDiscSeq || !groups || !groups.length) return;
+    
+    if(hadFull) return;
+    
     rinDiscData = groups;
+    rinDiscNeedFull = true;          
     rinDiscLoading = false;
     rinDiscPaint();
     
 
-    rinDiscWriteCache(season, groups, true);
+
+    if(!rinDiscHasFullCache(season)) rinDiscWriteCache(season, groups, true);
   }).then(res => {
     if(seq !== rinDiscSeq) return null;      
     rinDiscLoading = false;
@@ -14014,8 +14198,15 @@ function rinDiscLoad(force){
       rinDiscEmpty(rinDiscSeasonLabel(season) + " 没有读到番组——可能尚未定档");
       return null;
     }
+    
+    if(res.complete === false && hadFull){
+      rinDiscNeedFull = true;
+      return rinDiscData;
+    }
     rinDiscData = res.groups;
-    rinDiscWriteCache(season, rinDiscData);
+    rinDiscNeedFull = (res.complete === false);
+    
+    rinDiscWriteCache(season, rinDiscData, rinDiscNeedFull);
     rinDiscPaint();
     return rinDiscData;
   }).catch(() => {
@@ -14283,6 +14474,8 @@ function renderDiscover(){
   if(!body) return;
   if(window.rinBgmPing) window.rinBgmPing();   
   if(rinDiscSearch){ rinDiscPaint(); return; }
+  
+  if(rinDiscNeedFull && !rinDiscLoading){ rinDiscLoad(true); return; }
   if(rinDiscData){ rinDiscPaint(); return; }
   
 
@@ -14464,7 +14657,9 @@ function rinDiscEnsureBig(){
           "<div class='disc-view-meta' id='discMeta'></div>" +
           "<div class='disc-view-acts'><button class='btn' id='discAddBtn'>加入我的库</button>" +
             "<div class='rin-st-pop' id='discStPick'></div>" +
-            "<button type='button' class='btn rin-del-btn' id='discDelBtn' hidden>移出我的库</button></div>" +
+            "<button type='button' class='btn rin-del-btn' id='discDelBtn' hidden>移出我的库</button>" +
+            "<button type='button' class='btn sm' id='discNeverBtn'>不看这部</button>" +
+            "<button type='button' class='btn sm' id='discAlwaysBtn'>总是显示</button></div>" +
         "</div>" +
       "</div>" +
       "<div class='disc-view-sum' id='discSum'></div>" +
@@ -14479,6 +14674,24 @@ function rinDiscEnsureBig(){
       pop.classList.remove("show");
     }
   });
+  
+
+  function rinDiscMark(key, label){
+    const id = Number(rinDiscOpenId) || 0;
+    if(!id) return;
+    const list = rinDiscPref[key] || (rinDiscPref[key] = []);
+    const other = key === "never" ? "always" : "never";
+    rinDiscPref[other] = (rinDiscPref[other] || []).filter(n => n !== id);
+    if(list.indexOf(id) < 0) list.push(id);
+    rinDiscPrefSave();
+    ov.classList.remove("show");
+    if(typeof toast === "function") toast(label);
+    rinDiscPaint();
+  }
+  const nb = ov.querySelector("#discNeverBtn");
+  if(nb) nb.addEventListener("click", () => rinDiscMark("never", "已加入不看名单"));
+  const ab = ov.querySelector("#discAlwaysBtn");
+  if(ab) ab.addEventListener("click", () => rinDiscMark("always", "已设为总是显示"));
   const btn = ov.querySelector("#discAddBtn");
   if(btn) btn.addEventListener("click", () => {
     const own = (state.entries || []).find(e => Number(e.bgmId) === rinDiscOpenId);
@@ -14621,12 +14834,16 @@ function rinDiscAdd(id, want){
     if(cb) cb.style.display = "none";
     const inp = document.getElementById("discSearchInput");
     if(inp) inp.value = "";
-    if(rinDiscSeason){
-      try{ localStorage.removeItem(rinDiscSeasonKey(rinDiscSeason)); }catch(e){}
-    }
-    rinDiscData = null;
-    if(body) body.innerHTML = "";
-    rinDiscLoad(true);
+    
+
+
+
+
+    const prevOpacity = rf.style.opacity;
+    rf.style.opacity = "0.45";
+    rf.disabled = true;
+    const done = () => { rf.style.opacity = prevOpacity; rf.disabled = false; };
+    rinDiscLoad(true).then(done, done);
   });
 
   
@@ -19194,9 +19411,15 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
     });
   }
   var RIN_XG_LAST = null;   
+  
 
-  async function rinXgSave(files){
+  var RIN_XG_MODE = "share";
+  function rinXgSetMode(m){ RIN_XG_MODE = (m === "gallery") ? "gallery" : "share"; }
+  function rinXgModeLabel(){ return RIN_XG_MODE === "gallery" ? "保存" : "转发"; }
+
+  async function rinXgSave(files, mode){
     
+    var outMode = (mode === "gallery") ? "gallery" : "share";
     var ab = await rinXgAndroidMaybe();
     if(ab){
       var MAXN = window.RIN_ANDROID_MAX_FILES || 40;
@@ -19213,8 +19436,8 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
         payload.push({ name: files[ai].name, data: b64,
           mime: (files[ai].blob && files[ai].blob.type) || "application/octet-stream" });
       }
-      var ar = await window.rinAndroidSaveFiles({ files: payload });
-      RIN_XG_LAST = { android: true, ok: ar.ok === true, reason: ar.reason || "",
+      var ar = await window.rinAndroidSaveFiles({ files: payload, mode: outMode });
+      RIN_XG_LAST = { android: true, mode: outMode, ok: ar.ok === true, reason: ar.reason || "",
         written: (typeof ar.written === "number" ? ar.written : 0),
         presented: ar.presented === true, total: files.length, message: ar.message || "" };
       return RIN_XG_LAST.written;
@@ -19279,6 +19502,13 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
     var L = RIN_XG_LAST;
     if(L && L.android){
       if(L.reason === "cancelled") return;                        
+      if(L.mode === "gallery"){
+        if(L.reason === "too_many"){ toast(L.message || "一次最多 40 张，请用搜索缩小范围"); return; }
+        if(n === 0){ toast(failText || "保存失败：图片没有写入相册"); return; }
+        if(n === total){ toast("已保存到相册（" + n + " 张" + (kind || "") + "）"); return; }
+        toast("只保存 " + n + "/" + total + " 张，其余写入失败");
+        return;
+      }
       if(L.reason === "share_unavailable"){ toast("文件已在应用内生成，可重试分享"); return; }
       if(L.reason === "too_many"){ toast(L.message || "一次最多 40 张，请用搜索缩小范围"); return; }
       if(n === 0){ toast(failText || "导出失败：文件没有写出来"); return; }
@@ -19418,6 +19648,8 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
     
     var exist = document.getElementById("rinXgOverlay");
     if(exist){
+      var go = exist.querySelector("#rinXgGo");
+      if(go && !go.disabled) go.textContent = rinXgModeLabel();
       exist.classList.add("show");
       rinXgRefresh();
       return;
@@ -19505,7 +19737,7 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
         "</div>" +
         "<div class='modal-foot'>" +
           "<button class='btn' data-close='rinXgOverlay'>取消</button>" +
-          "<button class='btn primary' id='rinXgGo'>导出</button>" +
+          "<button class='btn primary' id='rinXgGo'>" + rinXgModeLabel() + "</button>" +
         "</div>" +
       "</div>";
     document.body.appendChild(ov);
@@ -19717,7 +19949,7 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
         }
         var yCv = rinXgDrawYearReport(cfg.scope, list);
         files.push({ name: "RinTools-" + cfg.scope + "-年度报告.png", blob: await rinXgBlob(yCv) });
-        var yn = await rinXgSave(files);
+        var yn = await rinXgSave(files, RIN_XG_MODE);
         rinXgSay(yn, 1, "年度报告", "已导出年度报告", "导出失败：文件没有写出来");
         var yov = document.getElementById("rinXgOverlay");
         if(yov) yov.classList.remove("show");
@@ -19744,7 +19976,7 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
             blob: await rinXgJpeg(rinXgDrawWall(compact, imgs, wi, wp)) });
         }
         if(!files.length){ toast("封面都没取到，检查网络后重试"); return; }
-        var wn2 = await rinXgSave(files);
+        var wn2 = await rinXgSave(files, RIN_XG_MODE);
         rinXgSay(wn2, files.length, "封面墙",
           "已导出 " + wn2 + " 张封面墙" + (skipped ? "（跳过 " + skipped + " 部无封面）" : ""),
           "导出失败：文件没有写出来");
@@ -19765,30 +19997,61 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
           String(i + 1).padStart(2, "0") + ".png", blob: await rinXgBlob(cv) });
       }
 
-      var n = await rinXgSave(files);
+      var n = await rinXgSave(files, RIN_XG_MODE);
       rinXgSay(n, files.length, "图片", "已导出 " + n + " 张图片", "导出失败：文件没有写出来");
       var ov = document.getElementById("rinXgOverlay");
       if(ov) ov.classList.remove("show");
     }catch(e){
       toast("导出失败：" + (e && e.message ? e.message : e));
     }finally{
-      if(btn){ btn.disabled = false; btn.textContent = "导出"; }
+      if(btn){ btn.disabled = false; btn.textContent = rinXgModeLabel(); }
     }
   }
 
   
+
+
+
   function rinXgMount(){
     var head = document.querySelector("#page-stats .page-head");
     if(!head || document.getElementById("rinXgBtn")) return;
-    var btn = document.createElement("button");
-    btn.className = "btn";
-    btn.id = "rinXgBtn";
-    btn.textContent = "导出图片";
+
+    if(!document.getElementById("rinXgActsCss")){
+      var st = document.createElement("style");
+      st.id = "rinXgActsCss";
+      st.textContent = [
+        ".rin-xg-mobile{display:none}",
+        "#page-stats .page-head-acts{display:flex;align-items:center;gap:8px}",
+        "@media (max-width:560px){",
+        "  body:not(.rin-framed) #page-stats .page-head{display:flex;align-items:center;",
+        "    justify-content:space-between;flex-wrap:nowrap;gap:8px}",
+        "  body:not(.rin-framed) #page-stats .page-head > div:first-child{flex:1;min-width:0}",
+        "  body:not(.rin-framed) #page-stats .page-head-acts{flex:none;margin-left:auto;gap:6px}",
+        "  body:not(.rin-framed) #page-stats .rin-xg-desktop{display:none}",
+        "  body:not(.rin-framed) #page-stats .rin-xg-mobile{display:inline-flex}",
+        "  body:not(.rin-framed) #page-stats .page-head-acts .btn{padding:6px 11px;",
+        "    font-size:.78rem;border-radius:9px;white-space:nowrap;margin:0}",
+        "}"
+      ].join("\n");
+      document.head.appendChild(st);
+    }
+
     var wrap = document.createElement("div");
     wrap.className = "page-head-acts";
-    wrap.appendChild(btn);
+    wrap.id = "rinXgActs";
+    function mk(id, text, cls, mode){
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "btn " + cls;
+      b.id = id;
+      b.textContent = text;
+      b.addEventListener("click", function(){ rinXgSetMode(mode); rinXgEnsure(); });
+      return b;
+    }
+    wrap.appendChild(mk("rinXgBtn", "导出图片", "rin-xg-desktop", "share"));
+    wrap.appendChild(mk("rinXgShareBtn", "转发", "rin-xg-mobile", "share"));
+    wrap.appendChild(mk("rinXgSaveBtn", "保存", "rin-xg-mobile", "gallery"));
     head.appendChild(wrap);
-    btn.addEventListener("click", rinXgEnsure);
   }
   if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", rinXgMount);
   else rinXgMount();
