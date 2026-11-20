@@ -287,15 +287,16 @@ tr:hover .row-actions{opacity:1}
 .tier-item:hover{border-color:var(--tc);color:var(--tc)}
 
 
-.week-total{display:inline-flex;align-items:center;gap:8px;background:var(--accent-soft);color:var(--accent2);border-radius:10px;padding:7px 15px;font-weight:700;font-size:.9rem}
+.week-total{display:inline-flex;align-items:center;gap:8px;background:var(--accent-soft);color:var(--accent2);border-radius:10px;padding:7px 15px;font-weight:700;font-size:.9rem;min-height:34px;box-sizing:border-box}
 
 
 
+.week-acts{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap;
+  grid-column:2;grid-row:1 / span 2;justify-self:end}
+.week-sync{display:flex;align-items:center;gap:8px}
+.week-sync .btn{width:auto;height:34px;padding:0 12px;display:inline-flex;align-items:center;white-space:nowrap}
 
-
-.week-acts{display:contents}
-.week-sync{display:flex;align-items:center;gap:8px;justify-self:end}
-.week-sync .btn{width:auto;white-space:nowrap}
+.week-cfg-btn{width:38px;height:34px;padding:0;display:inline-flex;align-items:center;justify-content:center;flex:none;line-height:1}
 #page-week .page-head{
   display:grid;
   grid-template-columns:1fr auto;
@@ -307,18 +308,32 @@ tr:hover .row-actions{opacity:1}
 #page-week .page-head > div:first-child{display:contents}
 #page-week .page-title{grid-area:wt}
 #page-week .page-sub{grid-area:wsub}
-#page-week .week-total{grid-area:ws;justify-self:end}
-#page-week .week-sync{grid-area:wsync}
 @media (max-width:560px){
+  body:not(.rin-framed) #page-week .page-sub{display:none}
+  body:not(.rin-framed) #page-week .page-head{
+    grid-template-columns:1fr;
+    grid-template-areas:"wt" "ws";
+    row-gap:4px;
+  }
+  body:not(.rin-framed) #page-week .week-acts{
+    grid-column:1;
+    grid-row:2;
+    justify-self:end;
+    justify-content:flex-end;
+  }
   body:not(.rin-framed) #page-week .page-head{column-gap:8px}
-  body:not(.rin-framed) #page-week .week-total{font-size:.78rem;padding:5px 10px}
+  body:not(.rin-framed) #page-week .week-total{font-size:.78rem;padding:5px 10px;min-height:32px}
+  body:not(.rin-framed) #page-week .week-total .wt-pre{display:none}
   body:not(.rin-framed) #page-week .week-sync{gap:6px}
-  body:not(.rin-framed) #page-week .week-sync .btn{flex:0 0 auto;height:26px;font-size:.72rem;padding:0 9px}
+  body:not(.rin-framed) #page-week .week-sync .btn{flex:0 0 auto;height:32px;font-size:.72rem;padding:0 10px}
+  body:not(.rin-framed) #page-week .week-cfg-btn{width:36px;height:32px;flex:0 0 36px;padding:0}
+  
+  body:not(.rin-framed) #page-week .page-head .week-cfg-btn{flex:0 0 36px;width:36px;max-width:36px;padding:0}
 }
 .week-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:12px;margin-bottom:20px}
 @media(max-width:1150px){.week-grid{grid-template-columns:repeat(4,1fr)}}
 @media(max-width:760px){.week-grid{grid-template-columns:repeat(2,1fr)}}
-.day-col{background:var(--panel);border:1px solid var(--border);border-radius:13px;display:flex;flex-direction:column;min-height:180px}
+.day-col{background:var(--panel);border:1px solid var(--border);border-radius:13px;display:flex;flex-direction:column;min-height:180px;min-width:0}
 .day-col.today{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
 .day-head{
   padding:10px 12px;font-weight:700;font-size:.88rem;text-align:center;border-bottom:1px solid var(--border);
@@ -1584,6 +1599,33 @@ body.rin-tab-dragging *{cursor:grabbing !important}
 .mono-sec+.mono-sec{margin-top:24px}
 .mono-empty{padding:18px 2px;font-size:.8rem;color:var(--faint)}
 .mono-empty[hidden]{display:none}
+
+.mono-detail{width:780px;max-width:100%}
+.mono-dacts{display:flex;align-items:center;gap:6px;flex:none}
+.mono-dlink{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;
+  border:1px solid var(--border);border-radius:8px;color:var(--muted);text-decoration:none;font-size:15px}
+.mono-dlink:hover{color:var(--accent2);border-color:var(--accent);background:var(--accent-soft)}
+.mono-dtop{display:flex;gap:20px;align-items:flex-start}
+.mono-dimg{flex:none;width:250px;border-radius:12px;background:var(--panel2);border:1px solid var(--border);
+  padding:8px;display:flex;align-items:center;justify-content:center;min-height:180px}
+.mono-dimg img{display:block;max-width:100%;max-height:56vh;width:auto;height:auto;object-fit:contain;border-radius:6px}
+.mono-dimg img[hidden]{display:none}
+.mono-dph{font-size:2rem;font-weight:600;color:var(--muted)}
+.mono-dph[hidden]{display:none}
+.mono-dinfo{flex:1;min-width:0}
+.mono-dname{font-size:1.1rem;font-weight:600;line-height:1.35}
+.mono-djp{font-size:.8rem;color:var(--muted);margin-top:3px}
+.mono-dchips{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+.mono-dchip{font-size:.72rem;color:var(--text);background:var(--panel2);border:1px solid var(--border);border-radius:6px;padding:2px 8px}
+.mono-dkv{margin-top:10px;font-size:.78rem;line-height:1.85;color:var(--text)}
+.mono-dkv .k{color:var(--muted);margin-right:6px}
+.mono-dsum{margin-top:12px;border-top:1px solid var(--border);padding-top:10px;font-size:.8rem;line-height:1.75;color:var(--muted);white-space:pre-wrap}
+@media(max-width:560px){
+  body:not(.rin-framed) .mono-dtop{flex-direction:column}
+  body:not(.rin-framed) .mono-dimg{width:100%;min-height:0}
+  body:not(.rin-framed) .mono-dimg img{max-height:42vh}
+  body:not(.rin-framed) .mono-dsum{max-height:none}
+}
 @media(max-width:560px){.mono-grid{grid-template-columns:repeat(auto-fill,minmax(74px,1fr));gap:13px 10px}}
 html[data-theme="dark"] body.rin-bg-on{
   --bg:transparent;--bg2:transparent;
@@ -1834,11 +1876,12 @@ ${l.stack}`)}else c=o?.stack??"";let f=this.url.toString().length;return o?.name
         <div class="page-sub">正在更新的周播番按播出日排列</div>
       </div>
       <div class="week-acts">
-        <div class="week-total" id="weekTotal">总计：2</div>
         <div class="week-sync">
           <span class="rin-fn-dot" id="epSyncDot" data-fn-manual data-tip="可以连接，但此功能需要直连环境" hidden></span>
           <button class="btn sm" id="epSyncBtn" hidden>同步集数</button>
         </div>
+        <button class="btn sm week-cfg-btn" id="weekCfgBtn" type="button" aria-label="周期表设置"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h14"/><circle cx="9" cy="7" r="2.2" fill="currentColor" stroke="none"/><circle cx="15" cy="12" r="2.2" fill="currentColor" stroke="none"/><circle cx="11" cy="17" r="2.2" fill="currentColor" stroke="none"/></svg></button>
+        <div class="week-total" id="weekTotal"><span class="wt-pre">在追 </span><span id="weekTotalN">2</span><span class="wt-suf"> 部</span></div>
       </div>
     </div>
     <div class="week-grid" id="weekGrid"></div>
@@ -2141,7 +2184,7 @@ ${l.stack}`)}else c=o?.stack??"";let f=this.url.toString().length;return o?.name
           <h3>关于</h3>
           <div class="about-head">
             <div>
-              <div class="about-name">Rin Tools <b class="ver-link" id="verLink">4.3.0</b></div>
+              <div class="about-name">Rin Tools <b class="ver-link" id="verLink">4.3.1</b></div>
               <div class="about-desc">一个本地的番剧观看记录与统计工具</div>
             </div>
             <button class="btn sm" id="updBtn">检查更新</button>
@@ -3475,6 +3518,18 @@ function doSaveEntry(){
     airTime: document.getElementById("eAirTime").value.trim(),
     note: document.getElementById("eNote").value.trim()
   };
+  
+  let wdChanged = false;
+  if(editingId){
+    const old = state.entries.find(x=>x.id===editingId);
+    wdChanged = !old || (weekdayVal === "" ? old.weekday != null : Number(old.weekday) !== Number(weekdayVal));
+  }else{
+    wdChanged = weekdayVal !== "";
+  }
+  if(wdChanged){
+    data.weekdayManual = true;
+    data.weekdayBase = weekdayVal === "" ? null : Number(weekdayVal);
+  }
   if(editingId){
     const e = state.entries.find(x=>x.id===editingId);
     const before = e ? { status:e.status, rating:e.rating, note:e.note } : null;
@@ -3810,12 +3865,21 @@ function renderWeek(){
 
 
   const weekly = state.entries.filter(e=>e.weekday!=null && e.weekday!=="" && e.status==="追番中" && !e.finished);
-  document.getElementById("weekTotal").textContent = "在追 "+weekly.length+" 部";
+  const totalN = document.getElementById("weekTotalN");
+  if(totalN) totalN.textContent = weekly.length;
+  else document.getElementById("weekTotal").textContent = "在追 "+weekly.length+" 部";
   const now = new Date();
   const todayIdx = now.getDay(); 
-  const sunday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - todayIdx); 
+  
+
+  const startIdx = (typeof window.rinWeekStartPref === "function") ? window.rinWeekStartPref() : 0;
+  const startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() - ((todayIdx - startIdx + 7) % 7));
+  const weekOrder = startIdx === 1 ? [1,2,3,4,5,6,0] : [0,1,2,3,4,5,6];
   const stColor = { "已看":"var(--green)", "追番中":"var(--cyan)", "待看":"var(--blue)", "搁置":"var(--orange)" };
-  setHtmlIfChanged(document.getElementById("weekGrid"), DAYS.map((d,i)=>{    const dt = new Date(sunday.getFullYear(), sunday.getMonth(), sunday.getDate() + i);
+  setHtmlIfChanged(document.getElementById("weekGrid"), weekOrder.map(function(i){
+    const d = DAYS[i];
+    const offset = (i - startIdx + 7) % 7;
+    const dt = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate() + offset);
     const dd = (dt.getMonth()+1)+"/"+String(dt.getDate()).padStart(2,"0");
     const shows = weekly.filter(e=>e.weekday===i).sort((a,b)=>String(a.airTime||"").localeCompare(String(b.airTime||"")) || String(a.name).localeCompare(String(b.name),"zh"));
     return `<div class="day-col ${i===todayIdx?"today":""}" data-day="${i}">
@@ -4005,6 +4069,9 @@ function endDrag(){
   if(zone && zone.kind === "day"){
     if(entry.weekday !== zone.day || entry.status !== "追番中"){
       entry.weekday = zone.day;
+      
+      entry.weekdayManual = true;
+      entry.weekdayBase = zone.day;
       entry.status  = "追番中";
       msg = `「${entry.name}」已排入 ${DAYS[zone.day]}`;
     }
@@ -4013,6 +4080,7 @@ function endDrag(){
     if(entry.boardId !== zone.board || (entry.weekday != null && entry.weekday !== "")){
       entry.boardId = zone.board;
       entry.weekday = null;
+      entry.weekdayManual = true;
       if(entry.status !== "追番中") entry.status = "追番中";
       msg = `「${entry.name}」已加入 ${zone.label}`;
     }
@@ -4023,6 +4091,7 @@ function endDrag(){
     if(entry.status !== zone.status || (entry.weekday != null && entry.weekday !== "") || hadBoard){
       entry.status  = zone.status;
       entry.weekday = null;
+      entry.weekdayManual = true;
       if(hadBoard) delete entry.boardId;
       msg = `「${entry.name}」已移入 ${zone.label}`;
     }
@@ -4131,6 +4200,8 @@ document.getElementById("pickerList").addEventListener("click", ev=>{
   if(e){
     const before = { status:e.status, rating:e.rating, note:e.note };
     e.weekday = pickerDay;
+    e.weekdayManual = true;
+    e.weekdayBase = pickerDay;
     
 
     if(e.status !== "追番中") e.status = "追番中";
@@ -4505,6 +4576,21 @@ const CHANGELOG = [
 
   
 
+  { v:"4.3.1", title:"周期表与资料页", items:[
+    "周期表新增深夜番顺延与一周起始日设置",
+    "补全信息不再改写手动排期",
+    "人物页新增角色资料详情与全身像",
+    "书籍与游戏补全详情、搜索筛选与按 ID 添加",
+    "编辑弹层改为两列布局与单层滚动",
+    "修复周期表作为启动页时的初始化异常"
+  ], mobile:{ title:"周期表与资料页", items:[
+    "周期表新增深夜番顺延与一周起始日设置",
+    "补全信息不再改写手动排期",
+    "人物页新增角色资料详情与全身像",
+    "书籍与游戏补全详情与搜索筛选",
+    "手机端页头与文案精简",
+    "修复周期表作为启动页时的初始化异常"
+  ]} },
   { v:"4.3.0", title:"游戏、书籍与分组", items:[
     "新增游戏与书籍记录",
     "周期表支持自定义分组",
@@ -4600,14 +4686,7 @@ const CHANGELOG = [
     "进度面板保留封面、播出信息与备注，可记录评论与吐槽",
     "修正弹窗末尾多余的空白与备注区域的显示问题",
     "其他优化"
-  ]},
-  { v:"3.1.0", title:"导出与整理", items:[
-    "导出图片：可按状态、评分、题材、季度筛选，提供清单与年度报告两种样式",
-    "信息同步：按 Bangumi 增量补全年份、集数、播出日期、公共评分与标签",
-    "数据整理：重复条目检测、导入查重、私密与受限条目标记",
-    "界面：配色调整、浅色主题修正、自定义背景、可折叠面板",
-    "其他优化"
-  ]},
+  ]}
 
 ];
 function renderChangelog(){
@@ -4896,6 +4975,14 @@ const RIN_SYS_DEFAULT = [
   "「刚想到一件好笑的事，下次讲给你听 ᗜ ᴗ ᗜ」"
 ].join("\n");
 let mascotCfg = loadMascotCfg();
+
+
+
+
+window.rinWeekStartPref = function(){ return Number(mascotCfg && mascotCfg.weekStart) === 1 ? 1 : 0; };
+try{
+  if(document.getElementById("page-week") && document.getElementById("page-week").classList.contains("active")) renderWeek();
+}catch(e){}
 let mascotTimer = null, mascotIdleTimer = null, mascotIdleLast = -1;
 
 let mascotIdleMiss = 0;
@@ -5002,13 +5089,17 @@ function loadMascotCfg(){
         lastChatAt: Number(o.lastChatAt) || 0,
         
 
+        weekLate: ["22","23","24"].includes(String(o.weekLate)) ? String(o.weekLate) : "",
+        weekStart: (o.weekStart === 1 || o.weekStart === "1") ? 1 : 0,
+        
+
         priv: { hide: !!(o.priv && o.priv.hide === true) }
       };
     }
   }catch(e){}
   return { img:null, hidden:false, pref:"", hist:[], bgm:"", bgmApi:"", bgmMode:"rin", bgmNotePush:false, bgmDirect:false, size:"auto", chatSize:null, rinRecent:[],
     cloud:{ lastSync:0, hash:"" }, dav:{ user:"", pass:"", lastSync:0, hash:"" }, ai:{ url:"", model:"", key:"", prompt:"", web:false },
-    win:null, winManual:null, mem:[], lastChatAt:0, priv:{ hide:false } };
+    win:null, winManual:null, mem:[], lastChatAt:0, weekLate:"", weekStart:0, priv:{ hide:false } };
 }
 function saveMascotCfg(){
   try{ localStorage.setItem(MASCOT_KEY, JSON.stringify(mascotCfg)); return true; }
@@ -6656,7 +6747,7 @@ function bgmApply(d){
         name: x.name, year: x.year, status: x.status,
         episodes: Number(x.eps) || 0, minutesPerEp: 0, totalMinutes: 0,
         cover: String(x.cover || ""),
-        tags: [], rating: (Number(x.rate) > 0 ? Number(x.rate) : null), weekday: null, airTime: "",
+        tags: [], rating: (Number(x.rate) > 0 ? Number(x.rate) : null), weekday: null, weekdayBase: null, weekdayManual: false, airTime: "",
         note: String(x.comment || "").trim(), bgmCmt: String(x.comment || "").trim(),
         bgmId: x.id || 0, bgmSt: x.status, bgmRt: Number(x.rate) || 0, bgmAt: x.ts || ""
       }));
@@ -10205,8 +10296,9 @@ function rinMemBlock(){
 
   var css = document.createElement("style");
   css.id = "rinMobileCss";
+  
+
   css.textContent = [
-    "/* 手机形态：仅窄屏 + 非桌面壳 */",
     ".rin-mbar,.rin-mmask,.rin-msheet,.rin-mfilter{display:none}",
     "@media (max-width:560px){",
     "  body:not(.rin-framed) .tabs{display:none}",
@@ -11264,6 +11356,31 @@ function rinMemBlock(){
       if(RIN_TAP_CLOSE[t.id]) return;
       ev.stopPropagation();
     }
+  }, true);
+
+  
+
+
+
+  var rinOvDown = null, rinOvUp = null, rinOvDownAt = 0;
+  document.addEventListener("pointerdown", function(ev){
+    var t = ev.target;
+    
+
+    rinOvDown = (t && t.closest && t.closest(".overlay")) ? t : null;
+    rinOvUp = null;
+    rinOvDownAt = Date.now();
+  }, true);
+  document.addEventListener("pointerup", function(ev){ rinOvUp = ev.target; }, true);
+  document.addEventListener("click", function(ev){
+    var t = ev.target;
+    if(!(t && t.classList && t.classList.contains("overlay"))) return;
+    var down = rinOvDown, up = rinOvUp;
+    rinOvDown = null; rinOvUp = null;                            
+    if(!down || Date.now() - rinOvDownAt > 1500) return;         
+    if(down === t && up === t) return;                           
+    ev.stopPropagation();
+    ev.stopImmediatePropagation();
   }, true);
 })();
 
@@ -13454,7 +13571,7 @@ function rinGalRefreshBar(){
     return "http" + r.status;
   }
   const RIN_MONO_ERR = {
-    "no-channel": "当前环境读不到 Bangumi 网页",
+    "no-channel": "当前环境读不到 Bangumi 网页，需在桌面版读取",
     dns:         "解析不了 bgm.tv，检查网络或代理",
     refused:     "连不上 bgm.tv，需要开启代理",
     timeout:     "连接 bgm.tv 超时，需要开启代理",
@@ -13691,9 +13808,10 @@ function rinGalRefreshBar(){
         (d && d.at ? " · " + rinMonoAgo(d.at) : "");
     }
     const canRead = rinMonoShellOk();
-    const tip = canRead ? "点「读取」从 Bangumi 取回收藏" : "当前环境读不到 Bangumi 网页";
-    if(ce){ ce.textContent = tip; ce.hidden = chars.length > 0; }
-    if(pe){ pe.textContent = tip; pe.hidden = persons.length > 0; }
+    const tip = canRead ? "点「读取」从 Bangumi 取回收藏" : "当前环境读不到 Bangumi 网页，需在桌面版读取";
+    const failTip = rinMonoErr ? rinMonoErr + "（开代理后点右上「读取」）" : tip;
+    if(ce){ ce.textContent = (!chars.length && rinMonoErr) ? failTip : tip; ce.hidden = chars.length > 0; }
+    if(pe){ pe.textContent = (!persons.length && rinMonoErr) ? failTip : tip; pe.hidden = persons.length > 0; }
     const btn = document.getElementById("monoRefresh");
     if(btn){
       btn.textContent = (chars.length || persons.length) ? "重新读取" : "读取";
@@ -13793,7 +13911,7 @@ function rinGalRefreshBar(){
 
     if(rinMonoBusy && Date.now() - rinMonoAt < 90000) return;
     if(!rinMonoShellOk()){
-      toast("当前环境读不到 Bangumi 网页");
+      toast("当前环境读不到 Bangumi 网页，需在桌面版读取");
       return;
     }
     const user = String(mascotCfg.bgm || "").trim();
@@ -13802,7 +13920,7 @@ function rinGalRefreshBar(){
       return;
     }
     if(!rinMonoShellOk()){
-      toast("当前环境读不到 Bangumi 网页");
+      toast("当前环境读不到 Bangumi 网页，需在桌面版读取");
       return;
     }
     rinMonoBusy = true; rinMonoAt = Date.now();
@@ -13844,6 +13962,174 @@ function rinGalRefreshBar(){
       rinMonoDot();
     }
   }
+
+  
+
+
+
+  var rinMonoDetailCache = {};
+  function rinMonoKv(list){
+    var out = [];
+    (Array.isArray(list) ? list : []).forEach(function(it){
+      if(!it) return;
+      var k = String(it.key || "").trim();
+      if(!k) return;
+      var v = it.value, s = "";
+      if(typeof v === "string" || typeof v === "number") s = String(v);
+      else if(Array.isArray(v)){
+        var hasKey = v.some(function(o){ return o && o.k; });
+        s = v.map(function(o){
+          if(o === null || o === undefined) return "";
+          if(typeof o === "string" || typeof o === "number") return String(o);
+          if(o.v === null || o.v === undefined) return "";
+          return hasKey && o.k ? String(o.k) + "：" + String(o.v) : String(o.v);
+        }).filter(Boolean).join(hasKey ? "；" : "、");
+      }
+      s = s.trim();
+      if(s) out.push({ k: k, v: s });
+    });
+    return out;
+  }
+  function rinMonoDetailEnsure(){
+    if(document.getElementById("monoDetailOverlay")) return;
+    var ov = document.createElement("div");
+    ov.className = "overlay";
+    ov.id = "monoDetailOverlay";
+    ov.innerHTML =
+      "<div class='modal mono-detail'>" +
+        "<div class='modal-head'><h2 id='monoDName'>人物</h2>" +
+          "<div class='mono-dacts'>" +
+            "<a class='mono-dlink' id='monoDLink' href='#' target='_blank' rel='noopener' title='在 Bangumi 打开'>↗</a>" +
+            "<button type='button' class='icon-btn' id='monoDX'>✕</button>" +
+          "</div>" +
+        "</div>" +
+        "<div class='modal-body'>" +
+          "<div class='mono-dtop'>" +
+            "<div class='mono-dimg'>" +
+              "<img id='monoDImg' alt='' decoding='async' referrerpolicy='no-referrer'>" +
+              "<div class='mono-dph' id='monoDPh' hidden>?</div>" +
+            "</div>" +
+            "<div class='mono-dinfo'>" +
+              "<div class='mono-dname' id='monoDTitle'></div>" +
+              "<div class='mono-djp' id='monoDSub'></div>" +
+              "<div class='mono-dchips' id='monoDChips'></div>" +
+              "<div class='mono-dkv' id='monoDKv'></div>" +
+              "<div class='mono-dsum' id='monoDSum'></div>" +
+            "</div>" +
+          "</div>" +
+        "</div>" +
+      "</div>";
+    document.body.appendChild(ov);
+    ov.addEventListener("click", function(ev){ if(ev.target === ov) ov.classList.remove("show"); });
+    document.getElementById("monoDX").addEventListener("click", function(){ ov.classList.remove("show"); });
+  }
+  function rinMonoDetailFetch(kind, id){
+    var path = "/v0/" + (kind === "person" ? "person" : "character") + "/" + id;
+    var ft = fetch(bgmApi() + path).then(function(r){
+      return (r && r.ok) ? r.json() : null;
+    }).catch(function(){ return null; });
+    var guard = new Promise(function(r){ setTimeout(function(){ r(null); }, 12000); });
+    return Promise.race([ft, guard]).then(function(d){
+      if(d) return d;
+      if(typeof window.rinBgmGetJson === "function"){
+        return Promise.resolve(window.rinBgmGetJson(path)).then(function(x){
+          return (x && x.ok && x.data) ? x.data : null;
+        }).catch(function(){ return null; });
+      }
+      return null;
+    });
+  }
+  function rinMonoDetailOpen(kind, id, name, img){
+    id = Number(id) || 0;
+    if(!id) return;
+    kind = (kind === "person") ? "person" : "character";
+    rinMonoDetailEnsure();
+    var ov = document.getElementById("monoDetailOverlay");
+    var head = document.getElementById("monoDName");
+    var title = document.getElementById("monoDTitle");
+    var sub = document.getElementById("monoDSub");
+    var chips = document.getElementById("monoDChips");
+    var kv = document.getElementById("monoDKv");
+    var sum = document.getElementById("monoDSum");
+    var im = document.getElementById("monoDImg");
+    var ph = document.getElementById("monoDPh");
+    var link = document.getElementById("monoDLink");
+    if(head) head.textContent = kind === "person" ? "人物" : "角色";
+    if(link) link.href = "https://bgm.tv/" + kind + "/" + id;
+    if(title) title.textContent = name || "未命名";
+    if(sub) sub.textContent = "";
+    if(chips) chips.innerHTML = "";
+    if(kv) kv.innerHTML = "";
+    if(sum) sum.textContent = "正在读取 Bangumi 资料…";
+    if(im){
+      im.hidden = !img;
+      if(img) im.src = img;
+      im.onerror = function(){
+        im.hidden = true;
+        if(ph){ ph.hidden = false; ph.textContent = String(name || "?").charAt(0) || "?"; }
+      };
+    }
+    if(ph) ph.hidden = !!img;
+    ov.classList.add("show");
+
+    var fill = function(d){
+      var info = rinMonoKv(d.infobox);
+      var get = function(k){
+        for(var i = 0; i < info.length; i++) if(info[i].k === k) return info[i].v;
+        return "";
+      };
+      var cn = get("简体中文名");
+      var nm = String(d.name || name || "未命名").trim();
+      if(title) title.textContent = nm;
+      if(sub) sub.textContent = (cn && cn !== nm) ? cn : "";
+      var chipKeys = ["性别", "生日", "血型", "身高", "体重"];
+      var chipVals = chipKeys.map(get).filter(Boolean);
+      if(chips) chips.innerHTML = chipVals.map(function(v){
+        return "<span class='mono-dchip'>" + esc(v) + "</span>";
+      }).join("");
+      var skip = { "简体中文名":1, "性别":1, "生日":1, "血型":1, "身高":1, "体重":1, "引用来源":1 };
+      if(kv) kv.innerHTML = info.filter(function(x){ return !skip[x.k]; }).map(function(x){
+        return "<div><span class='k'>" + esc(x.k) + "</span>" + esc(x.v) + "</div>";
+      }).join("");
+      if(sum) sum.textContent = String(d.summary || "").trim() || "暂无简介";
+      var big = (d.images && (d.images.large || d.images.medium)) || "";
+      if(big && im){
+        im.onerror = function(){
+          im.hidden = true;
+          if(ph){ ph.hidden = false; ph.textContent = nm.charAt(0) || "?"; }
+        };
+        im.src = big;
+        im.hidden = false;
+        if(ph) ph.hidden = true;
+      }
+    };
+    var key = kind + ":" + id;
+    if(rinMonoDetailCache[key]){ fill(rinMonoDetailCache[key]); return; }
+    rinMonoDetailFetch(kind, id).then(function(d){
+      if(d){ rinMonoDetailCache[key] = d; fill(d); }
+      else if(sum){
+        sum.textContent = "资料读取失败，检查网络/代理；点右上角可直接去 Bangumi 看。";
+      }
+    });
+  }
+  window.rinMonoDetailOpen = rinMonoDetailOpen;
+  
+  document.addEventListener("click", function(ev){
+    var a = ev.target && ev.target.closest ? ev.target.closest(".mono-item") : null;
+    if(!a) return;
+    if(!a.closest("#monoCharGrid") && !a.closest("#monoPersonGrid")) return;
+    if(ev.button !== 0 || ev.metaKey || ev.ctrlKey || ev.shiftKey || ev.altKey) return;
+    ev.preventDefault();
+    ev.stopPropagation();
+    var href = a.getAttribute("href") || "";
+    var m = href.match(/\/(character|person)\/(\d+)/);
+    var id = m ? Number(m[2]) : 0;
+    var kind = m ? m[1] : (a.closest("#monoPersonGrid") ? "person" : "character");
+    var nm = (a.querySelector("span") || {}).textContent || "";
+    var im = a.querySelector("img");
+    var src = im ? (im.src || im.getAttribute("data-src") || "") : "";
+    rinMonoDetailOpen(kind, id, nm, src);
+  }, true);
 
   window.renderMono = renderMono;
   window.rinMonoRun = rinMonoRun;
@@ -15000,7 +15286,7 @@ function rinDiscAdd(id, want){
       episodes: n, minutesPerEp: m, totalMinutes: m ? n * m : 0,
       cover: x.cover || "",
       
-      tags: [], rating: null, weekday: rinDiscWdFromDate(date), airTime: "", note: "",
+      tags: [], rating: null, weekday: rinDiscWdFromDate(date), weekdayBase: rinDiscWdFromDate(date), weekdayManual: false, airTime: "", note: "",
       bgmId: x.id, bgmSt: "", bgmRt: 0, bgmAt: "",
       createdAt: Date.now(), updatedAt: Date.now()
     });
@@ -15414,7 +15700,7 @@ function rinQaPick(id, st){
     year: Number(String(x.date || "").slice(0, 4)) || null,
     status: STATUSES.indexOf(st) >= 0 ? st : "待看",
     episodes: qaEps, minutesPerEp: qaMin, totalMinutes: qaMin ? qaEps * qaMin : 0,
-    cover: cover, tags: tags, rating: null, weekday: rinDiscWdFromDate(x.date), airTime: "", note: "",
+    cover: cover, tags: tags, rating: null, weekday: rinDiscWdFromDate(x.date), weekdayBase: rinDiscWdFromDate(x.date), weekdayManual: false, airTime: "", note: "",
     bgmId: id, bgmSt: "", bgmRt: 0, bgmAt: "",
     createdAt: Date.now(), updatedAt: Date.now()
   });
@@ -17795,14 +18081,9 @@ function rinMetaPlanFor(e, p, wantMin){
   if(p.year && p.year !== y){ changes.push("年份 " + (y || "空") + "→" + p.year); data.year = p.year; }
   const ep = Number(e.episodes) || 0;
   if(p.eps && p.eps !== ep){ changes.push("集数 " + (ep || "空") + "→" + p.eps); data.episodes = p.eps; }
-  const wdNow = (e.weekday == null || e.weekday === "") ? null : Number(e.weekday);
   
 
-  
 
-  if(e.status === "追番中" && p.weekday != null && p.weekday !== wdNow && !p.finished){
-    changes.push("放送日"); data.weekday = p.weekday;
-  }
   if(p.cover && !e.cover){ changes.push("封面"); data.cover = p.cover; }
   
   if(p.date && String(e.airDate || "") !== p.date){ changes.push("播出日"); data.airDate = p.date; }
@@ -17854,13 +18135,56 @@ function rinMetaNeed(e){
   if(!Number(e.bgmScore)) return true;
   if(!Array.isArray(e.bgmTags) || !e.bgmTags.length) return true;
   if(!String(e.summary || "").trim()) return true;   
-  if(e.status === "追番中" && (e.weekday == null || e.weekday === "")) return true;
+  
   
 
 
   if(typeof e.nsfw !== "boolean" && Number(e.bgmId)) return true;
   return false;
 }
+
+
+
+
+function rinWeekLate(){
+  const v = Number(mascotCfg && mascotCfg.weekLate);
+  return (v >= 1 && v <= 24) ? v : 0;
+}
+function rinWeekShift(wd, airTime){
+  const w = Number(wd);
+  if(!Number.isInteger(w) || w < 0 || w > 6) return wd;
+  const thr = rinWeekLate();
+  if(!thr) return w;
+  const m = String(airTime || "").match(/^(\d{1,2}):(\d{2})/);
+  if(!m) return w;
+  return (Number(m[1]) >= thr) ? (w + 1) % 7 : w;
+}
+function rinWeekReapply(){
+  const list = (state.entries || []).filter(function(e){
+    if(e.status !== "追番中") return false;
+    if(e.weekdayManual === true) return false;
+    const w = Number(e.weekday);
+    return Number.isInteger(w) && w >= 0 && w <= 6;
+  });
+  if(!list.length) return 0;
+  let n = 0;
+  list.forEach(function(e){
+    if(e.weekdayBase == null || !Number.isInteger(Number(e.weekdayBase))){
+      e.weekdayBase = Number(e.weekday);
+    }
+    const want = rinWeekShift(e.weekdayBase, e.airTime);
+    if(Number(e.weekday) !== want){ e.weekday = want; n++; }
+  });
+  if(n){
+    try{ if(typeof rinBkSave === "function") rinBkSave("深夜顺延前"); }catch(err){}
+    try{ saveState(); }catch(err){}
+    if(typeof renderWeek === "function") renderWeek();
+    if(typeof renderLibrary === "function") renderLibrary();
+  }
+  return n;
+}
+window.rinWeekShift = rinWeekShift;
+window.rinWeekReapply = rinWeekReapply;
 
 async function rinMetaRun(wantMin, force){
   if(rinMeta && rinMeta.running) return;
@@ -17903,6 +18227,13 @@ async function rinMetaRun(wantMin, force){
   rinMeta.running = false;
   rinMeta.phase = "done";
   rinMetaPaint();
+  
+  const metaOv = document.getElementById("rinMetaOverlay");
+  if(!metaOv || !metaOv.classList.contains("show")){
+    if(rinMeta.stop) toast("补全已停止");
+    else toast("补全完成：可补 " + rinMeta.plan.length + " 条" +
+      (rinMeta.miss.length ? "，未取到 " + rinMeta.miss.length + " 条" : ""));
+  }
 }
 
 
@@ -17916,7 +18247,8 @@ function rinMetaEnsure(){
       "<div class='modal-head'><h2>补全全部信息</h2></div>" +
       "<div class='modal-body'>" +
         "<div class='rin-mt-desc'>按已关联的 Bangumi 条目，同步<b>年份、集数、播出日期、公共评分与标签、封面</b>。" +
-          "信息已完整的条目默认跳过，中断后再点也只处理缺失的部分。" +
+          "信息已完整的条目默认跳过，下次再跑也只处理缺失的部分。" +
+          "关闭窗口不会中断，补全会继续在后台进行。" +
           "受限条目的详情只对登录状态开放，未登录时跳过。" +
           "结果仅供核对，点击「应用到库」后写入，写入前自动备份。" +
           "<span class='rin-mt-warn'>单集时长不在 Bangumi 数据范围内，如需估算请勾选下方选项。" +
@@ -17943,7 +18275,8 @@ function rinMetaEnsure(){
   document.body.appendChild(ov);
   
   document.getElementById("rinMetaClose").addEventListener("click", () => {
-    if(rinMeta && rinMeta.running) rinMeta.stop = true;
+    
+    if(rinMeta && rinMeta.running) toast("补全在后台继续，完成后会提示");
     rinMetaHideConfirm();
     ov.classList.remove("show");
   });
@@ -17970,6 +18303,7 @@ function rinMetaPaint(){
   const stop = document.getElementById("rinMetaStop");
   const apply = document.getElementById("rinMetaApply");
   const minRow = document.getElementById("rinMetaMinRow");
+  const closeBtn = document.getElementById("rinMetaClose");
   if(!st || !listEl) return;
   const m = rinMeta;
   if(!m){
@@ -17985,6 +18319,7 @@ function rinMetaPaint(){
     if(stop) stop.hidden = true;
     if(apply) apply.hidden = true;
     if(minRow) minRow.hidden = false;
+    if(closeBtn) closeBtn.textContent = "关闭";
     return;
   }
   const bits = [];
@@ -18001,6 +18336,7 @@ function rinMetaPaint(){
   if(stop){ stop.hidden = !m.running; stop.disabled = false; stop.textContent = "停止"; }
   if(apply){ apply.hidden = !(m.phase === "done" && m.plan.length > 0); apply.textContent = "应用到库（" + m.plan.length + " 条）"; }
   if(minRow) minRow.hidden = !!m.running;
+  if(closeBtn) closeBtn.textContent = m.running ? "后台运行" : "关闭";
 
   
 
@@ -18022,17 +18358,28 @@ function rinMetaAsk(){
   const m = rinMeta;
   if(!m || !m.plan.length) return;
   const n = m.plan.length;
-  const y = m.plan.filter(p => "year" in p.data).length;
-  const ep = m.plan.filter(p => "episodes" in p.data).length;
-  const wd = m.plan.filter(p => "weekday" in p.data).length;
-  const cv = m.plan.filter(p => "cover" in p.data).length;
-  const mn = m.plan.filter(p => "minutesPerEp" in p.data).length;
+  const count = k => m.plan.filter(p => k in p.data).length;
+  
+
+
+  const bits = [
+    ["年份", count("year")],
+    ["集数", count("episodes")],
+    ["放送日", count("weekday")],
+    ["播出日", count("airDate")],
+    ["已完结", count("finished")],
+    ["封面", count("cover")],
+    ["公共评分", count("bgmScore")],
+    ["简介", count("summary")],
+    ["公共标签", count("bgmTags")],
+    ["估算时长", count("minutesPerEp")]
+  ].filter(x => x[1] > 0).map(x => x[0] + " " + x[1]);
   const box = document.getElementById("rinMetaConfirm");
   const txt = document.getElementById("rinMetaConfirmText");
   if(!box || !txt) return;
-  txt.innerHTML = "将改动 <b>" + n + "</b> 条：年份 " + y + " · 集数 " + ep + " · 放送日 " + wd +
-    " · 封面 " + cv + (mn ? " · 估算时长 " + mn : "") + "。写入前自动备份。" +
-    "<span class='rin-mt-warn'>评分、观看状态、备注、你手动加的标签都不会被改动。</span>";
+  txt.innerHTML = "将改动 <b>" + n + "</b> 条：" + (bits.length ? bits.join(" · ") : "仅标记") +
+    "。写入前自动备份。" +
+    "<span class='rin-mt-warn'>你的评分、观看状态、备注、手动加的标签都不会被改动。</span>";
   box.hidden = false;
   const apply = document.getElementById("rinMetaApply");
   if(apply) apply.hidden = true;
@@ -18085,9 +18432,8 @@ async function rinMetaAutoFill(e){
   if(!e || !Number(e.bgmId)) return;
   const needYear = !Number(e.year);
   const needEps = !Number(e.episodes);
-  const needWd = e.status === "追番中" && (e.weekday == null || e.weekday === "");
   const needCover = !e.cover;
-  if(!needYear && !needEps && !needWd && !needCover) return;
+  if(!needYear && !needEps && !needCover) return;
   const stamp = ++rinMetaAutoBusy;
   const p = await rinMetaSubject(e.bgmId, e.name);
   if(!p || stamp !== rinMetaAutoBusy) return;
@@ -18099,9 +18445,6 @@ async function rinMetaAutoFill(e){
   if(needYear && p.year && yEl && !yEl.value.trim()){ yEl.value = p.year; filled++; }
   const epEl = document.getElementById("eEpisodes");
   if(needEps && p.eps && epEl && !epEl.value.trim()){ epEl.value = p.eps; filled++; }
-  const wdEl = document.getElementById("eWeekday");
-  if(needWd && p.weekday != null && wdEl && !wdEl.value){ wdEl.value = String(p.weekday); filled++; }
-  if(filled && typeof syncSelect === "function") ["eWeekday"].forEach(id => syncSelect(id));
   if(filled && typeof updateTotalMode === "function"){ try{ updateTotalMode(); }catch(err){} }
 }
 
@@ -18189,6 +18532,43 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
   if(tip) tip.textContent = "按名称关联、补全信息，或识别受限条目";
 })();
 
+
+
+
+(function(){
+  const anchor = document.getElementById("rinMetaBtn");
+  if(!anchor || document.getElementById("rinGbMetaBtn")) return;
+  const b = document.createElement("button");
+  b.type = "button";
+  b.className = "btn";
+  b.id = "rinGbMetaBtn";
+  b.textContent = "补全书籍/游戏资料";
+  b.title = "逐条读取 Bangumi 详情，补上简介、作者/开发商、册数等资料";
+  b.addEventListener("click", async function(){
+    if(b.disabled) return;
+    if(typeof window.rinGbCompleteAll !== "function"){ toast("游戏/书籍模块未加载"); return; }
+    let need = 0;
+    ["games","books"].forEach(function(k){
+      (state[k] || []).forEach(function(x){
+        if(Number(x.bgmId) && ((!Array.isArray(x.info) || !x.info.length) || !String(x.summary || "").trim())) need++;
+      });
+    });
+    if(!need){ toast("书籍/游戏资料都齐了"); return; }
+    b.disabled = true;
+    const back = b.textContent;
+    b.textContent = "补全中…";
+    let r = null;
+    try{ r = await window.rinGbCompleteAll(function(d, t){ b.textContent = "补全中 " + d + "/" + t; }); }
+    catch(e){ r = null; }
+    b.disabled = false;
+    b.textContent = back;
+    if(!r){ toast("补全失败，检查网络或代理"); return; }
+    toast("资料补全：成功 " + r.ok + " 条" + (r.fail ? "，失败 " + r.fail + " 条" : ""));
+  });
+  const ns = document.getElementById("rinNsBtn");
+  (ns || anchor).parentNode.insertBefore(b, (ns || anchor).nextSibling);
+})();
+
 (function(){
   const rinMetaBtnEl = document.getElementById("rinMetaBtn");
   if(rinMetaBtnEl){
@@ -18197,7 +18577,9 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
     rinMetaBtnEl.textContent = "补全全部信息";
     rinMetaBtnEl.addEventListener("click", () => {
       rinMetaEnsure();
-      rinMeta = null;
+      
+
+
       rinMetaHideConfirm();
       rinMetaPaint();
       const rinMetaOvEl = document.getElementById("rinMetaOverlay");
@@ -20810,7 +21192,7 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
     
 
 
-    ".board-col{background:var(--panel);border:1px solid var(--border);border-radius:13px;display:flex;flex-direction:column;min-height:180px;position:relative}",
+    ".board-col{background:var(--panel);border:1px solid var(--border);border-radius:13px;display:flex;flex-direction:column;min-height:180px;min-width:0;position:relative}",
     ".board-head{padding:10px 44px;font-weight:700;font-size:.88rem;text-align:center;border-bottom:1px solid var(--border);background:var(--panel2);border-radius:13px 13px 0 0;display:flex;justify-content:center;gap:7px;align-items:center;min-height:38px}",
     ".board-head .dd{font-size:.7rem;color:var(--faint);font-weight:500;font-variant-numeric:tabular-nums}",
     ".board-body{flex:1;padding:8px;display:flex;flex-direction:column;gap:7px}",
@@ -20821,13 +21203,21 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
     ".show-card .board-rm{position:absolute;top:5px;right:6px;border:none;background:transparent;color:var(--faint);font-size:13px;padding:2px 4px;border-radius:5px;display:none;cursor:pointer}",
     ".show-card:hover .board-rm{display:block}",
     ".show-card .board-rm:hover{color:var(--red);background:rgba(248,113,113,.12)}",
-    ".board-prog{height:4px;border-radius:3px;background:var(--border);margin-top:5px;overflow:hidden}",
-    ".board-prog i{display:block;height:100%;background:var(--accent);border-radius:3px}",
     ".board-add{margin:0 8px 8px;border:1px dashed var(--border2);background:transparent;color:var(--muted);border-radius:9px;padding:6px;font:inherit;font-size:.9rem;line-height:1;cursor:pointer;transition:.15s}",
     ".board-add:hover{color:var(--accent2);border-color:var(--accent);background:var(--accent-soft)}",
     ".board-new-col{background:var(--panel);border:1px dashed var(--border2);border-radius:13px;display:flex;justify-content:center;align-items:center;min-height:180px}",
     ".board-new{border:none;background:transparent;color:var(--muted);font:inherit;font-size:.85rem;cursor:pointer;padding:20px}",
     ".board-new:hover{color:var(--accent2)}",
+    
+    ".week-cfg-sec{margin-top:14px}",
+    ".week-cfg-sec>label{display:block;font-size:.8rem;color:var(--muted);margin-bottom:6px}",
+    ".week-opt{display:flex;align-items:flex-start;gap:9px;width:100%;margin-top:7px;padding:9px 11px;border:1px solid var(--border);border-radius:9px;background:var(--panel2);color:var(--text);font:inherit;text-align:left;cursor:pointer;box-sizing:border-box}",
+    ".week-opt .rd{width:15px;height:15px;border-radius:50%;border:2px solid var(--border2);flex:none;margin-top:1px;box-sizing:border-box}",
+    ".week-opt.sel{border-color:var(--accent);background:var(--accent-soft)}",
+    ".week-opt.sel .rd{border-color:var(--accent);background:var(--accent);box-shadow:inset 0 0 0 3px var(--panel)}",
+    ".week-opt b{display:block;font-size:.82rem;font-weight:600}",
+    ".week-opt small{display:block;font-size:.7rem;color:var(--muted);margin-top:2px;line-height:1.4}",
+    ".week-opt:hover{border-color:var(--border2)}",
     "@media (max-width:560px){ body:not(.rin-framed) .board-col .board-tools button{font-size:11px;padding:2px 3px} " +
     "body:not(.rin-framed) .board-head .dd{display:none} " +
     "body:not(.rin-framed) .board-head{padding:9px 8px;font-size:.82rem} }"
@@ -20858,13 +21248,15 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
   function cardHtml(e, bid){
     var total = Math.max(0, Math.round(Number(e.episodes) || 0));
     var w = Math.max(0, Math.round(Number(e.watched) || 0));
-    var pct = total > 0 ? Math.min(100, Math.round(w / total * 100)) : 0;
-    var txt = total > 0 ? (w + "/" + total + " 集") : (w ? "已点亮 " + w + " 集" : "未点亮");
+    var stColor = { "已看":"var(--green)", "追番中":"var(--cyan)", "待看":"var(--blue)", "搁置":"var(--orange)" };
+    var ag = (typeof weekAgoText === "function") ? weekAgoText(e.updatedAt) : "";
+    
+
+
     return '<div class="show-card board-card" data-id="' + esc(e.id) + '">' +
       '<button class="board-rm" data-id="' + esc(e.id) + '" data-board="' + esc(bid) + '" title="移出分组">✕</button>' +
       '<span class="nm">' + esc(e.name) + '</span>' +
-      '<div class="tm"><span class="dot" style="background:var(--cyan)"></span>' + txt + '</div>' +
-      '<div class="board-prog"><i style="width:' + pct + '%"></i></div>' +
+      (ag ? '<div class="tm"><span class="dot" style="background:' + (stColor[e.status] || "var(--gray)") + '"></span>' + esc(ag) + '</div>' : "") +
     '</div>';
   }
   function html(){
@@ -20872,7 +21264,10 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
     var entries = Array.isArray(state.entries) ? state.entries : [];
     var out = "";
     all.forEach(function(b){
-      var items = entries.filter(function(e){ return e.boardId === b.id; });
+      
+
+
+      var items = entries.filter(function(e){ return e.boardId === b.id && e.status !== "已看"; });
       out += '<div class="board-col" data-board="' + esc(b.id) + '">' +
         '<div class="board-head">' +
           '<span class="board-name">' + esc(b.name) + '</span>' +
@@ -21061,6 +21456,94 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
 
   
   try{ renderWeek(); }catch(e){}
+
+  
+
+
+  function weekCfgCount(){
+    var el = document.getElementById("weekCfgCount");
+    if(!el) return;
+    var late = 0;
+    if(typeof window.rinWeekShift === "function"){
+      late = (state.entries || []).filter(function(e){
+        if(e.status !== "追番中" || e.weekdayManual === true) return false;
+        var w = Number(e.weekday);
+        return Number.isInteger(w) && w >= 0 && w <= 6 && window.rinWeekShift(w, e.airTime) !== w;
+      }).length;
+    }
+    var on = !!(mascotCfg && mascotCfg.weekLate);
+    el.textContent = on
+      ? "顺延 " + late + " 部；手动排期不参与。"
+      : "未开启；开启后约 " + late + " 部顺延。";
+  }
+  function weekCfgPaint(){
+    var late = (mascotCfg && mascotCfg.weekLate) || "";
+    var start = Number(mascotCfg && mascotCfg.weekStart) === 1 ? 1 : 0;
+    Array.prototype.forEach.call(document.querySelectorAll("#weekCfgOverlay .week-opt"), function(b){
+      b.classList.toggle("sel", (b.getAttribute("data-late") || "") === late);
+    });
+    Array.prototype.forEach.call(document.querySelectorAll("#weekCfgStart .stg"), function(b){
+      b.classList.toggle("active", Number(b.getAttribute("data-start")) === start);
+    });
+    weekCfgCount();
+  }
+  function weekCfgEnsure(){
+    if(document.getElementById("weekCfgOverlay")) return;
+    var ov = document.createElement("div");
+    ov.className = "overlay";
+    ov.id = "weekCfgOverlay";
+    ov.innerHTML =
+      "<div class='modal' style='width:440px;max-width:100%'>" +
+        "<div class='modal-head'><h2>周期表设置</h2></div>" +
+        "<div class='modal-body'>" +
+          "<div class='week-cfg-sec'><label>深夜番顺延</label>" +
+            "<button type='button' class='week-opt' data-late=''><i class='rd'></i><span><b>关闭</b><small>保持现有排期</small></span></button>" +
+            "<button type='button' class='week-opt' data-late='22'><i class='rd'></i><span><b>22:00 后</b><small>晚于 22:00 顺延到次日</small></span></button>" +
+            "<button type='button' class='week-opt' data-late='23'><i class='rd'></i><span><b>23:00 后</b><small>晚于 23:00 顺延到次日</small></span></button>" +
+            "<button type='button' class='week-opt' data-late='24'><i class='rd'></i><span><b>24:00 后</b><small>晚于 24:00 顺延到次日</small></span></button>" +
+          "</div>" +
+          "<div class='week-cfg-sec'><label>一周从哪天开始</label>" +
+            "<span class='seg-toggle' id='weekCfgStart'>" +
+              "<button type='button' class='stg' data-start='0'>周日</button>" +
+              "<button type='button' class='stg' data-start='1'>周一</button>" +
+            "</span>" +
+            "<div class='bgm-tip' style='margin-top:6px'>只改列顺序，不动已有排期。</div>" +
+          "</div>" +
+          "<div class='bgm-tip' id='weekCfgCount' style='margin-top:14px'></div>" +
+        "</div>" +
+        "<div class='modal-foot'><button class='btn' id='weekCfgDone'>完成</button></div>" +
+      "</div>";
+    document.body.appendChild(ov);
+    ov.addEventListener("click", function(ev){
+      var opt = ev.target.closest ? ev.target.closest(".week-opt") : null;
+      if(opt){
+        mascotCfg.weekLate = opt.getAttribute("data-late") || "";
+        saveMascotCfg();
+        var n = (typeof window.rinWeekReapply === "function") ? window.rinWeekReapply() : 0;
+        if(n) toast("已按深夜顺延重排 " + n + " 部");
+        weekCfgPaint();
+        return;
+      }
+      var stg = ev.target.closest ? ev.target.closest("#weekCfgStart .stg") : null;
+      if(stg){
+        mascotCfg.weekStart = Number(stg.getAttribute("data-start")) === 1 ? 1 : 0;
+        saveMascotCfg();
+        try{ renderWeek(); }catch(e){}
+        weekCfgPaint();
+        return;
+      }
+      if(ev.target === ov) ov.classList.remove("show");
+    });
+    document.getElementById("weekCfgDone").addEventListener("click", function(){ ov.classList.remove("show"); });
+  }
+  function weekCfgOpen(){
+    weekCfgEnsure();
+    weekCfgPaint();
+    document.getElementById("weekCfgOverlay").classList.add("show");
+  }
+  var weekCfgBtn = document.getElementById("weekCfgBtn");
+  if(weekCfgBtn) weekCfgBtn.addEventListener("click", weekCfgOpen);
+  window.rinWeekCfgOpen = weekCfgOpen;
 
   window.rinWeekBoardPick = openPick;
   window.rinWeekBoardEdit = openEdit;
@@ -21563,7 +22046,10 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
     var n = rinEpSyncList().length;
     btn.hidden = !n;
     btn.disabled = !!rinEpSyncBusy;
-    if(!rinEpSyncBusy) btn.textContent = "同步集数（" + n + "）";
+    if(!rinEpSyncBusy){
+      
+      btn.textContent = (window.innerWidth <= 560) ? ("同步 " + n) : ("同步集数（" + n + "）");
+    }
     if(dot){
       
 
@@ -21783,11 +22269,50 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
       rating: (x.rating === null || x.rating === undefined || x.rating === "") ? null : Number(x.rating) || null,
       
       bgmScore: (x.bgmScore === null || x.bgmScore === undefined || x.bgmScore === "") ? null : Number(x.bgmScore) || null,
+      
+
+      summary: String(x.summary || "").trim().slice(0, 1200),
+      info: cleanInfo(x.info),
+      volumes: Number(x.volumes) || null,
+      eps: Number(x.eps) || null,
       status: String(x.status || "").trim(),
       note: String(x.note || "").trim(),
       createdAt: Number(x.createdAt) || Date.now(),
       updatedAt: Number(x.updatedAt) || Date.now()
     };
+  }
+  
+
+
+  function packInfo(list){
+    var out = [];
+    (Array.isArray(list) ? list : []).forEach(function(it){
+      if(!it) return;
+      var k = String(it.key || "").trim();
+      if(!k || k === "链接" || k === "website" || k === "中文名") return;
+      var v = it.value, s = "";
+      if(typeof v === "string" || typeof v === "number") s = String(v);
+      else if(Array.isArray(v)){
+        var hasKey = v.some(function(o){ return o && o.k; });
+        s = v.map(function(o){
+          if(o === null || o === undefined) return "";
+          if(typeof o === "string" || typeof o === "number") return String(o);
+          if(o.v === null || o.v === undefined) return "";
+          return hasKey && o.k ? String(o.k) + "：" + String(o.v) : String(o.v);
+        }).filter(Boolean).join(hasKey ? "；" : "、");
+      }
+      s = s.trim();
+      if(!s) return;
+      out.push({ k: k.slice(0, 20), v: s.slice(0, 300) });
+    });
+    return out.slice(0, 20);
+  }
+  function cleanInfo(arr){
+    return (Array.isArray(arr) ? arr : []).filter(function(i){
+      return i && i.k && i.v;
+    }).map(function(i){
+      return { k: String(i.k).slice(0, 20), v: String(i.v).slice(0, 300) };
+    }).slice(0, 20);
   }
   
 
@@ -21806,6 +22331,10 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
       tags: tags,
       rating: null,
       bgmScore: (d.rating && d.rating.score) ? Number(d.rating.score) : null,
+      summary: String(d.summary || "").trim().slice(0, 1200),
+      info: packInfo(d.infobox),
+      volumes: Number(d.volumes) || null,
+      eps: Number(d.eps) || null,
       status: CFG[kind].statuses[0],
       note: ""
     });
@@ -21834,6 +22363,35 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
     ".gb-sr .t{flex:1;min-width:0}" +
     ".gb-sr .t b{display:block;font-size:13px;color:var(--text);font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}" +
     ".gb-sr .t span{display:block;font-size:12px;color:var(--muted);margin-top:3px}" +
+    
+    ".gb-flt{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px}" +
+    ".gb-flt select,.gb-flt input{background:var(--panel2);border:1px solid var(--border);color:var(--text);border-radius:7px;padding:6px 8px;font-size:12px;font-family:inherit;box-sizing:border-box}" +
+    ".gb-flt input[type=number]{width:76px}" +
+    ".gb-flt .sep{color:var(--faint);font-size:12px}" +
+    ".gb-idrow{display:flex;gap:8px;margin-top:8px}" +
+    ".gb-idrow input{flex:1;background:var(--panel2);border:1px solid var(--border);color:var(--text);border-radius:7px;padding:6px 8px;font-size:12px;font-family:inherit;box-sizing:border-box}" +
+    
+    ".gb-edit-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px 14px}" +
+    ".gb-edit-grid .full{grid-column:1/-1}" +
+    ".gb-edit-grid label{margin:10px 0 5px}" +
+    ".gb-edit-grid .gb-info-wrap{margin-top:8px}" +
+    
+    "@media (min-width:561px){ .gb-edit-modal{max-height:min(94vh,900px)} }" +
+    ".gb-info-wrap{margin-top:14px;border-top:1px solid var(--border);padding-top:10px}" +
+    ".gb-info-h{display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:6px}" +
+    ".gb-info-h button{border:1px solid var(--border);background:transparent;color:var(--muted);border-radius:6px;padding:2px 8px;font:inherit;font-size:11px;cursor:pointer}" +
+    ".gb-info-h button:hover{color:var(--accent2);border-color:var(--accent)}" +
+    ".gb-info-kv{font-size:12px;line-height:1.85;color:var(--text);display:grid;grid-template-columns:1fr 1fr;gap:0 18px}" +
+    ".gb-info-kv > div{min-width:0}" +
+    ".gb-info-kv .more{display:none}" +
+    ".gb-info-kv.open .more{display:block}" +
+    ".gb-info-more{border:0;background:transparent;color:var(--accent2);font:inherit;font-size:11px;cursor:pointer;padding:2px 0;margin-top:2px}" +
+    ".gb-info-more[hidden]{display:none}" +
+    ".gb-info-kv .k{color:var(--muted);margin-right:6px}" +
+    ".gb-info-sum{margin-top:8px;font-size:12px;color:var(--muted);line-height:1.7;white-space:pre-wrap}" +
+    ".gb-info-none{font-size:12px;color:var(--faint)}" +
+    ".gb-detail-kv{margin-top:6px;font-size:12px;line-height:1.7;color:var(--muted)}" +
+    ".gb-detail-kv .k{color:var(--faint);margin-right:6px}" +
     ".gb-pick{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}" +
     ".gb-pick button{border:1px solid var(--border);background:var(--panel2);color:var(--text);border-radius:8px;padding:7px 13px;font-size:13px;cursor:pointer}" +
     ".gb-pick button.sel{border-color:var(--accent);color:var(--accent)}" +
@@ -21862,7 +22420,11 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
     "@media (max-width:560px){ body:not(.rin-framed) .gb-grid{grid-template-columns:repeat(2,1fr);gap:10px} " +
     "body:not(.rin-framed) .gb-card .gb-name{font-size:13px} " +
     "body:not(.rin-framed) .gb-sum .it{flex:1 1 calc(50% - 5px);padding:8px 10px} " +
-    "body:not(.rin-framed) .gb-sum .it b{font-size:17px} }";
+    "body:not(.rin-framed) .gb-sum .it b{font-size:17px} " +
+    
+    "body:not(.rin-framed) .gb-edit-grid{grid-template-columns:1fr} " +
+    
+    "body:not(.rin-framed) .gb-info-kv{display:block} }";
   document.head.appendChild(st);
 
   
@@ -21929,6 +22491,15 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
     ov.addEventListener("click", function(ev){
       if(ev.target === ov) ov.classList.remove("show");
     });
+    
+
+    ov.addEventListener("wheel", function(ev){
+      if(ev.target && ev.target.closest && ev.target.closest(".modal")) return;
+      var body = ov.querySelector(".modal-body");
+      if(!body) return;
+      body.scrollTop += ev.deltaY;
+      ev.preventDefault();
+    }, { passive:false });
     return ov;
   }
   function close(id){ var o = document.getElementById(id); if(o) o.classList.remove("show"); }
@@ -21949,6 +22520,28 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
             "<input id='gbQuery" + cap(kind) + "' type='text' placeholder='" + cfg.ph + "' autocomplete='off' style='flex:1;background:var(--panel2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:9px 11px;font-size:13px'>" +
             "<button class='btn primary' id='gbGo" + cap(kind) + "'>搜索</button>" +
           "</div>" +
+          "<div class='gb-flt'>" +
+            "<select id='gbRate" + cap(kind) + "' title='Bangumi 评分下限'>" +
+              "<option value=''>评分不限</option>" +
+              "<option value='6'>≥ 6 分</option>" +
+              "<option value='7'>≥ 7 分</option>" +
+              "<option value='8'>≥ 8 分</option>" +
+              "<option value='9'>≥ 9 分</option>" +
+            "</select>" +
+            "<input id='gbY1" + cap(kind) + "' type='number' min='1950' max='2100' placeholder='年份从' title='起始年份'>" +
+            "<span class='sep'>—</span>" +
+            "<input id='gbY2" + cap(kind) + "' type='number' min='1950' max='2100' placeholder='到' title='结束年份'>" +
+            "<select id='gbSort" + cap(kind) + "' title='结果排序'>" +
+              "<option value='match'>按匹配度</option>" +
+              "<option value='heat'>按热度</option>" +
+              "<option value='rank'>按排名</option>" +
+              "<option value='score'>按评分</option>" +
+            "</select>" +
+          "</div>" +
+          "<div class='gb-idrow'>" +
+            "<input id='gbId" + cap(kind) + "' type='text' placeholder='或粘贴 Bangumi 条目链接 / ID' autocomplete='off'>" +
+            "<button class='btn' id='gbIdGo" + cap(kind) + "'>按 ID 添加</button>" +
+          "</div>" +
           "<div class='gb-form' style='font-size:12px;color:var(--muted);margin-top:8px'>范围：Bangumi " + cfg.label + "条目</div>" +
           "<div id='gbResults" + cap(kind) + "' style='margin-top:10px;max-height:52vh;overflow:auto'></div>" +
         "</div>" +
@@ -21961,9 +22554,34 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
     var go = ov.querySelector("#gbGo" + cap(kind));
     if(go) go.onclick = function(){ doSearch(kind); };
     if(inp) inp.onkeydown = function(ev){ if(ev.key === "Enter"){ ev.preventDefault(); doSearch(kind); } };
+    var idInp = ov.querySelector("#gbId" + cap(kind));
+    var idGo = ov.querySelector("#gbIdGo" + cap(kind));
+    if(idGo) idGo.onclick = function(){ addById(kind); };
+    if(idInp) idInp.onkeydown = function(ev){ if(ev.key === "Enter"){ ev.preventDefault(); addById(kind); } };
     ov.classList.add("show");
     if(inp) setTimeout(function(){ try{ inp.focus(); }catch(e){} }, 60);
   }
+
+  function gbVal(id){ var e = document.getElementById(id); return e ? e.value : ""; }
+  
+
+  function searchBody(kind, kw){
+    var cfg = CFG[kind], c = cap(kind);
+    var flt = { type: [cfg.type] };
+    var rate = Number(gbVal("gbRate" + c));
+    if(rate >= 1 && rate <= 10) flt.rating = [">=" + rate];
+    var y1 = Number(gbVal("gbY1" + c)), y2 = Number(gbVal("gbY2" + c));
+    if(y1 && y2 && y1 > y2){ var t = y1; y1 = y2; y2 = t; }
+    var ad = [];
+    if(y1) ad.push(">=" + y1 + "-01-01");
+    if(y2) ad.push("<=" + y2 + "-12-31");
+    if(ad.length) flt.air_date = ad;
+    var body = { keyword: kw, filter: flt };
+    var sort = gbVal("gbSort" + c);
+    if(sort && sort !== "match") body.sort = sort;
+    return body;
+  }
+  window.rinGbSearchBody = searchBody;
 
   function doSearch(kind){
     var cfg = CFG[kind];
@@ -21974,11 +22592,11 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
     busy[kind] = true;
     out.innerHTML = "<div class='gb-empty'>正在搜索「" + esc(kw) + "」…</div>";
     var url = (typeof bgmApi === "function" ? bgmApi() : "https://bgmapi.anibt.net") + "/v0/search/subjects?limit=20";
-    var body = JSON.stringify({ keyword: kw, filter: { type: [cfg.type] } });
+    var body = JSON.stringify(searchBody(kind, kw));
     var done = function(j){
       busy[kind] = false;
       var arr = (j && Array.isArray(j.data)) ? j.data : null;
-      if(!arr){ out.innerHTML = "<div class='gb-empty'>搜索失败或超时，检查网络/代理后重试。</div>"; return; }
+      if(!arr){ out.innerHTML = "<div class='gb-empty'>搜索失败或超时，检查网络/代理后重试；也可以直接用下方「按 ID 添加」。</div>"; return; }
       results[kind] = arr;
       paintResults(kind);
     };
@@ -22005,11 +22623,48 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
       .catch(function(){ if(timer) clearTimeout(timer); done(null); });
   }
 
+  function parseBgmId(s){
+    s = String(s || "").trim();
+    var m = s.match(/subject\/(\d+)/) || s.match(/^(\d+)$/);
+    return m ? Number(m[1]) : 0;
+  }
+  
+
+
+  function gbSubject(id){
+    var n = Number(id) || 0;
+    if(!n) return Promise.resolve(null);
+    return gbGet("/v0/subjects/" + n).then(function(d){
+      if(d) return d;
+      if(typeof window.rinBgmGetJson === "function"){
+        return Promise.resolve(window.rinBgmGetJson("/v0/subjects/" + n)).then(function(r){
+          return (r && r.ok && r.data) ? r.data : null;
+        }).catch(function(){ return null; });
+      }
+      return null;
+    });
+  }
+  window.rinGbSubject = gbSubject;
+  window.rinGbAddById = addById;
+  function addById(kind){
+    var c = cap(kind);
+    var inp = document.getElementById("gbId" + c);
+    var id = parseBgmId(inp && inp.value);
+    if(!id){ toast("粘贴 Bangumi 条目链接或数字 ID"); return; }
+    var btn = document.getElementById("gbIdGo" + c);
+    if(btn){ btn.disabled = true; btn.textContent = "读取中…"; }
+    gbSubject(id).then(function(d){
+      if(btn){ btn.disabled = false; btn.textContent = "按 ID 添加"; }
+      if(!d){ toast("没读到条目，检查网络/代理；受限条目需要先在设置里填 Bangumi 令牌"); return; }
+      detail(kind, d);
+    });
+  }
+
   function paintResults(kind){
     var out = document.getElementById("gbResults" + cap(kind));
     if(!out) return;
     var arr = results[kind] || [];
-    if(!arr.length){ out.innerHTML = "<div class='gb-empty'>没有找到相关条目。</div>"; return; }
+    if(!arr.length){ out.innerHTML = "<div class='gb-empty'>没有找到相关条目。部分受限作品不在 Bangumi 匿名搜索里，可以用下方「按 ID 添加」粘贴条目链接。</div>"; return; }
     out.innerHTML = arr.map(function(d){
       var im = d.images || {};
       var c = coverUrl(im.medium || im.large || im.common || "");
@@ -22043,6 +22698,7 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
             "<img id='gbDImg" + cap(kind) + "' alt=''>" +
             "<div class='gb-detail-info'>" +
               "<div class='gb-detail-meta' id='gbDMeta" + cap(kind) + "'></div>" +
+              "<div class='gb-detail-kv' id='gbDKv" + cap(kind) + "'></div>" +
               "<div class='gb-detail-sum' id='gbDSum" + cap(kind) + "'></div>" +
             "</div>" +
           "</div>" +
@@ -22060,6 +22716,12 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
     if(img){ if(x.cover) img.src = x.cover; else img.style.visibility = "hidden"; }
     set("#gbDMeta" + cap(kind), [x.year || "", x.platform || "", (x.tags || []).slice(0, 4).join(" / "),
       x.bgmScore ? "Bangumi " + x.bgmScore + " 分" : ""].filter(Boolean).join(" · ") || "—");
+    var kvEl = ov.querySelector("#gbDKv" + cap(kind));
+    if(kvEl){
+      kvEl.innerHTML = (x.info || []).slice(0, 5).map(function(i){
+        return "<div><span class='k'>" + esc(i.k) + "</span>" + esc(i.v) + "</div>";
+      }).join("");
+    }
     set("#gbDSum" + cap(kind), String(d.summary || "").trim() || "（暂无简介）");
     var pick = ov.querySelector("#gbDPick" + cap(kind));
     if(pick){
@@ -22089,21 +22751,93 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
   }
 
   
+  
+
+
+  function paintInfo(kind, x, ov){
+    var c = cap(kind);
+    var box = ov.querySelector("#gbEInfo" + c);
+    var sum = ov.querySelector("#gbESum" + c);
+    var rfr = ov.querySelector("#gbERefresh" + c);
+    var hd = ov.querySelector("#gbEInfoH" + c);
+    var more = ov.querySelector("#gbEMore" + c);
+    if(!box) return;
+    if(!x.bgmId){
+      if(hd) hd.textContent = "Bangumi 资料";
+      if(more) more.hidden = true;
+      box.innerHTML = "<div class='gb-info-none'>本地条目，没有 Bangumi 资料</div>";
+      if(sum){ sum.textContent = ""; sum.style.display = "none"; }
+      if(rfr) rfr.style.display = "none";
+      return;
+    }
+    if(rfr) rfr.style.display = "";
+    var info = Array.isArray(x.info) ? x.info : [];
+    if(hd) hd.textContent = "Bangumi 资料" + (info.length ? " · " + info.length + " 项" : "");
+    
+    if(box.dataset.eid !== String(x.id)){ box.classList.remove("open"); box.dataset.eid = String(x.id); }
+    var CUT = 4;
+    box.innerHTML = info.length ? info.map(function(i, idx){
+      return "<div class='" + (idx >= CUT ? "more" : "") + "'><span class='k'>" + esc(i.k) + "</span>" + esc(i.v) + "</div>";
+    }).join("") : "<div class='gb-info-none'>还没有资料，点「刷新」从 Bangumi 读取</div>";
+    if(more){
+      more.hidden = info.length <= CUT;
+      more.textContent = box.classList.contains("open") ? "收起" : "展开全部（" + info.length + " 项）";
+      more.onclick = function(){
+        box.classList.toggle("open");
+        more.textContent = box.classList.contains("open") ? "收起" : "展开全部（" + info.length + " 项）";
+      };
+    }
+    if(sum){
+      sum.textContent = x.summary || "";
+      sum.style.display = x.summary ? "" : "none";
+    }
+  }
+  function loadInfo(kind, x, ov, force){
+    if(!x.bgmId) return;
+    if(!force && Array.isArray(x.info) && x.info.length) return;
+    var c = cap(kind);
+    var box = ov.querySelector("#gbEInfo" + c);
+    var rfr = ov.querySelector("#gbERefresh" + c);
+    if(box) box.innerHTML = "<div class='gb-info-none'>正在读取 Bangumi 资料…</div>";
+    if(rfr) rfr.disabled = true;
+    gbGet("/v0/subjects/" + Number(x.bgmId)).then(function(d){
+      if(rfr) rfr.disabled = false;
+      if(!d){
+        if(box) box.innerHTML = "<div class='gb-info-none'>资料读取失败，检查网络后点「刷新」</div>";
+        return;
+      }
+      x.summary = String(d.summary || "").trim().slice(0, 1200);
+      x.info = packInfo(d.infobox);
+      x.volumes = Number(d.volumes) || null;
+      x.eps = Number(d.eps) || null;
+      save();
+      paintInfo(kind, x, ov);
+    });
+  }
   function edit(kind, id){
     var cfg = CFG[kind];
     var x = find(kind, id);
     if(!x) return;
     var ovId = "gbEditOverlay" + cap(kind);
     var ov = ensure(ovId,
-      "<div class='modal' style='max-width:480px'>" +
+      "<div class='modal gb-edit-modal' style='width:680px;max-width:100%'>" +
         "<div class='modal-head'><h2>编辑" + cfg.label + "</h2></div>" +
         "<div class='modal-body gb-form'>" +
-          "<label>名称</label><input id='gbEName" + cap(kind) + "' type='text'>" +
-          "<label>状态</label><select id='gbEStatus" + cap(kind) + "'></select>" +
-          "<label>评分（1–10，留空为未评分）</label><input id='gbERating" + cap(kind) + "' type='number' min='1' max='10' step='1'>" +
-          "<label>" + cfg.platformLabel + "</label><input id='gbEPlatform" + cap(kind) + "' type='text'>" +
-          "<label>年份</label><input id='gbEYear" + cap(kind) + "' type='number' min='1900' max='2100' step='1'>" +
-          "<label>备注</label><textarea id='gbENote" + cap(kind) + "'></textarea>" +
+          "<div class='gb-edit-grid'>" +
+            "<div class='full'><label>名称</label><input id='gbEName" + cap(kind) + "' type='text'></div>" +
+            "<div><label>状态</label><select id='gbEStatus" + cap(kind) + "'></select></div>" +
+            "<div><label>评分（1–10，留空为未评分）</label><input id='gbERating" + cap(kind) + "' type='number' min='1' max='10' step='1'></div>" +
+            "<div><label>" + cfg.platformLabel + "</label><input id='gbEPlatform" + cap(kind) + "' type='text'></div>" +
+            "<div><label>年份</label><input id='gbEYear" + cap(kind) + "' type='number' min='1900' max='2100' step='1'></div>" +
+            "<div class='full'><div class='gb-info-wrap'>" +
+              "<div class='gb-info-h'><span id='gbEInfoH" + cap(kind) + "'>Bangumi 资料</span>" +
+                "<button type='button' id='gbERefresh" + cap(kind) + "'>刷新</button></div>" +
+              "<div class='gb-info-kv' id='gbEInfo" + cap(kind) + "'></div>" +
+              "<button type='button' class='gb-info-more' id='gbEMore" + cap(kind) + "' hidden>展开全部</button>" +
+              "<div class='gb-info-sum' id='gbESum" + cap(kind) + "'></div>" +
+            "</div></div>" +
+            "<div class='full'><label>备注</label><textarea id='gbENote" + cap(kind) + "'></textarea></div>" +
+          "</div>" +
         "</div>" +
         "<div class='modal-foot' style='justify-content:space-between'>" +
           "<button class='btn' id='gbEDel" + cap(kind) + "' style='color:var(--red, #e24b4a)'>移出" + cfg.label + "库</button>" +
@@ -22121,6 +22855,11 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
     g("Platform").value = x.platform || "";
     g("Year").value = x.year || "";
     g("Note").value = x.note || "";
+    paintInfo(kind, x, ov);
+    var rfr = ov.querySelector("#gbERefresh" + cap(kind));
+    if(rfr) rfr.onclick = function(){ loadInfo(kind, x, ov, true); };
+    
+    if(x.bgmId && (!Array.isArray(x.info) || !x.info.length)) loadInfo(kind, x, ov, false);
     g("Save").onclick = function(){
       x.name = String(g("Name").value || "").trim() || x.name;
       x.status = g("Status").value;
@@ -22323,6 +23062,12 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
         year: Number(String(s.date || "").slice(0, 4)) || null,
         platform: platformOf(kind, tags),
         tags: tags,
+        
+
+        summary: String(s.summary || "").trim().slice(0, 1200),
+        info: packInfo(s.infobox),
+        volumes: Number(s.volumes) || null,
+        eps: Number(s.eps) || null,
         status: statusFromBgm(kind, d.type)
       };
       var old = byBgm(kind, sid);
@@ -22386,6 +23131,41 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
   }
 
   
+
+  async function completeAll(onProgress){
+    var jobs = [];
+    ["games","books"].forEach(function(kind){
+      list(kind).forEach(function(x){
+        if(!Number(x.bgmId)) return;
+        if((!Array.isArray(x.info) || !x.info.length) || !String(x.summary || "").trim()){
+          jobs.push({ kind:kind, x:x });
+        }
+      });
+    });
+    if(!jobs.length) return { total:0, ok:0, fail:0 };
+    var ok = 0, fail = 0;
+    for(var i = 0; i < jobs.length; i++){
+      if(onProgress) onProgress(i + 1, jobs.length);
+      var d = await gbSubject(jobs[i].x.bgmId);
+      if(d){
+        jobs[i].x.summary = String(d.summary || "").trim().slice(0, 1200);
+        jobs[i].x.info = packInfo(d.infobox);
+        jobs[i].x.volumes = Number(d.volumes) || null;
+        jobs[i].x.eps = Number(d.eps) || null;
+        ok++;
+      }else{
+        fail++;
+      }
+      if((i + 1) % 10 === 0) save();
+      await new Promise(function(r){ setTimeout(r, 800); });
+    }
+    save();
+    render("games"); render("books");
+    return { total:jobs.length, ok:ok, fail:fail };
+  }
+  window.rinGbCompleteAll = completeAll;
+
+  
   ["games","books"].forEach(function(kind){
     var c = cap(kind);
     var add = document.getElementById("gbAdd" + c);
@@ -22446,6 +23226,7 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
   window.rinGbList = list;
   window.rinGbCfg = CFG;
   window.rinGbFromApi = fromApi;
+  window.rinGbPackInfo = packInfo;
   window.rinGbSearchPanel = searchPanel;
   window.rinGbDetail = detail;
   window.rinGbEdit = edit;
