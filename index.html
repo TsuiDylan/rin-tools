@@ -138,11 +138,11 @@ main{max-width:1560px;margin:0 auto;padding:24px 26px 60px;position:relative;z-i
 .btn.ghost:hover{color:var(--text);background:var(--panel2)}
 
 
-.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
 .toolbar .spacer{flex:1}
 .search-box{position:relative}
 .search-box input{
-  width:260px;padding:9px 12px;border-radius:9px;border:1px solid var(--border);
+  width:190px;padding:9px 12px;border-radius:9px;border:1px solid var(--border);
   background:var(--panel);color:var(--text);font-size:.9rem;outline:none;
 }
 .search-box input:focus{border-color:var(--accent)}
@@ -683,7 +683,7 @@ body.dragging *{cursor:grabbing !important}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
 body{user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}
-input,textarea,.about-list,#libTbody td:first-child{user-select:text;-webkit-user-select:text}
+input,textarea,.about-list,#libTbody tr:not(.lib-card) td:first-child{user-select:text;-webkit-user-select:text}
 .dev-link{color:var(--accent2);cursor:pointer;text-decoration:none}
 .ver-link{display:inline-block;margin-left:7px;font-size:.71rem;font-weight:600;color:var(--accent2);background:var(--accent-soft);padding:1px 8px;border-radius:9px;cursor:pointer}
 .egg-modal{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:18px 18px 14px;cursor:pointer;text-align:center;box-shadow:0 18px 50px rgba(0,0,0,.45);max-width:86vw}
@@ -714,6 +714,9 @@ input,textarea,.about-list,#libTbody td:first-child{user-select:text;-webkit-use
   
   body:not(.rin-framed) .page-head > div:last-child{flex:1 1 100%}
   body:not(.rin-framed) .page-head .btn{flex:1 1 auto;justify-content:center;white-space:nowrap;padding-left:8px;padding-right:8px}
+  
+  body:not(.rin-framed) #page-library .page-head > div:last-child{flex:0 1 auto}
+  body:not(.rin-framed) #page-library .page-head .btn{flex:none}
   .search-box{flex:1 1 100%}
   .search-box input{width:100%}
   
@@ -1783,24 +1786,14 @@ ${l.stack}`)}else c=o?.stack??"";let f=this.url.toString().length;return o?.name
         <div class="page-title">番剧库</div>
         <div class="page-sub">本地记录你的全部番剧，支持搜索、筛选与评分管理</div>
       </div>
-      <div style="display:flex;gap:10px">
-        <button class="btn" id="randBtn">帮我选</button>
-        <button class="btn" id="importCsvBtn">导入 CSV</button>
-        <button class="btn" id="exportCsvBtn">导出 CSV</button>
-        <button class="btn primary" id="addEntryBtn">＋ 新增番剧</button>
-      </div>
     </div>
     <div class="toolbar">
       <div class="search-box"><input id="fSearch" type="text" placeholder="搜索名称 / 备注…"></div>
-      <span class="filter-label">评分</span>
       <div class="cselect" data-cselect="" id="csRmin"><button type="button" class="cselect-btn"><span class="cselect-label">最低不限</span><i class="cselect-arrow"></i></button><div class="cselect-panel"><div class="cselect-opt sel" data-val=""><span class="txt">最低不限</span><i class="ck"></i></div><div class="cselect-opt " data-val="1"><span class="txt">1 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="2"><span class="txt">2 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="3"><span class="txt">3 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="4"><span class="txt">4 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="5"><span class="txt">5 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="6"><span class="txt">6 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="7"><span class="txt">7 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="8"><span class="txt">8 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="9"><span class="txt">9 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="10"><span class="txt">10 分</span><i class="ck"></i></div></div><select id="fRmin" hidden=""><option value="">最低不限</option><option value="1">1 分</option><option value="2">2 分</option><option value="3">3 分</option><option value="4">4 分</option><option value="5">5 分</option><option value="6">6 分</option><option value="7">7 分</option><option value="8">8 分</option><option value="9">9 分</option><option value="10">10 分</option></select></div>
       <span class="filter-label">~</span>
       <div class="cselect" data-cselect="" id="csRmax"><button type="button" class="cselect-btn"><span class="cselect-label">最高不限</span><i class="cselect-arrow"></i></button><div class="cselect-panel"><div class="cselect-opt sel" data-val=""><span class="txt">最高不限</span><i class="ck"></i></div><div class="cselect-opt " data-val="1"><span class="txt">1 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="2"><span class="txt">2 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="3"><span class="txt">3 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="4"><span class="txt">4 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="5"><span class="txt">5 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="6"><span class="txt">6 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="7"><span class="txt">7 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="8"><span class="txt">8 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="9"><span class="txt">9 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="10"><span class="txt">10 分</span><i class="ck"></i></div></div><select id="fRmax" hidden=""><option value="">最高不限</option><option value="1">1 分</option><option value="2">2 分</option><option value="3">3 分</option><option value="4">4 分</option><option value="5">5 分</option><option value="6">6 分</option><option value="7">7 分</option><option value="8">8 分</option><option value="9">9 分</option><option value="10">10 分</option></select></div>
-      <span class="filter-label">题材</span>
       <div class="cselect" data-cselect="" id="csTag"><button type="button" class="cselect-btn"><span class="cselect-label">全部题材</span><i class="cselect-arrow"></i></button><div class="cselect-panel"><div class="cselect-opt sel" data-val=""><span class="txt">全部题材</span><i class="ck"></i></div><div class="cselect-opt " data-val="恋爱"><span class="txt">恋爱</span><i class="ck"></i></div><div class="cselect-opt " data-val="校园"><span class="txt">校园</span><i class="ck"></i></div><div class="cselect-opt " data-val="异世界"><span class="txt">异世界</span><i class="ck"></i></div><div class="cselect-opt " data-val="百合"><span class="txt">百合</span><i class="ck"></i></div><div class="cselect-opt " data-val="奇幻"><span class="txt">奇幻</span><i class="ck"></i></div><div class="cselect-opt " data-val="悬疑"><span class="txt">悬疑</span><i class="ck"></i></div><div class="cselect-opt " data-val="体育"><span class="txt">体育</span><i class="ck"></i></div><div class="cselect-opt " data-val="音乐"><span class="txt">音乐</span><i class="ck"></i></div><div class="cselect-opt " data-val="日常"><span class="txt">日常</span><i class="ck"></i></div><div class="cselect-opt " data-val="喜剧"><span class="txt">喜剧</span><i class="ck"></i></div><div class="cselect-opt " data-val="战斗"><span class="txt">战斗</span><i class="ck"></i></div><div class="cselect-opt " data-val="剧情"><span class="txt">剧情</span><i class="ck"></i></div><div class="cselect-opt " data-val="科幻"><span class="txt">科幻</span><i class="ck"></i></div><div class="cselect-opt " data-val="治愈"><span class="txt">治愈</span><i class="ck"></i></div><div class="cselect-opt " data-val="黑暗"><span class="txt">黑暗</span><i class="ck"></i></div><div class="cselect-opt " data-val="欧美"><span class="txt">欧美</span><i class="ck"></i></div><div class="cselect-opt " data-val="国产"><span class="txt">国产</span><i class="ck"></i></div><div class="cselect-opt " data-val="青春"><span class="txt">青春</span><i class="ck"></i></div></div><select id="fTag" hidden=""></select></div>
-      <span class="filter-label">状态</span>
       <div class="cselect" data-cselect="" id="csStatus"><button type="button" class="cselect-btn"><span class="cselect-label">全部状态</span><i class="cselect-arrow"></i></button><div class="cselect-panel"><div class="cselect-opt sel" data-val=""><span class="txt">全部状态</span><i class="ck"></i></div><div class="cselect-opt " data-val="已看"><span class="txt">已看</span><i class="ck"></i></div><div class="cselect-opt " data-val="追番中"><span class="txt">追番中</span><i class="ck"></i></div><div class="cselect-opt " data-val="待看"><span class="txt">待看</span><i class="ck"></i></div><div class="cselect-opt " data-val="搁置"><span class="txt">搁置</span><i class="ck"></i></div><div class="cselect-opt " data-val="抛弃"><span class="txt">抛弃</span><i class="ck"></i></div></div><select id="fStatus" hidden=""><option value="">全部状态</option><option>已看</option><option>追番中</option><option>待看</option><option>搁置</option><option>抛弃</option></select></div>
-      <span class="filter-label">排序</span>
       <div class="cselect" data-cselect="" id="csSort"><button type="button" class="cselect-btn"><span class="cselect-label">默认顺序</span><i class="cselect-arrow"></i></button><div class="cselect-panel" style=""><div class="cselect-opt sel" data-val="updatedDesc"><span class="txt">默认顺序</span><i class="ck"></i></div><div class="cselect-opt " data-val="createdDesc"><span class="txt">最近添加</span><i class="ck"></i></div><div class="cselect-opt " data-val="ratingDesc"><span class="txt">评分 高→低</span><i class="ck"></i></div><div class="cselect-opt " data-val="ratingAsc"><span class="txt">评分 低→高</span><i class="ck"></i></div></div><select id="fSort" hidden="">
         <option value="updatedDesc">默认顺序</option>
         <option value="createdDesc">最近添加</option>
@@ -1808,6 +1801,7 @@ ${l.stack}`)}else c=o?.stack??"";let f=this.url.toString().length;return o?.name
         <option value="ratingAsc">评分 低→高</option>
       </select></div>
       <div class="spacer"></div>
+      <button class="btn primary sm" id="addEntryBtn">＋ 新增番剧</button>
       <button class="btn ghost sm" id="resetFilterBtn">重置筛选</button>
     </div>
     <div class="count-line" id="libCount">共 0 条</div>
@@ -2115,10 +2109,11 @@ ${l.stack}`)}else c=o?.stack??"";let f=this.url.toString().length;return o?.name
           <h3>数据管理</h3>
           <div class="data-btns">
             <div class="row">
-              <button class="btn" id="exportCsvBtn2">导出番剧 CSV</button>
-              <button class="btn" id="importCsvBtn2">导入番剧 CSV</button>
+              <button class="btn" id="exportCsvBtn2" title="CSV 只含基础字段，完整备份请用 JSON">导出番剧 CSV</button>
+              <button class="btn" id="importCsvBtn2" title="CSV 不含元数据与观看进度，完整恢复请用 JSON">导入番剧 CSV</button>
               <button class="btn" id="csvTplBtn">下载 CSV 模板</button>
             </div>
+            <div class="bgm-tip" style="margin-top:6px">CSV 只含基础字段；元数据与观看进度请用 JSON 备份。</div>
             <div class="row">
               <button class="btn" id="exportJsonBtn">备份全部数据（JSON）</button>
               <button class="btn" id="importJsonBtn">恢复备份（JSON）</button>
@@ -2184,7 +2179,7 @@ ${l.stack}`)}else c=o?.stack??"";let f=this.url.toString().length;return o?.name
           <h3>关于</h3>
           <div class="about-head">
             <div>
-              <div class="about-name">Rin Tools <b class="ver-link" id="verLink">4.3.1</b></div>
+              <div class="about-name">Rin Tools <b class="ver-link" id="verLink">4.4.0</b></div>
               <div class="about-desc">一个本地的番剧观看记录与统计工具</div>
             </div>
             <button class="btn sm" id="updBtn">检查更新</button>
@@ -2249,8 +2244,9 @@ ${l.stack}`)}else c=o?.stack??"";let f=this.url.toString().length;return o?.name
           </div>
         </div>
         <div class="field"><label>个人评分</label><div class="cselect block" data-cselect="" id="csERating"><button type="button" class="cselect-btn"><span class="cselect-label">未评分</span><i class="cselect-arrow"></i></button><div class="cselect-panel" style="max-height: 250.812px; visibility: visible;"><div class="cselect-opt sel" data-val=""><span class="txt">未评分</span><i class="ck"></i></div><div class="cselect-opt " data-val="1"><span class="txt">1 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="1.5"><span class="txt">1.5 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="2"><span class="txt">2 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="2.5"><span class="txt">2.5 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="3"><span class="txt">3 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="3.5"><span class="txt">3.5 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="4"><span class="txt">4 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="4.5"><span class="txt">4.5 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="5"><span class="txt">5 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="5.5"><span class="txt">5.5 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="6"><span class="txt">6 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="6.5"><span class="txt">6.5 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="7"><span class="txt">7 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="7.5"><span class="txt">7.5 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="8"><span class="txt">8 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="8.5"><span class="txt">8.5 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="9"><span class="txt">9 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="9.5"><span class="txt">9.5 分</span><i class="ck"></i></div><div class="cselect-opt " data-val="10"><span class="txt">10 分</span><i class="ck"></i></div></div><select id="eRating" hidden=""></select></div></div>
-        <div class="field"><label>周播日</label><div class="cselect block" data-cselect="" id="csEWeekday"><button type="button" class="cselect-btn"><span class="cselect-label">无</span><i class="cselect-arrow"></i></button><div class="cselect-panel" style="max-height: 250.812px; visibility: visible;"><div class="cselect-opt sel" data-val=""><span class="txt">无</span><i class="ck"></i></div><div class="cselect-opt " data-val="0"><span class="txt">周日</span><i class="ck"></i></div><div class="cselect-opt " data-val="1"><span class="txt">周一</span><i class="ck"></i></div><div class="cselect-opt " data-val="2"><span class="txt">周二</span><i class="ck"></i></div><div class="cselect-opt " data-val="3"><span class="txt">周三</span><i class="ck"></i></div><div class="cselect-opt " data-val="4"><span class="txt">周四</span><i class="ck"></i></div><div class="cselect-opt " data-val="5"><span class="txt">周五</span><i class="ck"></i></div><div class="cselect-opt " data-val="6"><span class="txt">周六</span><i class="ck"></i></div></div><select id="eWeekday" hidden=""></select></div></div>
-        <div class="field"><label>播出时间</label><input id="eAirTime" type="text" maxlength="20"></div>
+        <div class="field" style="display:none"><label>周播日</label><div class="cselect block" data-cselect="" id="csEWeekday"><button type="button" class="cselect-btn"><span class="cselect-label">无</span><i class="cselect-arrow"></i></button><div class="cselect-panel" style="max-height: 250.812px; visibility: visible;"><div class="cselect-opt sel" data-val=""><span class="txt">无</span><i class="ck"></i></div><div class="cselect-opt " data-val="0"><span class="txt">周日</span><i class="ck"></i></div><div class="cselect-opt " data-val="1"><span class="txt">周一</span><i class="ck"></i></div><div class="cselect-opt " data-val="2"><span class="txt">周二</span><i class="ck"></i></div><div class="cselect-opt " data-val="3"><span class="txt">周三</span><i class="ck"></i></div><div class="cselect-opt " data-val="4"><span class="txt">周四</span><i class="ck"></i></div><div class="cselect-opt " data-val="5"><span class="txt">周五</span><i class="ck"></i></div><div class="cselect-opt " data-val="6"><span class="txt">周六</span><i class="ck"></i></div></div><select id="eWeekday" hidden=""></select></div></div>
+        <div class="field" style="display:none"><label>播出时间</label><input id="eAirTime" type="text" maxlength="20"></div>
+        <div class="bgm-tip" style="grid-column:1/-1;margin-top:-4px">排期（放送日 / 播出时间）在周期表的追番进度里设置。</div>
         <div class="field full">
           <label class="rin-check"><input type="checkbox" id="ePrivate">私密条目</label>
           <div class="hint">开启「隐私模式」后，不在番剧库与封面墙显示</div>
@@ -2472,10 +2468,10 @@ const DEFAULT_TAGS = ["恋爱", "校园", "异世界", "百合", "奇幻", "悬�
 const TAG_MERGE = {"后宫":"恋爱","乙女":"恋爱","运动":"体育","竞技":"体育","将棋":"体育","棒球":"体育","潜水":"体育","偶像":"音乐","乐队":"音乐","演唱会":"音乐","舞台":"音乐","恶搞":"喜剧","cosplay":"喜剧","性别":"喜剧","性转":"喜剧","魔法":"奇幻","魔法少女":"奇幻","超能力":"奇幻","超自然":"奇幻","冒险":"奇幻","游戏":"奇幻","吉卜力":"奇幻","拟人":"奇幻","吸血鬼":"奇幻","旅行":"奇幻","公路":"奇幻","推理":"悬疑","心理":"悬疑","智斗":"悬疑","恐怖":"悬疑","惊悚":"悬疑","赌博":"悬疑","时间循环":"悬疑","间谍":"悬疑","dark":"黑暗","末日":"黑暗","丧尸":"黑暗","穿越":"异世界","转生":"异世界","机战":"科幻","机器人":"科幻","特摄":"科幻","赛博朋克":"科幻","历史":"剧情","古风":"剧情","科普":"剧情","经济":"剧情","群像":"剧情","复仇":"剧情","宗教":"剧情","同人":"剧情","同人动画":"剧情","户外":"日常","职场":"日常","美食":"日常","动物":"日常","家庭":"日常","乡村":"日常","传统艺能":"日常","催泪":"治愈","动作":"战斗","战争":"战斗","军事":"战斗","热血":"战斗"};
 const TAG_REMOVE = ["电影","OVA","短片","SP","选集","总集篇","剧场版网络电影","儿童","成人向","3D"];
 const ACCENTS = [ 
-  { n:"空 SORA", c:"#58B2DC" }, { n:"浅葱 ASAGI", c:"#33A6B8" },
-  { n:"若竹 WAKATAKE", c:"#68BE8D" }, { n:"山吹 YAMABUKI", c:"#FCB40F" },
-  { n:"朱 SHU", c:"#EB471F" }, { n:"躑躅 TSUTSUJI", c:"#E03C8A" },
-  { n:"桃 MOMO", c:"#F09199" }, { n:"藤 FUJI", c:"#8B81C3" }
+  { n:"空 SORA", c:"#58B2DC", f:"blue" }, { n:"浅葱 ASAGI", c:"#33A6B8", f:"blue" },
+  { n:"若竹 WAKATAKE", c:"#68BE8D", f:"green" }, { n:"山吹 YAMABUKI", c:"#FCB40F", f:"yellow" },
+  { n:"朱 SHU", c:"#EB471F", f:"red" }, { n:"躑躅 TSUTSUJI", c:"#E03C8A", f:"pink" },
+  { n:"桃 MOMO", c:"#F09199", f:"pink" }, { n:"藤 FUJI", c:"#8B81C3", f:"purple" }
 ];
 
 const SEED = [];
@@ -2483,6 +2479,7 @@ const SEED = [];
 let state = loadState();
 let filters = { q:"", rmin:"", rmax:"", tag:"", status:"", sort: state.sort||"updatedDesc" };
 let editingId = null;
+let entryOpenSeq = 0;                 
 let pickerDay = null;
 let formPrefill = null;   
 let pendingImport = null;
@@ -2696,7 +2693,19 @@ function mixHex(h1,h2,w){
 }
 
 let randomAccentPick = null;
-function randomAccent(){ return ACCENTS[Math.floor(Math.random()*ACCENTS.length)].c; }
+let randomAccentFamily = null;
+const ACCENT_FAMILIES = Array.from(new Set(ACCENTS.map(a => a.f)));
+function randomAccent(){
+  
+
+  let fam = randomAccentFamily, tries = 0;
+  do {
+    fam = ACCENT_FAMILIES[Math.floor(Math.random() * ACCENT_FAMILIES.length)];
+  } while (ACCENT_FAMILIES.length > 1 && fam === randomAccentFamily && ++tries < 8);
+  randomAccentFamily = fam;
+  const pool = ACCENTS.filter(a => a.f === fam);
+  return pool[Math.floor(Math.random() * pool.length)].c;
+}
 function resolveAccent(){
   if(state.accent === "random") return randomAccentPick || (randomAccentPick = randomAccent());
   return state.accent || "#58B2DC";
@@ -3288,27 +3297,31 @@ function rinEntryMetaRender(e){
   if(!line) return;
   const bgm = rinEntryBgm || {};
   const year = bgm.year || (e && e.year) || "";
-  const plat = bgm.platform || "";
+  const plat = bgm.platform || (e && e.platform) || "";
   const eps = bgm.eps || (e && e.episodes) || "";
-  const wd = (bgm.weekday != null) ? bgm.weekday
-    : ((e && e.weekday != null && e.weekday !== "") ? Number(e.weekday) : null);
-  const isFilm = /剧场版|OVA|电影/.test(plat);
+  const score = Number(bgm.score || (e && e.bgmScore) || 0);
+  const votes = Number(bgm.votes || (e && e.bgmScoreCount) || 0);
+  const tags = (Array.isArray(bgm.tags) && bgm.tags.length)
+    ? bgm.tags
+    : ((e && Array.isArray(e.bgmTags)) ? e.bgmTags : []);
   const bits = [];
   if(year) bits.push(year + " 年");
   if(plat) bits.push(plat);
-  if(eps) bits.push(isFilm ? "单片" : (Number(eps) + " 集"));
-  if(wd != null && !isNaN(wd)) bits.push("每周" + "日一二三四五六".charAt(wd));
+  if(eps) bits.push(Number(eps) + " 集");
   line.textContent = bits.length ? bits.join(" · ") : "";
   line.classList.toggle("is-empty", !bits.length);
 
-  if(tagsEl) tagsEl.innerHTML = (bgm.tags || []).slice(0, 6).map(t => "<span class='eh-tag'>" + esc(t) + "</span>").join("");
-  if(scoreEl) scoreEl.textContent = bgm.score ? ("评分 " + bgm.score.toFixed(1) + (bgm.votes ? " · " + bgm.votes + " 人评" : "")) : "";
+  if(tagsEl) tagsEl.innerHTML = tags.slice(0, 6).map(t => "<span class='eh-tag'>" + esc(t) + "</span>").join("");
+  if(scoreEl) scoreEl.textContent = score ? ("评分 " + score.toFixed(1) + (votes ? " · " + votes + " 人评" : "")) : "";
   if(btn) btn.title = (e && Number(e.bgmId)) ? "按已关联的 Bangumi 条目补全" : "按名称在 Bangumi 搜索后补全";
 }
 
 function openEntryModal(id){
+  entryOpenSeq++;
   rinEntryBgm = null;
   editingId = id || null;
+  const fillBtn = document.getElementById("eBgmFillBtn");
+  if(fillBtn){ fillBtn.disabled = false; fillBtn.removeAttribute("aria-busy"); }
   const pf = (!id && formPrefill) ? formPrefill : null;   
   formPrefill = null;
   refreshEntryFormOptions();
@@ -3404,8 +3417,8 @@ function rinEntryFill(){
   const e = editingId ? state.entries.find(x => x.id === editingId) : null;
   const bgmId = (e && Number(e.bgmId)) || 0;
   if(!bgmId && !name){ toast("先填番剧名称"); return; }
-  const reset = () => { if(btn){ btn.disabled = false; btn.textContent = "补全"; } };
-  if(btn){ btn.disabled = true; btn.textContent = "读取中…"; }
+  const reset = () => { if(btn){ btn.disabled = false; btn.removeAttribute("aria-busy"); } };
+  if(btn){ btn.disabled = true; btn.setAttribute("aria-busy", "true"); }
 
   const byId = id => bgmFetch(bgmApi() + "/v0/subjects/" + id).then(d => d || null);
   const byName = () => fetch(bgmApi() + "/v0/search/subjects?limit=10", {
@@ -3422,78 +3435,67 @@ function rinEntryFill(){
       return pick ? byId(pick.id) : "ambiguous";
     }).catch(() => null);
 
+  const openSeq = entryOpenSeq;
+  const reqId = editingId || null;
+  const stillSame = () => openSeq === entryOpenSeq &&
+    String(editingId || "") === String(reqId || "") &&
+    !!document.getElementById("entryOverlay").classList.contains("show");
   Promise.resolve(bgmId ? byId(bgmId) : byName()).then(d => {
     if(d === "ambiguous"){
-      reset();
-      toast("搜到多部同名——到发现页选一部加入后就能补全");
+      if(stillSame()){ reset(); toast("搜到多部同名——到发现页选一部加入后就能补全"); }
       return;
     }
-    reset();
-    if(!d){ toast("没读到 Bangumi 条目，稍后再试"); return; }
+    if(!d){ if(stillSame()){ reset(); toast("没读到 Bangumi 条目，稍后再试"); } return; }
 
     const want = {
       year: Number(String(d.date || "").slice(0, 4)) || 0,
       eps: rinBgmEpsOf(d),
       wd: (rinWdFromInfobox(d) != null) ? rinWdFromInfobox(d) : rinWdFromDate(d.date)
     };
-    const cur = {
-      year: Number(document.getElementById("eYear").value) || 0,
-      eps: Number(document.getElementById("eEpisodes").value) || 0,
-      wd: (document.getElementById("eWeekday").value === "") ? null : Number(document.getElementById("eWeekday").value)
-    };
-    const WD = "日一二三四五六";
-    const diff = [];
-    if(want.year && want.year !== cur.year) diff.push("首播年份：" + (cur.year || "空") + " → " + want.year);
-    if(want.eps && want.eps !== cur.eps) diff.push("集数：" + (cur.eps || "空") + " → " + want.eps);
-    if(want.wd != null && want.wd !== cur.wd) diff.push("周播日：" + (cur.wd == null ? "空" : "周" + WD.charAt(cur.wd)) + " → 周" + WD.charAt(want.wd));
-
     
-    const noise = (typeof rinDiscTagNoise === "function") ? rinDiscTagNoise : () => false;
-    
-
-    const gmap = (typeof RIN_DISC_GENRE_MAP !== "undefined") ? RIN_DISC_GENRE_MAP : null;
-    const seenTag = {};
-    const rawTags = (d.meta_tags || []).concat((d.tags || []).map(t => t && t.name).filter(Boolean));
-    const tags = rawTags.filter(t => {
-      const k = String(t || "").trim();
-      if(!k || noise(k)) return false;
-      if(gmap && !gmap[k.toLowerCase()]) return false;
-      if(seenTag[k]) return false;
-      seenTag[k] = 1;
-      return true;
-    }).slice(0, 6);
-    rinEntryBgm = {
+    const tags = (typeof window.rinBgmPublicTags === "function")
+      ? window.rinBgmPublicTags(d)
+      : (d.meta_tags || []).concat((d.tags || []).map(t => t && t.name).filter(Boolean)).slice(0, 6);
+    const bgmMeta = {
       year: want.year, eps: want.eps, weekday: want.wd,
       platform: String(d.platform || ""),
       score: Number((d.rating || {}).score) || 0,
       votes: Number((d.rating || {}).total) || 0,
-      tags: tags
+      tags: tags,
+      summary: String(d.summary || "").trim()
     };
+    
+
+
+    if(e){
+      if(d.platform) e.platform = String(d.platform);
+      if(tags.length) e.bgmTags = tags.slice();
+      const sc = Number((d.rating || {}).score) || 0;
+      const cnt = Number((d.rating || {}).total) || 0;
+      if(sc) e.bgmScore = sc;
+      if(cnt) e.bgmScoreCount = cnt;
+      if(d.summary) e.summary = String(d.summary).trim();
+      try{ saveState(); }catch(err){}
+    }
+    
+    if(!stillSame()) return;
+    reset();
+    rinEntryBgm = bgmMeta;
     const apply = () => {
       if(want.year) document.getElementById("eYear").value = want.year;
       if(want.eps) document.getElementById("eEpisodes").value = want.eps;
-      if(want.wd != null){
-        document.getElementById("eWeekday").value = String(want.wd);
-        syncSelect("eWeekday");
-      }
       updateTotalMode();
       rinEntryMetaRender(editingId ? state.entries.find(x => x.id === editingId) : null);
     };
-    if(!diff.length){
-      apply();
-      toast("已与 Bangumi 一致");
-      return;
-    }
-    askConfirm("用 Bangumi 的数据覆盖",
-      "将按 Bangumi 的值更新以下内容（只改表单，点保存后才生效）：<br><br>" +
-      diff.map(x => "· " + esc(x)).join("<br>") +
-      "<br><br>观看状态、个人评分、备注、单集时长、题材标签不会被动。",
-      apply, "覆盖");
-  }).catch(() => { reset(); toast("补全失败，稍后再试"); });
+    apply();
+  }).catch(() => {
+    if(stillSame()){ reset(); toast("补全失败，稍后再试"); }
+  });
 }
 document.getElementById("eBgmFillBtn").addEventListener("click", rinEntryFill);
 
 function doSaveEntry(){
+  const oldE = editingId ? state.entries.find(x=>x.id===editingId) : null;
   const name = document.getElementById("eName").value.trim();
   const ep = Number(document.getElementById("eEpisodes").value)||0;
   const mn = Number(document.getElementById("eMinutes").value)||0;
@@ -3507,9 +3509,15 @@ function doSaveEntry(){
 
   const privEl = document.getElementById("ePrivate");
   const privOn = !!(privEl && privEl.checked);
+  
   const data = {
     name,
     year,
+    platform: (rinEntryBgm && rinEntryBgm.platform) || (oldE && oldE.platform) || "",
+    bgmTags: (rinEntryBgm && Array.isArray(rinEntryBgm.tags) && rinEntryBgm.tags.length) ? rinEntryBgm.tags : ((oldE && oldE.bgmTags) || []),
+    bgmScore: Number((rinEntryBgm && rinEntryBgm.score) || (oldE && oldE.bgmScore) || 0) || 0,
+    bgmScoreCount: Number((rinEntryBgm && rinEntryBgm.votes) || (oldE && oldE.bgmScoreCount) || 0) || 0,
+    summary: String((rinEntryBgm && rinEntryBgm.summary) || (oldE && oldE.summary) || "").trim(),
     status: document.getElementById("eStatus").value,
     episodes: ep, minutesPerEp: mn, totalMinutes: total,
     tags: cleanTagList([...formTags]),
@@ -3597,7 +3605,8 @@ function rollRand(){
     randCur.totalMinutes? fmtDur(randCur.totalMinutes) : "", randCur.note||""
   ].filter(Boolean).join(" · ");
 }
-document.getElementById("randBtn").addEventListener("click", ()=>{
+const randBtnEl = document.getElementById("randBtn");
+if(randBtnEl) randBtnEl.addEventListener("click", ()=>{
   randPool = state.entries.filter(e=>e.status==="待看");
   if(!randPool.length){ toast("「待看」清单里还没有条目"); return; }
   rollRand(); showOverlay("randomOverlay");
@@ -3829,6 +3838,31 @@ function weekFinishedByDate(dateStr, total){
 
 
 
+function weekAiredCount(dateStr, total, epAirdates){
+  const t = Number(total) || 0;
+  if(!t) return 0;
+  
+  if(Array.isArray(epAirdates) && epAirdates.length >= t){
+    const d = new Date(), p = n => (n < 10 ? "0" : "") + n;
+    const today = d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate());
+    let n = 0;
+    for(const x of epAirdates){
+      const s = String(x || "").trim();
+      if(/^\d{4}-\d{2}-\d{2}$/.test(s) && s <= today) n++;
+    }
+    return Math.min(t, n);
+  }
+  const s = String(dateStr || "").trim();
+  if(!(s.length >= 10 && s.charAt(4) === "-" && s.charAt(7) === "-")) return 0;
+  if(weekFinishedByDate(s, t)) return t;
+  const d = Date.parse(s.slice(0, 10) + "T00:00:00+09:00");
+  if(!isFinite(d)) return 0;
+  const weeks = Math.floor((Date.now() - d) / (7 * 86400000)) + 1;
+  return Math.max(0, Math.min(t, weeks));
+}
+
+
+
 
 function rinFixFinished(){
   let n = 0;
@@ -3845,16 +3879,17 @@ function rinFixFinished(){
 
 
 
-function weekAgoText(ts){
+function weekAgoText(ts, label){
   const t = Number(ts) || 0;
   if(!t) return "";
+  const word = label || "改动";
   const d = Date.now() - t;
-  if(d < 60000) return "刚刚改动";
-  if(d < 3600000) return Math.floor(d / 60000) + " 分钟前改动";
-  if(d < 86400000) return Math.floor(d / 3600000) + " 小时前改动";
-  if(d < 86400000 * 30) return Math.floor(d / 86400000) + " 天前改动";
+  if(d < 60000) return "刚刚" + word;
+  if(d < 3600000) return Math.floor(d / 60000) + " 分钟前" + word;
+  if(d < 86400000) return Math.floor(d / 3600000) + " 小时前" + word;
+  if(d < 86400000 * 30) return Math.floor(d / 86400000) + " 天前" + word;
   const dt = new Date(t), p = n => (n < 10 ? "0" : "") + n;
-  return dt.getFullYear() + "-" + p(dt.getMonth() + 1) + "-" + p(dt.getDate()) + " 改动";
+  return dt.getFullYear() + "-" + p(dt.getMonth() + 1) + "-" + p(dt.getDate()) + " " + word;
 }
 
 function renderWeek(){
@@ -3885,7 +3920,8 @@ function renderWeek(){
     return `<div class="day-col ${i===todayIdx?"today":""}" data-day="${i}">
       <div class="day-head">${d}<span class="dd">${dd}</span>${i===todayIdx?'<span class="dc">今天</span>':""}</div>
       <div class="day-body">${shows.map(e=>{
-        const ag = weekAgoText(e.updatedAt);
+        const stamp = e.watchedAt || e.updatedAt;
+        const ag = weekAgoText(stamp, e.watchedAt ? "观看" : "改动");
         return `<div class="show-card" data-id="${e.id}">
           <button class="rm" data-day="${i}" data-id="${e.id}" title="移出${d}">✕</button>
           <span class="nm">${esc(e.name)}</span>
@@ -4462,8 +4498,14 @@ document.getElementById("importReplaceBtn").addEventListener("click", ()=>{
   if(pendingImport){ state.entries = pendingImport; saveState(); renderLibrary(); toast("已替换为导入的 "+pendingImport.length+" 条"); }
   pendingImport = null; hideOverlay("importOverlay");
 });
-["importCsvBtn","importCsvBtn2"].forEach(id=>document.getElementById(id).addEventListener("click", ()=>document.getElementById("csvFileInput").click()));
-["exportCsvBtn","exportCsvBtn2"].forEach(id=>document.getElementById(id).addEventListener("click", exportCSV));
+["importCsvBtn","importCsvBtn2"].forEach(id=>{
+  const el = document.getElementById(id);
+  if(el) el.addEventListener("click", ()=>document.getElementById("csvFileInput").click());
+});
+["exportCsvBtn","exportCsvBtn2"].forEach(id=>{
+  const el = document.getElementById(id);
+  if(el) el.addEventListener("click", exportCSV);
+});
 document.getElementById("csvTplBtn").addEventListener("click", ()=>{
   const tpl = "\uFEFF" + CSV_HEADERS.join(",") + "\n" +
     "示例番剧 01,12,24,,奇幻/治愈,8,已看,周五,23:00,\n" +
@@ -4576,6 +4618,22 @@ const CHANGELOG = [
 
   
 
+  { v:"4.4.0", title:"番剧库合集与书架", items:[
+    "番剧库改为「按单部」与「按系列」两种视图",
+    "合集自动归并，跨季、剧场版与关联作品归到一组",
+    "书籍页新增按系列视图，分卷默认堆叠",
+    "标签统一为固定分类，补全信息后展示更一致",
+    "窗口每次启动自动居中，修复偶发不可见",
+    "从 Bangumi 同步进度时不再覆盖较新记录",
+    "其他细节优化"
+  ], mobile:{ title:"番剧库合集与书架", items:[
+    "番剧库改为「按单部」与「按系列」两种视图",
+    "合集自动归并，单季作品同样收录",
+    "手机端精简单部信息，聚焦名称与进度",
+    "书籍页新增按系列视图",
+    "从 Bangumi 同步进度时不再覆盖较新记录",
+    "其他细节优化"
+  ] } },
   { v:"4.3.1", title:"周期表与资料页", items:[
     "周期表新增深夜番顺延与一周起始日设置",
     "补全信息不再改写手动排期",
@@ -6715,7 +6773,9 @@ function bgmApply(d){
       e.bgmId = bid;
       const up = (d.add || []).find(a => Number(a.id) === bid);
       if(up && up.name && up.name !== e.name) e.name = up.name;
-      e.bgmSt = ""; e.bgmRt = 0; e.bgmAt = ""; n.relink++;
+      e.bgmSt = ""; e.bgmRt = 0; e.bgmAt = "";
+      if(typeof window.rinBgmClearCaches === "function") window.rinBgmClearCaches(e);
+      n.relink++;
     }
     if(bid) relinkedIds.add(bid);
   }
@@ -6727,7 +6787,7 @@ function bgmApply(d){
   }
   
   if(d.repaired && d.repaired.length && on("repair")){
-    for(const p of d.repaired){ if(p.up && p.up.id){ p.e.bgmId = p.up.id; n.repair++; } }
+    for(const p of d.repaired){ if(p.up && p.up.id){ p.e.bgmId = p.up.id; if(typeof window.rinBgmClearCaches === "function") window.rinBgmClearCaches(p.e); n.repair++; } }
   }
   if(on("add")){
     for(const x of d.add){
@@ -6756,7 +6816,7 @@ function bgmApply(d){
       n.add++;
     }
   }
-  if(on("claim")) for(const p of d.claim){ p.e.bgmId = p.up.id || 0; n.claim++; }
+  if(on("claim")) for(const p of d.claim){ p.e.bgmId = p.up.id || 0; if(typeof window.rinBgmClearCaches === "function") window.rinBgmClearCaches(p.e); n.claim++; }
   
 
   if(on("eps")){
@@ -6816,7 +6876,11 @@ function bgmApply(d){
     p.e.bgmAt = p.up.ts || "";
     
 
-    if(p.up.epStatus != null) p.e.bgmEp = Number(p.up.epStatus) || 0;
+    
+    if(p.up.epStatus != null){
+      const upEp = Number(p.up.epStatus) || 0;
+      if(upEp > 0 || !Number(p.e.bgmEp)) p.e.bgmEp = upEp;
+    }
     
 
     if(p.up.status && String(p.e.status || "") === String(p.up.status)) p.e.bgmSt = p.up.status;
@@ -6831,6 +6895,7 @@ function bgmApply(d){
     for(const e of d.gone){
       if(picked.has(e.id)){ if(act === "del") goneDel.add(e.id); else goneHold.push(e); }
       e.bgmId = 0; e.bgmSt = ""; e.bgmRt = 0;   
+      if(typeof window.rinBgmClearCaches === "function") window.rinBgmClearCaches(e);
     }
     for(const e of goneHold){ e.status = "搁置"; e.statusAt = Date.now(); e.updatedAt = Date.now(); }
     n.gone = picked.size;
@@ -7281,10 +7346,57 @@ function cloudMarkSynced(){
   saveMascotCfg();
 }
 function cloudMerge(a, b){
-  const seen = new Set(), out = [];
+  
+
+  const seen = new Set(), out = [], by = {};
   const key = e => String((e && e.id != null) ? e.id : ((e && e.name) || ""));
-  for(const e of (a||[])){ const k = key(e); if(k && !seen.has(k)){ seen.add(k); out.push(e); } }
-  for(const e of (b||[])){ const k = key(e); if(k && !seen.has(k)){ seen.add(k); out.push(e); } }
+  for(const e of (a||[])){
+    const k = key(e);
+    if(k && !seen.has(k)){ seen.add(k); out.push(e); by[k] = e; }
+  }
+  for(const e of (b||[])){
+    const k = key(e);
+    if(!k) continue;
+    const l = by[k];
+    if(!l){ seen.add(k); out.push(e); continue; }
+    const lw = Number(l.watchedAt) || 0, rw = Number(e.watchedAt) || 0;
+    const lc = Number(l.watched) || 0, rc = Number(e.watched) || 0;
+    
+
+    const takeWatch = rw > lw
+      ? !(lw === 0 && lc > rc)
+      : (rw === 0 && rc > lc);
+    if(takeWatch){
+      if(e.watched != null) l.watched = e.watched;
+      if(e.watchedAt != null) l.watchedAt = e.watchedAt;
+      
+
+      if(l.watched != null) l.bgmEp = Number(l.watched) || 0;
+    }
+    const la = Number(l.epAirdatesAt) || 0, ra = Number(e.epAirdatesAt) || 0;
+    if(Array.isArray(e.epAirdates) && e.epAirdates.length &&
+       (ra > la || !Array.isArray(l.epAirdates) || !l.epAirdates.length)){
+      l.epAirdates = e.epAirdates; l.epAirdatesAt = e.epAirdatesAt;
+    }
+    const lr = Number(l.bgmRelationsAt) || 0, rr = Number(e.bgmRelationsAt) || 0;
+    if(Array.isArray(e.bgmRelations) && e.bgmRelations.length &&
+       (rr > lr || !Array.isArray(l.bgmRelations) || !l.bgmRelations.length)){
+      l.bgmRelations = e.bgmRelations; l.bgmRelationsAt = e.bgmRelationsAt;
+    }
+    const lt = Number(l.updatedAt) || 0, rt = Number(e.updatedAt) || 0;
+    const metaKeys = ["platform", "bgmTags", "bgmScore", "bgmScoreCount", "summary", "airDate"];
+    for(const mk of metaKeys){
+      if(!(mk in e)) continue;
+      const ev = e[mk], lv = l[mk];
+      const empty = ev === "" || ev == null || ev === 0 || (Array.isArray(ev) && !ev.length);
+      const lvEmpty = lv === "" || lv == null || lv === 0 || (Array.isArray(lv) && !lv.length);
+      
+      if(!empty && (rt > lt || lvEmpty)) l[mk] = ev;
+    }
+    
+    if(!Number(l.bgmId) && Number(e.bgmId)) l.bgmId = e.bgmId;
+    if(rt > lt) l.updatedAt = rt;
+  }
   return out;
 }
 function cloudTime(t){
@@ -7637,6 +7749,8 @@ async function davSync(silent){
   DAV_BUSY = false;
   if(syncBtnEl) syncBtnEl.disabled = false;
   if(!silent && msg) toast(msg);
+  try{ if(typeof renderWeek === "function") renderWeek(); }catch(e){}
+  try{ if(typeof renderLibrary === "function") renderLibrary(); }catch(e){}
   davPaint();
   return { ok:okFlag, msg:msg };
 }
@@ -7670,6 +7784,33 @@ function davAutoPush(){
   clearTimeout(DAV_T);
   DAV_T = setTimeout(()=>{ davSync(true); }, 10000);
 }
+
+
+
+
+var DAV_PULL_T = 0;
+function davAutoPull(){
+  if(DAV_BUSY || !davConnected()) return;
+  if(!Number(davCfg().lastSync)) return;
+  if(document.visibilityState === "hidden") return;
+  if(document.querySelector(".overlay.show")) return;
+  var ae = document.activeElement;
+  if(ae && /^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName)) return;
+  var now = Date.now();
+  if(now - DAV_PULL_T < 60000) return;
+  DAV_PULL_T = now;
+  setTimeout(function(){
+    if(DAV_BUSY || !davConnected()) return;
+    if(document.visibilityState === "hidden") return;
+    davSync(true);
+  }, 1200);
+}
+document.addEventListener("visibilitychange", function(){
+  if(document.visibilityState === "visible") davAutoPull();
+});
+window.addEventListener("focus", davAutoPull);
+setTimeout(davAutoPull, 2500);
+window.rinDavAutoPull = davAutoPull;
 if(typeof saveState === "function"){
   const _davOrigSave = saveState;
   window.saveState = function(){ const r = _davOrigSave.apply(this, arguments); davAutoPush(); return r; };
@@ -8041,7 +8182,38 @@ function winBootDone(){
   setTimeout(function(){ RIN_BOOT_QUIET = false; }, 5000);
   try{ document.dispatchEvent(new CustomEvent("rinWinReady")); }catch(e){}
 }
+
+
+function winFixOffscreen(){
+  return winApi(function(W){
+    if(typeof W.getPosition !== "function") return Promise.resolve(false);
+    return W.getPosition().then(function(p){
+      if(!p) return false;
+      const x = Number(p.x), y = Number(p.y);
+      if(!isFinite(x) || !isFinite(y)) return false;
+      
+      if(Math.abs(x) <= 8000 && Math.abs(y) <= 8000) return false;
+      return W.setPosition({ x: 120, y: 80 }).then(function(){ return true; }).catch(function(){ return false; });
+    });
+  }).catch(function(){ return false; });
+}
+
+
+function winCenterOnce(){
+  return winApi(function(W){
+    if(typeof W.center === "function"){
+      return W.center().then(function(){ return true; }).catch(function(){ return false; });
+    }
+    return W.setPosition({ x: 120, y: 80 }).then(function(){ return true; }).catch(function(){ return false; });
+  }).catch(function(){ return false; });
+}
+
 function winBootRestore(){
+  return winFixOffscreen()
+    .then(winBootRestoreBody)
+    .then(function(r){ return winCenterOnce().then(function(){ return r; }); });
+}
+function winBootRestoreBody(){
   const done = winBootDone;
   const want = winWantSize();
   if(!want){ done(); return Promise.resolve(false); }
@@ -10317,6 +10489,13 @@ function rinMemBlock(){
     "  body:not(.rin-framed) .toolbar.open .cselect-btn{width:100%;justify-content:space-between}",
     "  body:not(.rin-framed) .toolbar.open .spacer{display:none}",
     "  body:not(.rin-framed) .toolbar.open #resetFilterBtn{grid-column:3 / -1;justify-self:end}",
+    
+    "  body:not(.rin-framed) .toolbar.has-add{padding-right:142px}",
+    "  body:not(.rin-framed) .toolbar.has-add #addEntryBtn{position:absolute;right:46px;top:0;height:38px;padding:0 10px;font-size:.8rem;white-space:nowrap;z-index:11}",
+    "  body:not(.rin-framed) .toolbar.has-add.open{padding-right:12px;grid-template-columns:repeat(3,minmax(0,1fr))}",
+    "  body:not(.rin-framed) .toolbar.has-add.open>.filter-label{display:none}",
+    "  body:not(.rin-framed) .toolbar.has-add.open #addEntryBtn{position:static;height:auto;z-index:auto;grid-column:1 / 2;justify-self:start}",
+    "  body:not(.rin-framed) .toolbar.has-add.open #resetFilterBtn{grid-column:3 / 4}",
     "  body:not(.rin-framed) .toolbar.open .search-box{margin-right:46px}",
     "  body:not(.rin-framed) .toolbar.open .rin-mfilter{top:12px;right:12px}",
     
@@ -10784,56 +10963,10 @@ function rinMemBlock(){
     "  body:not(.rin-framed) .y-list{max-height:none;overflow:visible}",
     "  body:not(.rin-framed) #tagDist{max-height:none!important;overflow:visible!important}",
     "  body:not(.rin-framed) .tl-wrap{max-height:none;overflow:visible}",
-    "  body:not(.rin-framed) #randBtn,",
-    "  body:not(.rin-framed) #importCsvBtn,",
-    "  body:not(.rin-framed) #exportCsvBtn{display:none}",
-    "  body:not(.rin-framed) #addEntryBtn{padding:6px 12px;font-size:.8rem;flex:none;width:auto;white-space:nowrap;border-radius:8px}",
+    "  body:not(.rin-framed) #addEntryBtn{padding:6px 12px;font-size:.8rem;flex:1 1 auto;white-space:nowrap;border-radius:8px}",
     "  body:not(.rin-framed) #page-library .count-line{font-size:.74rem;margin:0 0 7px 2px;color:var(--faint)}",
 
     
-    "  body:not(.rin-framed) #page-library .table-wrap{background:transparent;border:0;border-radius:0;overflow:visible}",
-    "  body:not(.rin-framed) #page-library .table-wrap table{display:block;min-width:0;width:100%}",
-    "  body:not(.rin-framed) #page-library .table-wrap thead{display:none}",
-    "  body:not(.rin-framed) #page-library .table-wrap tbody{display:block;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:var(--panel)}",
-    "  body:not(.rin-framed) #page-library .table-wrap tbody tr{",
-    "    display:block;position:relative;padding:8px 12px 9px;border-bottom:1px solid var(--border2);cursor:pointer}",
-    "  body:not(.rin-framed) #page-library .table-wrap tbody tr:last-child{border-bottom:0}",
-    
-
-    "  body:not(.rin-framed) #page-library .table-wrap tbody tr{content-visibility:auto;contain-intrinsic-size:auto 57px}",
-    "  body:not(.rin-framed) #page-library .table-wrap tbody tr:active{background:var(--panel2)}",
-    "  body:not(.rin-framed) #page-library .table-wrap td{display:none;padding:0;border:0;white-space:nowrap;vertical-align:middle}",
-    
-    "  body:not(.rin-framed) #page-library .table-wrap tr > td:nth-child(1){",
-    "    display:block;max-width:none;padding-right:46px;font-size:.9rem;font-weight:600;",
-    "    line-height:1.35;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}",
-    "  body:not(.rin-framed) #page-library .table-wrap tr > td:nth-child(1):hover{color:inherit}",
-    "  body:not(.rin-framed) #page-library .table-wrap .mini-tags{display:none}",
-    
-
-    "  body:not(.rin-framed) #page-library .rin-lib-side{",
-    
-
-    "    position:absolute;right:12px;top:0;bottom:0;min-width:46px;",
-    "    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}",
-    
-    "  body:not(.rin-framed) #page-library .rin-lib-side td{display:flex;align-items:center;justify-content:flex-end;position:static;padding:0;border:0;line-height:1}",
-    
-
-    "  body:not(.rin-framed) #page-library .rin-lib-side .score-badge{",
-    "    height:22px;min-width:30px;font-size:.78rem;padding:0 6px;border-radius:7px}",
-    
-
-    
-    "  body:not(.rin-framed) #page-library .status-cell .tag{font-size:.66rem;line-height:1.2;padding:2px 7px}",
-    
-    "  body:not(.rin-framed) #page-library .table-wrap tr > td:nth-child(2),",
-    "  body:not(.rin-framed) #page-library .table-wrap tr > td:nth-child(4),",
-    "  body:not(.rin-framed) #page-library .table-wrap td.year-cell{",
-    "    display:inline-block;font-size:.72rem;color:var(--muted);line-height:1.5;margin-top:2px}",
-    "  body:not(.rin-framed) #page-library .table-wrap td.year-cell{padding-right:52px}",
-    "  body:not(.rin-framed) #page-library .table-wrap tr > td:nth-child(4)::before,",
-    "  body:not(.rin-framed) #page-library .table-wrap td.year-cell::before{content:'·';margin:0 6px;color:var(--faint)}",
 
     
     "  body:not(.rin-framed) #page-discover .page-head{margin-bottom:8px}",
@@ -10860,84 +10993,6 @@ function rinMemBlock(){
   ].join("\n");
   document.head.appendChild(css);
 
-  
-  
-
-  function narrow(){
-    return !document.body.classList.contains("rin-framed") &&
-           window.matchMedia("(max-width:560px)").matches;
-  }
-  var tbody = document.getElementById("libTbody");
-  if(tbody){
-    tbody.addEventListener("click", function(ev){
-      if(!narrow()) return;
-      if(ev.target.closest("[data-act]")) return;
-      var tr = ev.target.closest("tr");
-      if(!tr) return;
-      var cell = tr.querySelector("[data-id]");
-      var id = cell ? cell.dataset.id : "";
-      if(id && typeof openEntryModal === "function") openEntryModal(id);
-    });
-  }
-
-  
-  
-
-
-  function packSide(){
-    var rows = document.querySelectorAll("#libTbody tr");
-    var on = narrow();
-    for(var i = 0; i < rows.length; i++){
-      var tr = rows[i];
-      var box = tr.querySelector(".rin-lib-side");
-      var score = tr.querySelector("td.score-cell");
-      var status = tr.querySelector("td.status-cell");
-      if(!score || !status) continue;
-      if(on && !box){
-        box = document.createElement("div");
-        box.className = "rin-lib-side";
-        tr.appendChild(box);
-        box.appendChild(score);
-        box.appendChild(status);
-      }else if(!on && box){
-        
-        var dur = tr.children[3];
-        if(dur && dur.parentNode === tr){
-          tr.insertBefore(score, dur.nextSibling);
-          tr.insertBefore(status, score.nextSibling);
-        }else{
-          tr.insertBefore(score, box);
-          tr.insertBefore(status, box);
-        }
-        tr.removeChild(box);
-      }
-    }
-  }
-
-  
-  
-
-  function tidyScore(){
-    var cells = document.querySelectorAll("#libTbody tr td.score-cell");
-    var on = narrow();
-    for(var i = 0; i < cells.length; i++){
-      var badge = cells[i].querySelector(".score-badge");
-      var empty = !badge || (badge.textContent || "").trim() === "—";
-      cells[i].style.display = (on && empty) ? "none" : "";
-      if(badge) badge.style.display = (on && empty) ? "none" : "";
-    }
-  }
-
-  function syncRows(){
-    packSide();
-    tidyScore();
-  }
-
-  if(tbody){
-    new MutationObserver(syncRows).observe(tbody, { childList: true });
-    syncRows();
-  }
-  window.addEventListener("resize", syncRows);
 })();
 
 
@@ -12075,6 +12130,7 @@ function rinMtDoApply(){
     const e = (state.entries || []).find(x => x.id === p.id);
     if(!e) continue;
     e.bgmId = p.bgmId;
+    if(typeof window.rinBgmClearCaches === "function") window.rinBgmClearCaches(e);
     if(p.name && p.name !== e.name){
       
       const dup = (typeof findDupEntry === "function") ? findDupEntry(p.name, e.id) : null;
@@ -18001,6 +18057,24 @@ const rinMetaCache = new Map();
 
 function rinMetaSleep(ms){ return new Promise(r => setTimeout(r, ms)); }
 
+
+
+function rinBgmPublicTags(src){
+  const noise = (typeof rinDiscTagNoise === "function") ? rinDiscTagNoise : () => false;
+  const gmap = (typeof RIN_DISC_GENRE_MAP !== "undefined") ? RIN_DISC_GENRE_MAP : null;
+  const raw = ((src && src.meta_tags) || []).concat(((src && src.tags) || []).map(t => t && t.name).filter(Boolean));
+  const out = [], seen = {};
+  for(const t of raw){
+    const k = String(t || "").trim();
+    if(!k || noise(k) || seen[k]) continue;
+    if(gmap && !gmap[k.toLowerCase()]) continue;
+    seen[k] = 1; out.push(k);
+    if(out.length >= 6) break;
+  }
+  return out;
+}
+window.rinBgmPublicTags = rinBgmPublicTags;
+
 function rinMetaParse(s, opts){
   const noNsfw = !!(opts && opts.noNsfw);
   const date = String((s && s.date) || "");
@@ -18030,8 +18104,7 @@ function rinMetaParse(s, opts){
   const total = Number(s && s.total_episodes) || 0;
   const score = (s && s.rating && Number(s.rating.score)) || 0;
   const scoreCount = (s && s.rating && Number(s.rating.total)) || 0;
-  const tagList = Array.isArray(s && s.tags) ? s.tags : [];
-  const pubTags = tagList.map(t => String((t && t.name) || "")).filter(Boolean).slice(0, 6);
+  const pubTags = rinBgmPublicTags(s);
   
 
 
@@ -18081,6 +18154,7 @@ function rinMetaPlanFor(e, p, wantMin){
   if(p.year && p.year !== y){ changes.push("年份 " + (y || "空") + "→" + p.year); data.year = p.year; }
   const ep = Number(e.episodes) || 0;
   if(p.eps && p.eps !== ep){ changes.push("集数 " + (ep || "空") + "→" + p.eps); data.episodes = p.eps; }
+  if(p.plat && String(e.platform || "") !== p.plat){ changes.push("类型 " + (e.platform || "空") + "→" + p.plat); data.platform = p.plat; }
   
 
 
@@ -18127,14 +18201,24 @@ function rinMetaNeed(e){
 
   if(!Number(e.year)) return true;
   if(!Number(e.episodes)) return true;
+  if(!String(e.platform || "").trim()) return true;
   if(!e.cover) return true;
   if(!e.airDate) return true;
   if(typeof e.finished !== "boolean") return true;   
   
 
-  if(!Number(e.bgmScore)) return true;
-  if(!Array.isArray(e.bgmTags) || !e.bgmTags.length) return true;
-  if(!String(e.summary || "").trim()) return true;   
+  const checkedAt = Number(e.bgmCheckedAt) || 0;
+  const metaFresh = checkedAt > 0 && Date.now() - checkedAt < 7 * 86400000;
+  if(!Number(e.bgmScore) && !metaFresh) return true;
+  if(!Array.isArray(e.bgmTags) || !e.bgmTags.length){
+    if(!metaFresh) return true;
+  }else if(typeof RIN_DISC_GENRE_MAP !== "undefined"){
+    
+
+    const gmap = RIN_DISC_GENRE_MAP;
+    if(e.bgmTags.some(function(t){ const k = String(t || "").trim(); return !k || !gmap[k.toLowerCase()]; })) return true;
+  }
+  if(!String(e.summary || "").trim() && !metaFresh) return true;   
   
   
 
@@ -18142,6 +18226,79 @@ function rinMetaNeed(e){
   if(typeof e.nsfw !== "boolean" && Number(e.bgmId)) return true;
   return false;
 }
+
+
+
+let RIN_AIR_BUSY = {};
+async function rinAirLoad(e){
+  if(!e || !Number(e.bgmId)) return;
+  if(typeof bgmFetch !== "function" || typeof bgmApi !== "function") return;
+  const total = Number(e.episodes) || 0;
+  if(total && Array.isArray(e.epAirdates) && e.epAirdates.length >= total) return;
+  if(RIN_AIR_BUSY[e.id]) return;
+  const last = Number(e.airDatesTried) || 0;
+  if(last && Date.now() - last < 6 * 3600000) return;
+  RIN_AIR_BUSY[e.id] = 1;
+  try{
+    const sid = Number(e.bgmId), out = [];
+    for(let offset = 0; offset < 500; offset += 100){
+      const j = await bgmFetch(bgmApi() + "/v0/episodes?subject_id=" + sid + "&type=0&limit=100&offset=" + offset);
+      const arr = (j && j.data) ? j.data : [];
+      for(const x of arr){
+        const d = String(x.airdate || "").trim();
+        if(/^\d{4}-\d{2}-\d{2}$/.test(d)) out.push(d);
+      }
+      if(arr.length < 100) break;
+    }
+    e.airDatesTried = Date.now();
+    if(out.length){
+      out.sort();
+      e.epAirdates = out;
+      e.epAirdatesAt = Date.now();
+      try{ saveState(); }catch(err){}
+      try{ renderWeek(); }catch(err){}
+      if(typeof window.rinEpRepaintCurrent === "function") window.rinEpRepaintCurrent(e.id);
+    }
+  }catch(err){ e.airDatesTried = Date.now(); }
+  finally{ delete RIN_AIR_BUSY[e.id]; }
+}
+window.rinAirLoad = rinAirLoad;
+
+
+let RIN_REL_BUSY = {};
+async function rinRelationsLoad(e, opts){
+  if(!e || !Number(e.bgmId)) return;
+  if(typeof bgmFetch !== "function" || typeof bgmApi !== "function") return;
+  if(Array.isArray(e.bgmRelations) && Date.now() - (Number(e.bgmRelationsAt) || 0) < 24 * 3600000) return;
+  if(RIN_REL_BUSY[e.id]) return;
+  RIN_REL_BUSY[e.id] = 1;
+  try{
+    const rel = await bgmFetch(bgmApi() + "/v0/subjects/" + Number(e.bgmId) + "/subjects");
+    if(Array.isArray(rel)){
+      e.bgmRelations = rel.map(function(x){
+        return { id: Number(x.id) || 0, name: String(x.name || ""), name_cn: String(x.name_cn || ""),
+          relation: String(x.relation || ""), type: Number(x.type) || 0 };
+      }).filter(function(x){ return x.id > 0; });
+      e.bgmRelationsAt = Date.now();
+      
+      if(!(opts && opts.silent)){ try{ saveState(); }catch(err){} }
+      return true;
+    }
+    
+    e.bgmRelationsTried = Date.now();
+  }catch(err){ e.bgmRelationsTried = Date.now(); }
+  finally{ delete RIN_REL_BUSY[e.id]; }
+}
+window.rinRelationsLoad = rinRelationsLoad;
+
+
+function rinBgmClearCaches(e){
+  if(!e) return;
+  ["bgmRelations", "bgmRelationsAt", "bgmRelationsTried", "epAirdates", "epAirdatesAt", "airDatesTried", "bgmCheckedAt"].forEach(function(k){
+    try{ delete e[k]; }catch(err){}
+  });
+}
+window.rinBgmClearCaches = rinBgmClearCaches;
 
 
 
@@ -18190,6 +18347,7 @@ async function rinMetaRun(wantMin, force){
   if(rinMeta && rinMeta.running) return;
   const all = (state.entries || []).filter(e => Number(e.bgmId));
   const list = force ? all : all.filter(rinMetaNeed);
+  let marked = false;
   const skipped = all.length - list.length;
   rinMeta = { running: true, stop: false, wantMin: !!wantMin, skipped: skipped,
     skipNsfw: 0, done: 0, total: list.length, plan: [], miss: [], phase: "run" };
@@ -18216,7 +18374,14 @@ async function rinMetaRun(wantMin, force){
       const plan = rinMetaPlanFor(e, p, wantMin);
       
 
-      if(plan.changes.length || Object.keys(plan.data).length) rinMeta.plan.push(plan);
+      if(plan.changes.length || Object.keys(plan.data).length){
+        rinMeta.plan.push(plan);
+      }else{
+        
+
+        e.bgmCheckedAt = Date.now();
+        marked = true;
+      }
     }
     
 
@@ -18224,6 +18389,7 @@ async function rinMetaRun(wantMin, force){
     if(rinMeta.done % 10 === 0) rinMetaPaint();
     await rinMetaSleep(RIN_META_GAP);
   }
+  if(marked){ try{ saveState(); }catch(err){} }
   rinMeta.running = false;
   rinMeta.phase = "done";
   rinMetaPaint();
@@ -18246,13 +18412,9 @@ function rinMetaEnsure(){
     "<div class='modal rin-mt'>" +
       "<div class='modal-head'><h2>补全全部信息</h2></div>" +
       "<div class='modal-body'>" +
-        "<div class='rin-mt-desc'>按已关联的 Bangumi 条目，同步<b>年份、集数、播出日期、公共评分与标签、封面</b>。" +
-          "信息已完整的条目默认跳过，下次再跑也只处理缺失的部分。" +
-          "关闭窗口不会中断，补全会继续在后台进行。" +
-          "受限条目的详情只对登录状态开放，未登录时跳过。" +
-          "结果仅供核对，点击「应用到库」后写入，写入前自动备份。" +
-          "<span class='rin-mt-warn'>单集时长不在 Bangumi 数据范围内，如需估算请勾选下方选项。" +
-          "放送日仅写入状态为「追番中」且仍在连载的条目，已完结的不再排入周期表。</span></div>" +
+        "<div class='rin-mt-desc'>按已关联的 Bangumi 条目，同步<b>类型、年份、集数、首播日期、封面、公共评分与标签、简介</b>。" +
+          "完整条目默认跳过；受限条目未登录时跳过。点「应用到库」写入，写前自动备份。" +
+          "<span class='rin-mt-warn'>单集时长需手动估算；关闭窗口后补全继续在后台运行。</span></div>" +
         "<label class='rin-meta-opt' id='rinMetaForceRow'><input type='checkbox' id='rinMetaForce'>" +
           "重新核对已完整的条目（较慢，仅在怀疑库内数据陈旧时勾选）</label>" +
         "<label class='rin-meta-opt' id='rinMetaMinRow'><input type='checkbox' id='rinMetaMin'>" +
@@ -18368,6 +18530,7 @@ function rinMetaAsk(){
     ["放送日", count("weekday")],
     ["播出日", count("airDate")],
     ["已完结", count("finished")],
+    ["类型", count("platform")],
     ["封面", count("cover")],
     ["公共评分", count("bgmScore")],
     ["简介", count("summary")],
@@ -18401,7 +18564,7 @@ function rinMetaDoApply(){
     if(!e) continue;
     if("year" in p.data) e.year = p.data.year;
     if("episodes" in p.data) e.episodes = p.data.episodes;
-    if("weekday" in p.data) e.weekday = p.data.weekday;
+    if("platform" in p.data) e.platform = p.data.platform;
     if("cover" in p.data) e.cover = p.data.cover;
     if("airDate" in p.data) e.airDate = p.data.airDate;   
     if("finished" in p.data) e.finished = p.data.finished;
@@ -18414,6 +18577,7 @@ function rinMetaDoApply(){
       e.totalMinutes = p.data.totalMinutes;
     }
     e.updatedAt = Date.now();
+    e.bgmCheckedAt = Date.now();
     n++;
   }
   saveState();
@@ -18594,25 +18758,8 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
   function rinMetaShowPublic(e){
     
 
-    const foot = document.querySelector("#entryOverlay .eh-foot");
-    const host = foot ? foot.parentNode : document.querySelector("#entryOverlay .modal-body");
-    if(!host) return;
-    let rinPubBox = document.getElementById("rinPubMeta");
-    if(rinPubBox){ rinPubBox.remove(); rinPubBox = null; }
-    const score = Number(e.bgmScore) || 0;
-    const tags = Array.isArray(e.bgmTags) ? e.bgmTags : [];
-    if(!score && !tags.length) return;
-    rinPubBox = document.createElement("div");
-    rinPubBox.id = "rinPubMeta";
-    rinPubBox.className = "rin-pub";
-    const bits = [];
-    if(score){
-      const cnt = Number(e.bgmScoreCount) || 0;
-      bits.push("Bangumi " + score.toFixed(1) + " 分" + (cnt ? "（" + cnt.toLocaleString("zh-CN") + " 人评分）" : ""));
-    }
-    if(tags.length) bits.push(tags.join(" · "));
-    rinPubBox.textContent = bits.join(" · ");
-    host.insertBefore(rinPubBox, foot || host.firstChild);
+    const old = document.getElementById("rinPubMeta");
+    if(old) old.remove();
   }
 
   
@@ -21140,15 +21287,62 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
       
       rinShTimer = setTimeout(function(){ rinShPush(v); }, 900);
     });
+    
+
+    input.parentNode.addEventListener("mousedown", function(ev){
+      var box = document.getElementById("rinShBox");
+      if(!box || !box.contains(ev.target)) return;
+      ev.preventDefault();
+    });
+
     input.addEventListener("blur", function(){
       
-      setTimeout(rinShHide, 160);
+
+      setTimeout(function(){
+        var box = document.getElementById("rinShBox");
+        if(box && box.classList.contains("on")){
+          try{ if(box.matches(":hover")) return; }catch(e){}
+        }
+        rinShHide();
+      }, 160);
     });
     input.addEventListener("keydown", function(ev){
       if(ev.key === "Escape") rinShHide();
     });
 
+    
+    function rinShDel(it){
+      if(!it || it.isConnected === false) return;
+      var q = it.getAttribute("data-q") || "";
+      if(!q) return;
+      rinShSave(rinShLoad().filter(function(x){ return x !== q; }));
+      
+
+      var box = document.getElementById("rinShBox");
+      it.parentNode && it.parentNode.removeChild(it);
+      if(!box) return;
+      if(!box.querySelector(".rin-sh-i")) rinShHide();
+      else box.classList.add("on");
+    }
+    input.parentNode.addEventListener("contextmenu", function(ev){
+      var it = ev.target.closest ? ev.target.closest(".rin-sh-i") : null;
+      if(!it) return;
+      ev.preventDefault();
+      rinShDel(it);
+    });
+    var rinShLp = 0;
+    input.parentNode.addEventListener("touchstart", function(ev){
+      var it = ev.target.closest ? ev.target.closest(".rin-sh-i") : null;
+      if(!it) return;
+      rinShLp = setTimeout(function(){ rinShDel(it); }, 550);
+    }, { passive:true });
+    ["touchend","touchmove","touchcancel"].forEach(function(t){
+      input.parentNode.addEventListener(t, function(){ clearTimeout(rinShLp); }, { passive:true });
+    });
+
     document.addEventListener("click", function(ev){
+      if(ev.button !== 0) return;                 
+      if(ev.target && ev.target.isConnected === false) return;  
       var box = document.getElementById("rinShBox");
       
 
@@ -21249,7 +21443,9 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
     var total = Math.max(0, Math.round(Number(e.episodes) || 0));
     var w = Math.max(0, Math.round(Number(e.watched) || 0));
     var stColor = { "已看":"var(--green)", "追番中":"var(--cyan)", "待看":"var(--blue)", "搁置":"var(--orange)" };
-    var ag = (typeof weekAgoText === "function") ? weekAgoText(e.updatedAt) : "";
+    var ag = (typeof weekAgoText === "function")
+      ? weekAgoText(e.watchedAt || e.updatedAt, e.watchedAt ? "观看" : "改动")
+      : "";
     
 
 
@@ -21507,7 +21703,7 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
               "<button type='button' class='stg' data-start='0'>周日</button>" +
               "<button type='button' class='stg' data-start='1'>周一</button>" +
             "</span>" +
-            "<div class='bgm-tip' style='margin-top:6px'>只改列顺序，不动已有排期。</div>" +
+            "<div class='bgm-tip' style='margin-top:6px'>只改列顺序。手动拖到哪天就固定在哪天；深夜顺延只对填了时间的条生效，默认关闭。</div>" +
           "</div>" +
           "<div class='bgm-tip' id='weekCfgCount' style='margin-top:14px'></div>" +
         "</div>" +
@@ -21568,7 +21764,7 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
   if(typeof renderWeek !== "function") return;
 
   var RIN_EP_MAX_CELLS = 600;   
-  var rinEpCur = null, rinEpBuilt = false;
+  var rinEpCur = null, rinEpBuilt = false, rinEpSched0 = null;
   var rinEpSaveT = 0, rinEpNoteT = 0;
   
 
@@ -21590,17 +21786,26 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
       '.rin-ep-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}',
       '.rin-ep-name{font-size:.98rem;font-weight:700;line-height:1.35;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}',
       '.rin-ep-meta{font-size:.74rem;color:var(--muted);font-variant-numeric:tabular-nums}',
-      '.rin-ep-bar{height:5px;border-radius:3px;background:var(--panel3);overflow:hidden}',
-      '.rin-ep-bar i{display:block;height:100%;width:0;background:var(--accent);border-radius:3px;transition:width .18s ease}',
+      '.rin-ep-bar{position:relative;height:5px;border-radius:3px;background:var(--panel3);overflow:hidden;box-shadow:inset 0 0 0 1px rgba(255,255,255,.045)}',
+      '.rin-ep-bar i{position:absolute;left:0;top:0;height:100%;width:0;border-radius:3px;transition:width .18s ease}',
+      '.rin-ep-bar i.air{background:var(--accent2);opacity:.55;filter:saturate(.35) brightness(1.12);box-shadow:inset 0 1px 0 rgba(255,255,255,.16)}',
+      '.rin-ep-bar i.seen{background:var(--accent);z-index:1;box-shadow:inset 0 1px 0 rgba(255,255,255,.18),1px 0 0 var(--panel3)}',
       '.rin-ep-cnt{font-size:.74rem;color:var(--muted);font-variant-numeric:tabular-nums}',
       '.rin-ep-cnt b{color:var(--accent2);font-size:.92rem}',
       '.rin-ep-ago{font-size:.7rem;color:var(--muted);margin-top:1px;font-variant-numeric:tabular-nums}',
       '.rin-ep-sync{font-size:.7rem;color:var(--muted);margin-top:1px}',
       '.rin-ep-sync.bad{color:var(--orange)}',
+      '.rin-ep-sched{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:9px 0 0;padding:7px 9px;border:1px solid var(--border);border-radius:10px;background:var(--panel2)}',
+      '.rin-ep-sched .lbl{font-size:.7rem;color:var(--muted);margin-right:2px}',
+      '.rin-ep-sched select,.rin-ep-sched input{background:var(--panel3);border:1px solid var(--border);border-radius:7px;padding:3px 6px;color:var(--text);font:inherit;font-size:.72rem;height:28px;box-sizing:border-box}',
+      '.rin-ep-sched #rinEpWeekday{width:74px}',
+      '.rin-ep-sched #rinEpAirTime{width:64px;text-align:center;font-variant-numeric:tabular-nums}',
       '.rin-ep-sec{font-size:.76rem;color:var(--muted);margin:15px 0 7px}',
       '.rin-ep-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}',
       '.rin-ep-cell{height:32px;border:1px solid var(--border);background:var(--panel2);color:var(--muted);border-radius:8px;font-family:inherit;font-size:.76rem;font-variant-numeric:tabular-nums;cursor:pointer;transition:background .12s,border-color .12s,color .12s}',
       '.rin-ep-cell:hover{border-color:var(--accent);color:var(--text)}',
+      '.rin-ep-cell.air{background:linear-gradient(var(--accent-soft),var(--accent-soft)),linear-gradient(var(--accent-soft),var(--accent-soft)),var(--panel2);border-color:var(--accent2);color:var(--accent2)}',
+      '.rin-ep-cell.air:hover{border-color:var(--accent2);color:var(--text)}',
       '.rin-ep-cell.on{background:var(--accent);border-color:var(--accent);color:var(--rin-ep-ink,#10151f);font-weight:700}',
       '.rin-ep-cell.on:hover{filter:brightness(1.08);color:var(--rin-ep-ink,#10151f)}',
       '.rin-ep-tools{display:flex;align-items:center;gap:8px;margin-top:9px}',
@@ -21619,8 +21824,10 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
       '.rin-ep-link{margin-right:auto;border:0;background:transparent;color:var(--muted);font-family:inherit;font-size:.76rem;cursor:pointer;padding:4px 2px}',
       '.rin-ep-link:hover{color:var(--accent2)}',
       '#weekGrid .rin-we{display:flex;align-items:center;gap:6px;margin-top:6px}',
-      '#weekGrid .rin-we-bar{flex:1;height:3px;border-radius:2px;background:var(--panel3);overflow:hidden}',
-      '#weekGrid .rin-we-bar i{display:block;height:100%;width:0;background:var(--accent);border-radius:2px}',
+      '#weekGrid .rin-we-bar{position:relative;flex:1;height:4px;border-radius:2px;background:var(--panel3);overflow:hidden}',
+      '#weekGrid .rin-we-bar i{position:absolute;left:0;top:0;height:100%;width:0;border-radius:2px}',
+      '#weekGrid .rin-we-bar i.air{background:var(--accent2);opacity:.55;z-index:0;filter:saturate(.35) brightness(1.12);box-shadow:inset 0 1px 0 rgba(255,255,255,.16)}',
+      '#weekGrid .rin-we-bar i.seen{background:var(--accent);z-index:1;box-shadow:inset 0 1px 0 rgba(255,255,255,.18),1px 0 0 var(--panel3)}',
       '#weekGrid .rin-we-num{font-size:.62rem;color:var(--faint);font-variant-numeric:tabular-nums}',
       '#weekGrid .rin-we.full .rin-we-num{color:var(--accent2)}',
       '.rin-ep-cell[disabled]{opacity:.4;cursor:default}'
@@ -21645,10 +21852,15 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
               '<div class="rin-ep-name" id="rinEpName"></div>' +
               '<div class="rin-ep-meta" id="rinEpMeta"></div>' +
               '<div class="rin-ep-cnt" id="rinEpCnt"></div>' +
-              '<div class="rin-ep-bar"><i id="rinEpBar"></i></div>' +
+              '<div class="rin-ep-bar"><i class="air" id="rinEpAir"></i><i class="seen" id="rinEpBar"></i></div>' +
               '<div class="rin-ep-ago" id="rinEpAgo"></div>' +
               '<div class="rin-ep-sync" id="rinEpSync"></div>' +
             '</div>' +
+          '</div>' +
+          '<div class="rin-ep-sched">' +
+            '<span class="lbl">排期</span>' +
+            '<select id="rinEpWeekday" aria-label="放送日"></select>' +
+            '<input id="rinEpAirTime" type="text" maxlength="5" inputmode="numeric" placeholder="23:44" aria-label="播出时间">' +
           '</div>' +
           '<div id="rinEpBody">' +
             '<div class="rin-ep-sec">集数</div>' +
@@ -21703,6 +21915,15 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
       if(!rinEpCur) return;
       rinEpSetWatched(0);
     });
+    var schedW = document.getElementById("rinEpWeekday");
+    var schedT = document.getElementById("rinEpAirTime");
+    if(schedW) schedW.addEventListener("change", rinEpSchedSave);
+    if(schedT){
+      schedT.addEventListener("blur", rinEpSchedSave);
+      schedT.addEventListener("keydown", function(ev){
+        if(ev.key === "Enter"){ ev.preventDefault(); rinEpSchedSave(); }
+      });
+    }
     document.getElementById("rinEpSeen").addEventListener("click", function(){
       if(!rinEpCur) return;
       var e = rinEpCur;
@@ -21742,15 +21963,17 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
 
   
 
-  function rinEpAgo(ts){
-    var s = (typeof weekAgoText === "function") ? weekAgoText(ts) : "";
-    return s || "尚无改动记录";
+  function rinEpAgo(ts, label){
+    var s = (typeof weekAgoText === "function") ? weekAgoText(ts, label) : "";
+    return s || (label === "观看" ? "尚无观看记录" : "尚无改动记录");
   }
   window.rinEpAgo = rinEpAgo;
-  function rinEpAgoPaint(){    var el = document.getElementById("rinEpAgo");
+  function rinEpAgoPaint(){
+    var el = document.getElementById("rinEpAgo");
     if(!el || !rinEpCur) return;
-    el.textContent = rinEpAgo(rinEpCur.updatedAt);
-    var t = Number(rinEpCur.updatedAt) || 0;
+    var ts = rinEpCur.watchedAt || rinEpCur.updatedAt;
+    el.textContent = rinEpAgo(ts, rinEpCur.watchedAt ? "观看" : "改动");
+    var t = Number(ts) || 0;
     if(t){
       var d = new Date(t), p = function(n){ return (n < 10 ? "0" : "") + n; };
       el.title = d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate()) + " " + p(d.getHours()) + ":" + p(d.getMinutes());
@@ -21784,6 +22007,68 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
     return Math.max(0, Math.min(t, v));
   }
 
+  function rinEpMetaText(e){
+    var total = rinEpTotal(e), bits = [];
+    if(e.weekday != null && e.weekday !== "" && typeof DAYS !== "undefined") bits.push(DAYS[Number(e.weekday)] || "");
+    if(e.airTime) bits.push(String(e.airTime));
+    if(e.airDate) bits.push("首播 " + String(e.airDate));
+    if(!total) bits.push("集数未填");
+    if(total && typeof weekAiredCount === "function"){
+      var aired = weekAiredCount(e.airDate, total, e.epAirdates);
+      if(aired) bits.push("已播 " + aired + "/" + total);
+    }
+    return bits.filter(Boolean).join(" · ");
+  }
+  function rinEpPaintMeta(){
+    var el = document.getElementById("rinEpMeta");
+    if(!el || !rinEpCur) return;
+    el.textContent = rinEpMetaText(rinEpCur);
+  }
+  function rinEpSchedPaint(){
+    var e = rinEpCur;
+    if(!e) return;
+    var w = document.getElementById("rinEpWeekday"), t = document.getElementById("rinEpAirTime");
+    if(w && !w.options.length){
+      var days = (typeof DAYS !== "undefined") ? DAYS : ["周日","周一","周二","周三","周四","周五","周六"];
+      w.innerHTML = '<option value="">未排期</option>' + days.map(function(x, i){ return '<option value="' + i + '">' + x + "</option>"; }).join("");
+    }
+    if(w) w.value = (e.weekday == null || e.weekday === "") ? "" : String(e.weekday);
+    if(t) t.value = e.airTime || "";
+    rinEpSched0 = {
+      weekday: (e.weekday == null || e.weekday === "") ? null : Number(e.weekday),
+      airTime: e.airTime || ""
+    };
+  }
+  function rinEpSchedSave(){
+    var e = rinEpCur;
+    if(!e) return;
+    var w = document.getElementById("rinEpWeekday"), t = document.getElementById("rinEpAirTime");
+    var wd = (!w || w.value === "") ? null : Number(w.value);
+    var at = t ? String(t.value || "").trim() : "";
+    if(at && !/^([01]\d|2[0-3]):[0-5]\d$/.test(at)){
+      toast("时间写成 23:44");
+      if(t) t.value = e.airTime || "";
+      return;
+    }
+    var old = rinEpSched0 || {};
+    var changed = false;
+    if(wd !== (old.weekday == null ? null : Number(old.weekday))){
+      e.weekday = wd; e.weekdayManual = true; e.weekdayBase = wd; changed = true;
+    }
+    if(at !== (old.airTime || "")){ e.airTime = at; changed = true; }
+    if(!changed) return;
+    e.updatedAt = Date.now();
+    try{ saveState(); }catch(err){}
+    rinEpSched0 = { weekday: wd, airTime: e.airTime };
+    try{ rinEpPaintMeta(); }catch(err){}
+    try{ rinEpPaintProgress(); }catch(err){}
+    try{ renderWeek(); }catch(err){}
+    if(Number(mascotCfg && mascotCfg.weekLate) && typeof window.rinWeekReapply === "function"){
+      try{ window.rinWeekReapply(); }catch(err){}
+      try{ rinEpSchedPaint(); rinEpPaintMeta(); }catch(err){}
+    }
+  }
+
   
   function rinEpPaint(){
     var e = rinEpCur;
@@ -21797,12 +22082,7 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
       img.removeAttribute("src"); img.hidden = true; if(none) none.hidden = false;
     }
     document.getElementById("rinEpName").textContent = e.name || "未命名条目";
-    var bits = [];
-    if(e.weekday != null && e.weekday !== "" && typeof DAYS !== "undefined") bits.push(DAYS[Number(e.weekday)] || "");
-    if(e.airTime) bits.push(String(e.airTime));
-    if(e.year) bits.push(e.year + " 年");
-    bits.push(total ? "共 " + total + " 集" : "集数未填");
-    document.getElementById("rinEpMeta").textContent = bits.filter(Boolean).join(" · ");
+    rinEpPaintMeta();
 
     var grid = document.getElementById("rinEpGrid");
     var empty = document.getElementById("rinEpEmpty");
@@ -21815,6 +22095,8 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
       document.getElementById("rinEpDone").hidden = true;
       document.getElementById("rinEpCnt").textContent = "尚未填写集数";
       document.getElementById("rinEpBar").style.width = "0%";
+      var air0 = document.getElementById("rinEpAir");
+      if(air0) air0.style.width = "0%";
     }else{
       grid.style.display = "";
       tools.style.display = "";
@@ -21830,20 +22112,26 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
     }
     document.getElementById("rinEpNote").value = e.note || "";
     rinEpPaintProgress();
+    rinEpSchedPaint();
   }
 
   function rinEpPaintProgress(){
     var e = rinEpCur;
     if(!e) return;
     var total = rinEpTotal(e), seen = rinEpSeen(e);
+    var aired = total ? ((typeof weekAiredCount === "function") ? weekAiredCount(e.airDate, total, e.epAirdates) : 0) : 0;
     var cells = document.querySelectorAll("#rinEpGrid .rin-ep-cell");
     for(var i = 0; i < cells.length; i++){
-      cells[i].classList.toggle("on", Number(cells[i].dataset.n) <= seen);
+      var n = Number(cells[i].dataset.n);
+      cells[i].classList.toggle("on", n <= seen);
+      cells[i].classList.toggle("air", n > seen && n <= aired);
     }
     document.getElementById("rinEpCnt").innerHTML = total
       ? "已看 <b>" + seen + "</b> / " + total + " 集"
       : "尚未填写集数";
     document.getElementById("rinEpBar").style.width = total ? Math.round(seen / total * 100) + "%" : "0%";
+    var airEl = document.getElementById("rinEpAir");
+    if(airEl) airEl.style.width = total ? Math.round(aired / total * 100) + "%" : "0%";
     document.getElementById("rinEpDone").hidden = !(total > 0 && seen >= total);
     rinEpAgoPaint();
   }
@@ -21854,12 +22142,14 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
     if(!e) return;
     var total = rinEpTotal(e);
     var next = Math.max(0, Math.min(total, Math.round(v)));
+    var old = Number(e.watched) || 0;
     
-    if(next === (Number(e.watched) || 0)){
+    if(next === old){
       rinEpPaintProgress();
       return;
     }
     e.watched = next;
+    if(next > old) e.watchedAt = Date.now();   
     rinEpDirty = true;
     e.updatedAt = Date.now();
     rinEpPaintProgress();
@@ -21892,13 +22182,24 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
     if(!line){
       line = document.createElement("div");
       line.className = "rin-we";
-      line.innerHTML = '<span class="rin-we-bar"><i></i></span><span class="rin-we-num"></span>';
+      line.innerHTML = '<span class="rin-we-bar"><i class="air"></i><i class="seen"></i></span><span class="rin-we-num"></span>';
       card.appendChild(line);
+    }else if(!line.querySelector(".air")){
+      
+      line.innerHTML = '<span class="rin-we-bar"><i class="air"></i><i class="seen"></i></span><span class="rin-we-num"></span>';
     }
+    var aired = (typeof weekAiredCount === "function") ? weekAiredCount(e.airDate, total, e.epAirdates) : 0;
     line.classList.toggle("full", seen >= total);
-    line.querySelector(".rin-we-bar i").style.width = Math.round(seen / total * 100) + "%";
+    line.querySelector(".air").style.width = Math.round(aired / total * 100) + "%";
+    line.querySelector(".seen").style.width = Math.round(seen / total * 100) + "%";
     line.querySelector(".rin-we-num").textContent = seen + "/" + total;
+    line.title = "已看 " + seen + "/" + total + (aired ? " · 已播 " + aired + "/" + total : "");
   }
+
+  window.rinEpRepaintCurrent = function(id){
+    if(!rinEpCur || String(rinEpCur.id) !== String(id)) return;
+    try{ rinEpPaintMeta(); rinEpPaintProgress(); }catch(err){}
+  };
 
   
   function rinEpDecorate(){
@@ -21927,6 +22228,7 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
     if(window.rinBgmPaintEps) window.rinBgmPaintEps("");   
     rinEpCur = e;
     rinEpDirty = false;              
+    if(typeof window.rinAirLoad === "function") window.rinAirLoad(e);
     document.getElementById("rinEpOverlay").style.setProperty("--rin-ep-ink", rinEpInk());
     rinEpPaint();
     document.getElementById("rinEpOverlay").classList.add("show");
@@ -22116,6 +22418,48 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
 
   function rinEpSyncSleep(ms){ return new Promise(function(r){ setTimeout(r, ms); }); }
 
+  
+
+  function rinEpBgmEpGet(subjectId){
+    if(typeof bgmFetch !== "function" || typeof bgmApi !== "function") return Promise.resolve(null);
+    return Promise.resolve(bgmFetch(bgmApi() + "/v0/users/-/collections/" + encodeURIComponent(subjectId)))
+      .then(function(j){
+        if(!j || j.ep_status == null) return null;
+        return Number(j.ep_status) || 0;
+      }).catch(function(){ return null; });
+  }
+  async function rinEpHydrate(list){
+    const DAY = 86400000;
+    const need = list.filter(function(e){
+      return Number(e.bgmId) && !Number(e.bgmEp) &&
+        !(Date.now() - (Number(e.bgmEpAt) || 0) < DAY);
+    });
+    if(!need.length) return { ok:0, failed:0 };
+    let i = 0, ok = 0, failed = 0;
+    async function worker(){
+      while(i < need.length){
+        const e = need[i++];
+        const v = await rinEpBgmEpGet(e.bgmId);
+        if(v != null){
+          e.bgmEp = v;
+          e.bgmEpAt = Date.now();
+          
+          if(v > (Number(e.watched) || 0)){
+            e.watched = v;
+            e.watchedAt = Date.now();
+          }
+          ok++;
+        }else{
+          e.bgmEpFailed = true;
+          failed++;
+        }
+      }
+    }
+    await Promise.all([worker(), worker(), worker(), worker()]);
+    if(ok){ try{ saveState(); }catch(err){} }
+    return { ok: ok, failed: failed };
+  }
+
   async function rinEpSyncRun(opts){
     if(rinEpSyncBusy) return;
     var auto = !!(opts && opts.auto === true);
@@ -22129,9 +22473,35 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
     }
     if(!list.length) return;
     if(typeof window.rinBgmPushEpsNow !== "function"){ if(!auto) toast("当前环境不能推送"); return; }
-    rinEpSyncBusy = true;
+    if(!auto){
+      const btn0 = document.getElementById("epSyncBtn");
+      if(btn0 && btn0.disabled) return;          
+      rinEpSyncBusy = true;
+      if(btn0) btn0.disabled = true;
+      const missing = list.filter(function(e){ return !Number(e.bgmEp); });
+      if(missing.length){
+        if(btn0) btn0.textContent = "读取进度…";
+        const h = await rinEpHydrate(missing);
+        if(h.failed) toast("有 " + h.failed + " 部读不到 Bangumi 进度，按本地进度推送");
+        missing.forEach(function(e){ delete e.bgmEpFailed; });
+        
+        list = list.filter(function(e){
+          return Number(e.watched) !== Number(e.bgmEp);
+        });
+        if(!list.length){
+          rinEpSyncBusy = false;
+          if(btn0) btn0.disabled = false;
+          rinEpSyncPaint();
+          toast("本地与 Bangumi 进度已一致，无需推送");
+          return;
+        }
+      }
+      if(btn0){ btn0.textContent = "确认连接…"; }
+    }else{
+      rinEpSyncBusy = true;
+    }
     var btn = document.getElementById("epSyncBtn");
-    if(btn){ btn.disabled = true; btn.textContent = "确认连接…"; }
+    if(btn){ btn.disabled = true; }
 
     
 
@@ -22227,6 +22597,982 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
 
 
 
+(function(){
+  if(document.getElementById("libInfoOverlay")) return;
+
+  
+  const libTb = document.querySelector("#page-library .toolbar");
+  if(libTb) libTb.classList.add("has-add");
+
+  const css = document.createElement("style");
+  css.id = "libInfoCss";
+  css.textContent = `
+  .lib-info-modal{width:560px}
+  .lib-info-hero{display:flex;gap:14px;align-items:flex-start}
+  .lib-info-cover{width:96px;height:136px;flex:none;border-radius:10px;background:var(--panel3);object-fit:cover;display:block}
+  .lib-info-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:7px}
+  .lib-info-name{font-size:1.05rem;font-weight:700;line-height:1.35}
+  .lib-info-meta{font-size:.74rem;color:var(--muted);font-variant-numeric:tabular-nums}
+  .lib-info-tags{display:flex;flex-wrap:wrap;gap:5px}
+  .lib-info-tag{font-size:.66rem;color:var(--accent2);background:var(--accent-soft);border-radius:6px;padding:2px 6px}
+  .lib-info-sec{font-size:.7rem;color:var(--faint);margin:11px 0 5px;letter-spacing:.04em}
+  .lib-info-txt{font-size:.78rem;line-height:1.65;color:var(--text);white-space:pre-wrap;word-break:break-word}
+  .lib-info-note{border-left:2px solid var(--border2);padding-left:9px;color:var(--muted)}
+  .lib-info-rels{display:flex;flex-wrap:wrap;gap:7px}
+  .lib-info-rel{font-size:.72rem;border:1px solid var(--border);border-radius:7px;padding:4px 8px;color:var(--text);background:var(--panel2)}
+  .lib-info-rel[data-bgm]{cursor:pointer}
+  .lib-info-rel[data-bgm]:hover{border-color:var(--accent);color:var(--accent2)}
+  .lib-info-rel b{font-weight:500;color:var(--accent2);margin-right:4px}
+  .lib-info-empty{font-size:.74rem;color:var(--faint)}
+  `;
+  document.head.appendChild(css);
+
+  const ov = document.createElement("div");
+  ov.className = "overlay";
+  ov.id = "libInfoOverlay";
+  ov.innerHTML =
+    '<div class="modal lib-info-modal">' +
+      '<div class="modal-head"><h2 id="libInfoTitle">条目资料</h2>' +
+        '<button type="button" class="icon-btn" id="libInfoX" aria-label="关闭">×</button></div>' +
+      '<div class="modal-body" id="libInfoBody"></div>' +
+      '<div class="modal-foot"><div class="row" style="margin-left:auto">' +
+        '<button type="button" class="btn" id="libInfoClose">关闭</button>' +
+        '<button type="button" class="btn primary" id="libInfoEdit">编辑</button>' +
+      '</div></div>' +
+    '</div>';
+  document.body.appendChild(ov);
+
+  let curId = null;
+  const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+  const $ = id => document.getElementById(id);
+
+  function relationText(x){
+    return x && (x.name_cn || x.name) ? String(x.name_cn || x.name) : "";
+  }
+
+  function paint(e){
+    const body = $("libInfoBody");
+    if(!body) return;
+    const cover = e.cover
+      ? '<img class="lib-info-cover" alt="" src="' + esc(e.cover) + '">'
+      : '<div class="lib-info-cover"></div>';
+    const meta = [];
+    if(e.year) meta.push(e.year + " 年");
+    if(e.platform) meta.push(e.platform);
+    if(Number(e.episodes)) meta.push(Number(e.episodes) + " 集");
+    if(e.status) meta.push(e.status);
+    if(e.rating != null) meta.push("我的评分 " + e.rating);
+    if(Number(e.bgmScore)) meta.push("Bangumi " + Number(e.bgmScore).toFixed(1));
+    const tags = (Array.isArray(e.bgmTags) ? e.bgmTags : []).slice(0, 6);
+    const rels = Array.isArray(e.bgmRelations) ? e.bgmRelations.slice(0, 20) : [];
+    let relHtml = "";
+    if(rels.length){
+      relHtml = '<div class="lib-info-sec">关联</div><div class="lib-info-rels">' +
+        rels.map(x => {
+          const local = (state.entries || []).find(y => Number(y.bgmId) && Number(y.bgmId) === Number(x.id));
+          const cls = local ? "lib-info-rel" : "lib-info-rel";
+          return '<span class="' + cls + '"' + (local ? ' data-bgm="' + esc(x.id) + '"' : "") + '>' +
+            (x.relation ? '<b>' + esc(x.relation) + '</b>' : "") + esc(relationText(x)) + '</span>';
+        }).join("") + "</div>";
+    }
+    body.innerHTML =
+      '<div class="lib-info-hero">' + cover + '<div class="lib-info-main">' +
+        '<div class="lib-info-name">' + esc(e.name || "未命名") + '</div>' +
+        '<div class="lib-info-meta">' + esc(meta.join(" · ")) + '</div>' +
+        (tags.length ? '<div class="lib-info-tags">' + tags.map(t => '<span class="lib-info-tag">' + esc(t) + "</span>").join("") + "</div>" : "") +
+        (e.summary ? '<div class="lib-info-sec">简介</div><div class="lib-info-txt">' + esc(e.summary) + "</div>" : "") +
+        '<div class="lib-info-sec">我的备注</div><div class="lib-info-txt lib-info-note">' + (e.note ? esc(e.note) : '<span class="lib-info-empty">—</span>') + "</div>" +
+        relHtml +
+      "</div></div>";
+    $("libInfoTitle").textContent = e.name || "条目资料";
+  }
+
+  function openEntryInfo(id){
+    const e = (state.entries || []).find(x => String(x.id) === String(id));
+    if(!e) return;
+    curId = e.id;
+    paint(e);
+    showOverlay("libInfoOverlay");
+    if(Number(e.bgmId) && typeof window.rinRelationsLoad === "function" &&
+       !(Array.isArray(e.bgmRelations) && e.bgmRelations.length)){
+      window.rinRelationsLoad(e).then(function(){
+        if(String(curId) === String(e.id) && Array.isArray(e.bgmRelations) && e.bgmRelations.length) paint(e);
+      }).catch(function(){});
+    }
+  }
+  window.openEntryInfo = openEntryInfo;
+
+  function closeInfo(){ hideOverlay("libInfoOverlay"); curId = null; }
+  $("libInfoX").addEventListener("click", closeInfo);
+  $("libInfoClose").addEventListener("click", closeInfo);
+  ov.addEventListener("click", function(ev){ if(ev.target === ov) closeInfo(); });
+  $("libInfoEdit").addEventListener("click", function(){
+    const id = curId;
+    closeInfo();
+    if(id && typeof window.openEntryModal === "function") window.openEntryModal(id);
+  });
+  $("libInfoBody").addEventListener("click", function(ev){
+    const b = ev.target.closest("[data-bgm]");
+    if(!b) return;
+    const local = (state.entries || []).find(y => Number(y.bgmId) && Number(y.bgmId) === Number(b.dataset.bgm));
+    if(local){ closeInfo(); openEntryInfo(local.id); }
+  });
+
+  
+
+  const tbody = document.getElementById("libTbody");
+  if(tbody){
+    tbody.addEventListener("click", function(ev){
+      const cell = ev.target.closest(".name-cell");
+      if(!cell) return;
+      const id = cell.dataset.id;
+      if(!id) return;
+      ev.preventDefault();
+      ev.stopPropagation();
+      openEntryInfo(id);
+    }, true);
+  }
+})();
+
+
+
+(function(){
+  if(document.getElementById("libSeriesOverlay")) return;
+
+  const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+  const SERIES_KEY = "rin.lib.series";
+  let seriesMode = false;
+  try{ seriesMode = localStorage.getItem(SERIES_KEY) === "1"; }catch(e){}
+  let seriesGroups = new Map();
+  let curSeriesKey = "";
+
+  document.body.classList.add("rin-lib-cards");
+
+  
+  
+
+
+  const css = document.createElement("style");
+  css.id = "libSeriesCss";
+  css.textContent = `
+  .lib-series-toggle{margin-left:auto}
+  #page-library .table-wrap table{display:block;min-width:0;width:100%}
+  #page-library .table-wrap thead{display:none}
+  #page-library .table-wrap tbody{display:block}
+  #page-library .table-wrap tr.lib-card{display:block;background:var(--panel);border-bottom:1px solid var(--border)}
+  #page-library .table-wrap tr.lib-card:last-child{border-bottom:0}
+  #page-library .table-wrap tr.lib-card>td{display:block;padding:0;border:0;white-space:normal;box-shadow:inset 3px 0 0 var(--card-c,var(--accent))}
+  .lib-card-cell{display:flex;align-items:center;gap:12px;padding:11px 14px}
+  .lib-card-covers{position:relative;display:flex;align-items:center;gap:3px;flex:none;width:96px;height:58px}
+  .lib-card-covers .ph{width:42px;height:58px;border-radius:5px;background:var(--panel3);color:var(--faint);display:flex;align-items:center;justify-content:center;font-size:.86rem;flex:none;overflow:hidden}
+  .lib-card-covers img{border-radius:5px;object-fit:cover;background:var(--panel3);display:block;flex:none}
+  .lib-card-covers img.single{position:absolute;left:0;top:0;width:42px;height:58px}
+  .lib-card-covers img.series{width:30px;height:42px}
+  .lib-card-main{flex:1;min-width:0}
+  .lib-card-title{display:flex;align-items:center;gap:8px;min-width:0}
+  .lib-card-name{font-size:.9rem;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer}
+  .lib-card-name:hover{color:var(--accent2)}
+  .lib-card-meta{display:flex;gap:10px;align-items:center;font-size:.78rem;color:var(--muted);margin-top:4px;white-space:nowrap;overflow:hidden}
+  .lib-card-meta>span{min-width:0;overflow:hidden;text-overflow:ellipsis}
+  .lib-card-meta .rt{margin-left:auto}
+  .lib-card-note{font-size:.68rem;color:var(--faint);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .lib-card-tag{flex:none;font-size:.7rem;line-height:1.6;color:var(--accent2);background:var(--accent-soft);border-radius:5px;padding:0 7px;white-space:nowrap}
+  .lib-card-cell.lib-single{display:grid;grid-template-columns:56px minmax(150px,1fr) 60px 92px 84px 46px 62px 78px 108px;gap:12px;align-items:center}
+  .lib-single-name{min-width:0}
+  .lib-single-meta{display:contents}
+  .lib-single-tags{display:flex;gap:4px;margin-top:4px;overflow:hidden}
+  .lib-single-col{font-size:.78rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .lib-single-score{display:flex;justify-content:center}
+  .lib-card-actions{display:flex;gap:6px;flex:none}
+  .lib-card-actions .btn{white-space:nowrap}
+  .lib-card-actions .score-badge{height:24px;min-width:32px;font-size:.8rem}
+  .lib-series-member .score-badge{height:22px;min-width:30px;font-size:.78rem;flex:none}
+  .lib-series-row{cursor:pointer}
+  .lib-series-row:hover>td{background:var(--panel2)}
+  .lib-card-go{flex:none;font-size:1.15rem;line-height:1;color:var(--faint);padding:0 2px}
+  .lib-series-row:hover .lib-card-go{color:var(--accent2)}
+  .lib-series-row .lib-card-name{flex:0 1 auto}
+  .lib-series-mark{display:inline-block;flex:none;font-size:.62rem;font-weight:600;color:var(--accent2);background:var(--accent-soft);border:1px solid var(--accent-soft);border-radius:5px;padding:1px 5px}
+  .lib-series-sub{flex:none;font-size:.68rem;color:var(--faint)}
+  .lib-series-members{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:3px 12px;margin-top:6px;max-width:760px}
+  .lib-series-members span{font-size:.67rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+  .lib-series-members span i{font-style:normal;color:var(--faint);margin-right:4px;font-variant-numeric:tabular-nums}
+  .lib-series-members span.on{color:var(--text)}
+  .lib-series-members span.on i{color:var(--accent2)}
+  .lib-series-members span.more{color:var(--faint)}
+  .lib-series-modal{width:580px}
+  .lib-series-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+  .lib-series-head .sub{font-size:.72rem;color:var(--muted)}
+  .lib-series-list{display:flex;flex-direction:column;gap:7px}
+  .lib-series-member{display:flex;align-items:center;gap:9px;padding:7px 9px;border:1px solid var(--border);border-radius:9px;background:var(--panel2);cursor:pointer}
+  .lib-series-member:hover{border-color:var(--accent)}
+  .lib-series-member .th{width:32px;height:44px;border-radius:5px;object-fit:cover;background:var(--panel3);flex:none;display:block}
+  .lib-series-member .nm{font-size:.82rem;font-weight:600;min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .lib-series-member .mt{font-size:.68rem;color:var(--muted);white-space:nowrap}
+  .lib-series-member .season{font-size:.66rem;color:var(--accent2);border:1px solid var(--accent-soft);background:var(--accent-soft);border-radius:5px;padding:1px 5px;white-space:nowrap}
+  .lib-series-member .btn{flex:none}
+  @media (max-width:900px){
+    .lib-series-members{grid-template-columns:repeat(2,minmax(0,1fr))}
+  }
+  @media (max-width:980px){
+    .lib-card-cell.lib-single{grid-template-columns:52px minmax(120px,1fr) 52px 44px 58px 64px 104px}
+    .lib-single-meta>span:nth-child(2),.lib-single-meta>span:nth-child(3){display:none}
+  }
+  @media (max-width:560px){
+    .lib-card-cell{padding:10px 12px;gap:9px;flex-wrap:wrap}
+    .lib-card-cell.lib-single{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:4px 9px;align-items:center}
+    .lib-single .lib-card-covers{grid-column:1;grid-row:1 / span 2;align-self:start}
+    .lib-single-name{grid-column:2 / 4;grid-row:1;min-width:0}
+    .lib-single-meta{grid-column:2;grid-row:2;display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px}
+    .lib-single-col{font-size:.72rem}
+    .lib-single-col:nth-of-type(2),.lib-single-col:nth-of-type(3){display:none}
+    .lib-card-cell.lib-single .lib-card-actions{grid-column:3;grid-row:2;justify-self:end;flex:none}
+    .lib-card-cell.lib-collection{position:relative;padding-right:84px}
+    .lib-collection .lib-card-actions{position:absolute;right:12px;top:10px;flex-direction:row;align-items:center;gap:4px}
+
+    .lib-series-row .lib-single-meta .lib-single-col:last-child{display:none}
+    .lib-card-main{flex:1 1 0}
+    .lib-card-actions{flex:1 1 100%;justify-content:flex-end;margin-top:2px}
+    .lib-card-covers{width:64px;height:52px}
+    .lib-card-covers .ph{width:38px;height:52px;font-size:.8rem}
+    .lib-card-covers img.single{width:38px;height:52px}
+    .lib-card-covers img.series:nth-child(n+3){display:none}
+    .lib-card-name{font-size:.88rem}
+    .lib-card-meta{display:flex;flex-wrap:wrap;gap:2px 10px;font-size:.74rem}
+    .lib-card-meta .sp{display:none}
+    .lib-card-note{font-size:.7rem}
+    .lib-card-actions .btn{padding:4px 7px;font-size:.74rem}
+    .lib-series-members{display:none}
+    .lib-series-member{flex-wrap:wrap;gap:5px 8px}
+    .lib-series-member .nm{flex-basis:100%}
+    .lib-series-member .mt{white-space:normal}
+    .lib-series-toggle{margin-left:0}
+  }
+  `;
+  document.head.appendChild(css);
+
+  const ov = document.createElement("div");
+  ov.className = "overlay";
+  ov.id = "libSeriesOverlay";
+  ov.innerHTML =
+    '<div class="modal lib-series-modal">' +
+      '<div class="modal-head"><div class="lib-series-head"><h2 id="libSeriesTitle">系列</h2><span class="sub" id="libSeriesSub"></span></div>' +
+        '<button type="button" class="icon-btn" id="libSeriesX" aria-label="关闭">×</button></div>' +
+      '<div class="modal-body"><div class="lib-series-list" id="libSeriesList"></div></div>' +
+    '</div>';
+  document.body.appendChild(ov);
+
+  function seriesKey(name){
+    let s = String(name || "").trim();
+    if(!s) return "";
+    s = s.replace(/[（(]([^()（）]*)[)）]\s*$/g, function(all, inner){
+      return /^\d{4}$/.test(String(inner).trim()) ? all : "";
+    });
+    
+    s = s.replace(/[（）()]/g, "");
+    s = s.replace(/^[【\[]?(剧场版动画|剧场版|电影版)[】\]]?\s*/i, "");
+    s = s.replace(/[＊*]/g, "");
+    
+    s = s.replace(/\s*(第[一二三四五六七八九十0-9]+部分|Part\s*\d+)\s*(?:[（(]\s*\d{4}\s*[)）])?\s*$/ig, "");
+    s = s.replace(/\s*(第[一二三四五六七八九十0-9]+[季部]|Season\s*\d+|S\d+)\s*(?:[（(]\s*\d{4}\s*[)）])?\s*$/ig, "");
+    s = s.replace(/\s*(OAD|OVA|剧场版|电影|特别篇|总集篇|TV|WEB|Web|续篇|完结篇)\s*$/ig, "");
+    s = s.replace(/(^|\D)0+(\d)$/, "$1$2");   
+    return s.replace(/[\s·:：\-—–~～]+/g, "").toLowerCase();
+  }
+
+  function groupName(members){
+    let best = members[0] ? String(members[0].name || "") : "系列";
+    for(const m of members){
+      const n = String(m.name || "");
+      if(n && n.length < best.length) best = n;
+    }
+    return best || "系列";
+  }
+
+  function watchDone(e){
+    if(e.status === "已看") return true;
+    const total = Number(e.episodes) || 0;
+    return total > 0 && Number(e.watched) >= total;
+  }
+
+  function buildGroups(list, relType){
+    const map = new Map(), order = [];
+    for(const e of list){
+      const k = seriesKey(e.name) || ("id:" + e.id);
+      if(!map.has(k)){ map.set(k, []); order.push(k); }
+      map.get(k).push(e);
+    }
+    
+
+    for(const short of order.slice()){
+      if(!map.has(short) || short.length < 3) continue;
+      for(const long of order.slice()){
+        if(long === short || !map.has(long)) continue;
+        if(long.length > short.length && long.indexOf(short) === 0 && map.has(short) && map.has(long)){
+          map.get(short).push(...map.get(long));
+          map.delete(long);
+        }
+      }
+    }
+    
+    for(const k of order.slice()){
+      if(/\d{4}$/.test(k)) continue;            
+      const m = k.match(/^(.*?)([2-9]|[1-9]\d)$/);
+      if(m && m[1].length >= 2 && map.has(m[1]) && map.has(k)){
+        map.get(m[1]).push(...map.get(k));
+        map.delete(k);
+      }
+    }
+    
+    const numGroups = new Map();
+    for(const k of order.slice()){
+      if(!map.has(k)) continue;
+      if(/\d{4}$/.test(k)) continue;
+      const m = k.match(/^(.*?)([2-9]|[1-9]\d)$/);
+      if(!m || m[1].length < 2 || map.has(m[1])) continue;
+      if(!numGroups.has(m[1])) numGroups.set(m[1], []);
+      numGroups.get(m[1]).push(k);
+    }
+    const numOf = k => Number((k.match(/([2-9]|[1-9]\d)$/) || [])[1] || 0);
+    for(const arr of numGroups.values()){
+      if(arr.length < 2) continue;
+      arr.sort((a, b) => numOf(a) - numOf(b));
+      const anchor = arr[0];
+      for(const k of arr.slice(1)){
+        if(map.has(k) && map.has(anchor)){ map.get(anchor).push(...map.get(k)); map.delete(k); }
+      }
+    }
+    const groups = order.filter(k => map.has(k)).map(k => ({ key:k, members: map.get(k) }));
+    
+    const parent = new Map(groups.map(g => [g.key, g.key]));
+    const find = k => { let x = k; while(parent.get(x) !== x) x = parent.get(x); while(parent.get(k) !== x){ const n = parent.get(k); parent.set(k, x); k = n; } return x; };
+    const union = (a,b) => { const ra = find(a), rb = find(b); if(ra !== rb) parent.set(rb, ra); };
+    const byBgm = new Map();
+    for(const g of groups) for(const m of g.members) if(Number(m.bgmId)) byBgm.set(Number(m.bgmId), g.key);
+    
+
+    const REL_OK = { "续集":1, "前传":1, "续篇":1, "衍生":1, "番外篇":1, "番外":1 };
+    const wantType = Number(relType) || 2;    
+    for(const g of groups) for(const m of g.members){
+      for(const r of (Array.isArray(m.bgmRelations) ? m.bgmRelations : [])){
+        if(!r) continue;
+        const rType = Number(r.type) || 0;
+        if(rType){ if(rType !== wantType) continue; }
+        else if(wantType !== 2){ continue; }   
+        if(!REL_OK[String(r.relation || "").trim()]) continue;
+        if(byBgm.has(Number(r.id))) union(g.key, byBgm.get(Number(r.id)));
+      }
+    }
+    const out = new Map();
+    for(const g of groups){
+      const root = find(g.key);
+      if(!out.has(root)) out.set(root, { key:root, members:[] });
+      out.get(root).members.push(...g.members);
+    }
+    return Array.from(out.values());
+  }
+
+  function seasonNo(name){
+    const s = String(name || "");
+    const cn = { "一":1, "二":2, "三":3, "四":4, "五":5, "六":6, "七":7, "八":8, "九":9, "十":10 };
+    let m = s.match(/第([一二三四五六七八九十0-9]+)[季部]/);
+    if(m){
+      const v = m[1];
+      if(/^\d+$/.test(v)) return Number(v);
+      if(cn[v]) return cn[v];
+      if(v.length === 2 && cn[v[0]] && cn[v[1]]) return cn[v[0]] * 10 + cn[v[1]];
+    }
+    m = s.match(/Season\s*(\d+)/i) || s.match(/\sS(\d+)\s*$/i);
+    if(m) return Number(m[1]);
+    return 0;
+  }
+  window.rinSeriesSeasonNo = seasonNo;
+  window.rinBuildGroups = buildGroups;
+
+  
+  function ratingColor(r){
+    if(r == null || r === "") return "var(--accent)";
+    if(typeof segOf === "function" && typeof SEG_COLOR !== "undefined"){
+      return SEG_COLOR[segOf(Number(r))] || "var(--accent)";
+    }
+    return "var(--accent)";
+  }
+
+  function coverSlot(e){
+    const ch = String(e.name || "").trim().charAt(0) || "·";
+    const img = e.cover
+      ? '<img class="single" src="' + esc(e.cover) + '" alt="" loading="lazy" onerror="this.remove()">'
+      : "";
+    return '<div class="lib-card-covers"><span class="ph">' + esc(ch) + '</span>' + img + '</div>';
+  }
+
+  
+  
+  const EXTRA_TAGS = { "搞笑":"喜剧", "吐槽":"喜剧", "黄段子":"喜剧", "无厘头":"喜剧", "恶搞":"喜剧",
+    "枪战":"战斗", "打斗":"战斗", "热血":"战斗", "萌":"治愈", "萌系":"治愈", "治愈系":"治愈",
+    "校园生活":"校园", "青春校园":"校园", "恋爱喜剧":"恋爱", "致郁":"黑暗", "猎奇":"黑暗" };
+
+  function singleCard(e){
+    const total = Number(e.episodes) || 0;
+    const doneAll = e.status === "已看";
+    const seen = doneAll ? total : Math.max(0, Math.min(total, Number(e.watched) || 0));
+    const perEp = Number(e.minutesPerEp) || (total > 1 ? 24 : 0);
+    const totalMin = Number(e.totalMinutes) || (perEp ? perEp * total : 0);
+    
+
+    const isAndroid = document.documentElement.classList.contains("rin-android");
+    const tags = (function(){
+      const out = [];
+      const raw = (Array.isArray(e.tags) && e.tags.length) ? e.tags
+        : (Array.isArray(e.bgmTags) ? e.bgmTags : []);
+      for(const t of raw){
+        let v = String(t == null ? "" : t).trim();
+        if(!v) continue;
+        try{ if(typeof TAG_MERGE !== "undefined") v = TAG_MERGE[v] || TAG_MERGE[v.toLowerCase()] || v; }catch(err){}
+        v = EXTRA_TAGS[v] || v;
+        if(typeof DEFAULT_TAGS !== "undefined" && DEFAULT_TAGS.indexOf(v) < 0) continue;
+        if(out.indexOf(v) < 0) out.push(v);
+        if(out.length >= 3) break;
+      }
+      return out;
+    })();
+    const tagHtml = (!isAndroid && tags.length) ? tags.map(function(t){
+      return '<span class="lib-card-tag">' + esc(t) + "</span>";
+    }).join("") : "";    const ratingNum = (e.rating == null || e.rating === "") ? null : Number(e.rating);
+    const score = (ratingNum == null || !isFinite(ratingNum))
+      ? ""
+      : '<span class="score-badge" style="' + scoreStyle(ratingNum) + '">' + esc(String(ratingNum)) + '</span>';
+    return '<tr class="lib-card" data-id="' + esc(e.id) + '" style="--card-c:' + ratingColor(e.rating) + '"><td colspan="9">' +
+      '<div class="lib-card-cell lib-single">' +
+        coverSlot(e) +
+        '<div class="lib-single-name">' +
+          '<div class="lib-card-title"><span class="lib-card-name name-cell" data-id="' + esc(e.id) + '">' + esc(e.name) + '</span></div>' +
+          (tagHtml ? '<div class="lib-single-tags">' + tagHtml + '</div>' : "") +
+          (e.note ? '<div class="lib-card-note" title="' + esc(e.note) + '">' + esc(e.note) + '</div>' : "") +
+        '</div>' +
+        '<div class="lib-single-meta">' +
+          '<span class="lib-single-col">' + (total ? seen + "/" + total + " 集" : "") + '</span>' +
+          '<span class="lib-single-col">' + (perEp ? "单集 " + perEp + " 分钟" : "") + '</span>' +
+          '<span class="lib-single-col">' + (totalMin ? fmtDur(totalMin) : "") + '</span>' +
+          '<span class="lib-single-score">' + score + '</span>' +
+          '<span class="lib-single-col st">' + (e.status ? '<span class="tag st-' + esc(e.status) + '">' + esc(e.status) + '</span>' : "") + '</span>' +
+          '<span class="lib-single-col">' + (!isAndroid && e.year ? String(e.year) : "") + '</span>' +
+        '</div>' +
+        '<div class="lib-card-actions"><button class="btn sm" data-act="edit" data-id="' + esc(e.id) + '">编辑</button>' +
+        '<button class="btn sm danger" data-act="del" data-id="' + esc(e.id) + '">删除</button></div>' +
+      '</div></td></tr>';
+  }
+
+  function memberOrder(a, b){
+    const da = String(a.airDate || ""), db = String(b.airDate || "");
+    if(da && db && da !== db) return da < db ? -1 : 1;
+    if(da && !db) return -1;
+    if(!da && db) return 1;
+    const ya = Number(a.year) || 9999, yb = Number(b.year) || 9999;
+    if(ya !== yb) return ya - yb;
+    const sa = seasonNo(a.name) || 1, sb = seasonNo(b.name) || 1;
+    if(sa !== sb) return sa - sb;
+    return String(a.name).localeCompare(String(b.name));
+  }
+
+  
+  function seasonOnly(name){
+    const s = String(name || "");
+    const cn = { "一":1, "二":2, "三":3, "四":4, "五":5, "六":6, "七":7, "八":8, "九":9, "十":10 };
+    let m = s.match(/第([一二三四五六七八九十0-9]+)季/);
+    if(m){
+      const v = m[1];
+      if(/^\d+$/.test(v)) return Number(v);
+      if(cn[v]) return cn[v];
+      if(v.length === 2 && cn[v[0]] && cn[v[1]]) return cn[v[0]] * 10 + cn[v[1]];
+    }
+    m = s.match(/Season\s*(\d+)/i) || s.match(/\sS(\d+)\s*$/i);
+    return m ? Number(m[1]) : 0;
+  }
+
+  
+  function groupRow(g){
+    const ms = g.members.slice().sort(memberOrder);
+    const years = ms.map(x => Number(x.year)).filter(Boolean);
+    const yr = years.length ? (Math.min(...years) === Math.max(...years) ? String(Math.min(...years)) : Math.min(...years) + "–" + Math.max(...years)) : "";
+    const done = ms.filter(watchDone).length;
+    const allDone = done === ms.length;
+    const watching = ms.some(m => m.status === "追番中") || (done > 0 && !allDone);
+    const stText = allDone ? "已看" : (watching ? "追番中" : "待看");
+    const covers = ms.filter(m => m.cover).slice(0, 3)
+      .map(m => '<img class="series" src="' + esc(m.cover) + '" alt="" onerror="this.remove()">').join("");
+    const rated = ms.filter(m => m.rating != null);
+    const avgRaw = rated.length ? rated.reduce((a, m) => a + Number(m.rating), 0) / rated.length : null;
+    const avg = (avgRaw == null) ? null : Math.round(avgRaw * 10) / 10;
+    const avgBadge = (avg == null)
+      ? ""
+      : '<span class="score-badge" style="' + scoreStyle(avg) + '">' + esc(String(avg)) + '</span>';
+    return '<tr class="lib-card lib-series-row" data-series="' + esc(g.key) + '" style="--card-c:' + ratingColor(avg) + '"><td colspan="9">' +
+      '<div class="lib-card-cell lib-collection">' +
+        '<div class="lib-card-covers">' + covers + '</div>' +
+        '<div class="lib-card-main">' +
+          '<div class="lib-card-title">' +
+            (ms.length > 1 ? '<span class="lib-series-mark">合集</span>' : "") +
+            '<span class="lib-card-name">' + esc(groupName(ms)) + '</span>' +
+            '<span class="tag st-' + esc(stText) + '">' + esc(stText) + '</span>' +
+            '<span class="lib-series-sub">' + ms.length + ' 部</span></div>' +
+          '<div class="lib-card-meta"><span>' + done + "/" + ms.length + ' 部' +
+            (yr ? " · " + esc(yr) : "") + '</span></div>' +
+          (ms.length > 1 ? '<div class="lib-series-members">' + ms.slice(0, 8).map(function(m, i){
+            const ok = watchDone(m);
+            return '<span class="' + (ok ? "on" : "") + '"><i>' + (i + 1) + '</i>' + esc(m.name) + '</span>';
+          }).join("") + (ms.length > 8 ? '<span class="more"><i>＋</i>另有 ' + (ms.length - 8) + ' 部</span>' : "") + '</div>' : "") +
+        '</div>' +
+        '<div class="lib-card-actions">' + avgBadge + '<span class="lib-card-go" aria-hidden="true">›</span></div>' +
+      '</div></td></tr>';
+  }
+
+  
+  let relJob = null, relCooldown = 0, relWin = 0;
+  function looseKey(name){
+    const k = seriesKey(name);
+    return k ? k.slice(0, 4) : "";
+  }
+  function relPending(list){
+    const buckets = new Map();
+    for(const e of list){
+      const k = looseKey(e.name) || ("id:" + e.id);
+      if(!buckets.has(k)) buckets.set(k, []);
+      buckets.get(k).push(e);
+    }
+    const out = [];
+    for(const arr of buckets.values()){
+      if(arr.length < 2) continue;
+      for(const e of arr){
+        if(!Number(e.bgmId)) continue;
+        const fresh = Array.isArray(e.bgmRelations) &&
+          Date.now() - (Number(e.bgmRelationsAt) || 0) < 24 * 3600000;
+        const tried = Date.now() - (Number(e.bgmRelationsTried) || 0) < 6 * 3600000;
+        if(!fresh && !tried) out.push(e);
+      }
+    }
+    return out;
+  }
+  async function relPrefetch(){
+    if(relJob || !seriesMode) return;
+    if(Date.now() < relCooldown) return;
+    if(typeof window.rinRelationsLoad !== "function") return;
+    const list = (typeof getFiltered === "function") ? getFiltered() : (state.entries || []);
+    const todo = relPending(list);
+    if(!todo.length) return;
+    const alive = function(){
+      const pg = document.getElementById("page-library");
+      return seriesMode && !!pg && pg.classList.contains("active");
+    };
+    let stopped = false;
+    relJob = { cur:0, done:0, total:todo.length };
+    relWin = 0;
+    if(alive()){ try{ renderSeries(); }catch(e){} }
+    const worker = async function(){
+      while(relJob && relJob.cur < todo.length){
+        
+        if(!alive()){ stopped = true; relJob = null; return; }
+        const e = todo[relJob.cur++];
+        try{ if(await window.rinRelationsLoad(e, { silent:true })) relWin++; }catch(err){}
+        if(!relJob) return;
+        relJob.done++;
+        if(relJob.done % 10 === 0 && alive()){ try{ renderSeries(); }catch(err){} }
+      }
+    };
+    await Promise.all([worker(), worker(), worker()]);
+    
+    if(!relWin && !stopped) relCooldown = Date.now() + 10 * 60000;
+    relJob = null;
+    try{ saveState(); }catch(e){}
+    if(!stopped && alive()){ try{ renderSeries(); }catch(e){} }
+  }
+
+  function countLine(list){
+    const hid = (typeof rinPrivHiddenCount === "function") ? rinPrivHiddenCount() : 0;
+    const showTotal = !hid && list.length !== state.entries.length;
+    return "共 " + list.length + " 条" + (showTotal ? "（全部 " + state.entries.length + " 条）" : "");
+  }
+
+  function renderSingles(){
+    if(typeof refreshFilterSelects === "function") refreshFilterSelects();
+    const list = (typeof getFiltered === "function") ? getFiltered() : (state.entries || []);
+    const tbody = document.getElementById("libTbody");
+    const html = (typeof rinVirtualSlice === "function")
+      ? rinVirtualSlice(list, singleCard)
+      : list.map(singleCard).join("");
+    setHtmlIfChanged(tbody, html);
+    const empty = document.getElementById("libEmpty");
+    if(empty){
+      if(!list.length){
+        empty.style.display = "block";
+        empty.textContent = "还没有番剧。点右上角「＋ 新增番剧」开始记录。";
+      }else{
+        empty.style.display = "none";
+      }
+    }
+    const count = document.getElementById("libCount");
+    if(count) count.textContent = countLine(list);
+  }
+
+  function renderSeries(){
+    if(!seriesMode) return;              
+    
+    try{ rinVl = null; rinVlCalPending = false; }catch(e){}
+    if(typeof refreshFilterSelects === "function") refreshFilterSelects();
+    const list = (typeof getFiltered === "function") ? getFiltered() : (state.entries || []);
+    const tbody = document.getElementById("libTbody");
+    const groups = buildGroups(list);
+    const coll = groups;
+    seriesGroups = new Map(coll.map(g => [g.key, g]));
+    setHtmlIfChanged(tbody, coll.map(groupRow).join(""));
+    const empty = document.getElementById("libEmpty");
+    if(empty){
+      if(!list.length){
+        empty.style.display = "block";
+        empty.textContent = "还没有番剧。点右上角「＋ 新增番剧」开始记录。";
+      }else{
+        empty.style.display = "none";
+      }
+    }
+    const count = document.getElementById("libCount");
+    if(count){
+      count.textContent = "共 " + coll.length + " 个合集 · " + list.length + " 部" +
+        (relJob ? "（读取关系中 " + relJob.done + "/" + relJob.total + "）" : "");
+    }
+    if(!relJob){ setTimeout(function(){ relPrefetch(); }, 60); }
+  }
+
+  function paintSeries(){
+    const g = seriesGroups.get(curSeriesKey);
+    if(!g){ hideOverlay("libSeriesOverlay"); return; }
+    const ms = g.members.slice().sort(memberOrder);
+    const done = ms.filter(watchDone).length;
+    document.getElementById("libSeriesTitle").textContent = groupName(ms);
+    document.getElementById("libSeriesSub").textContent = ms.length + " 部 · " + done + " 部已看";
+    document.getElementById("libSeriesList").innerHTML = ms.map(m => {
+      const bits = [];
+      if(m.year) bits.push(m.year + " 年");
+      if(m.platform) bits.push(m.platform);
+      if(Number(m.episodes)) bits.push(Number(m.episodes) + " 集");
+      if(m.status) bits.push(m.status);
+      const sn = seasonOnly(m.name);
+      const cover = m.cover ? '<img class="th" src="' + esc(m.cover) + '" alt="">' : "";
+      const scNum = (m.rating == null || m.rating === "") ? null : Number(m.rating);
+      const sc = (scNum == null || !isFinite(scNum))
+        ? ""
+        : '<span class="score-badge" style="' + scoreStyle(scNum) + '">' + esc(String(scNum)) + "</span>";
+      return '<div class="lib-series-member" data-id="' + esc(m.id) + '">' + cover +
+        '<span class="nm">' + esc(m.name) + "</span>" +
+        '<span class="mt">' + esc(bits.join(" · ")) + "</span>" +
+        (sn > 1 ? '<span class="season">第' + sn + '部</span>' : "") +
+        sc +
+        '<button type="button" class="btn sm" data-edit="' + esc(m.id) + '">编辑</button></div>';
+    }).join("");
+
+    const relNow = Date.now();
+    const pending = ms.filter(function(m){
+      if(!Number(m.bgmId) || Array.isArray(m.bgmRelations)) return false;
+      if(relNow - (Number(m.bgmRelationsTried) || 0) < 6 * 3600000) return false;
+      if(relNow - (Number(m.bgmRelationsAt) || 0) < 24 * 3600000) return false;
+      return true;
+    }).slice(0, 8);
+    if(pending.length && typeof window.rinRelationsLoad === "function"){
+      const ids = ms.map(m => m.id);
+      Promise.all(pending.map(m => window.rinRelationsLoad(m))).then(function(){
+        if(!ov.classList.contains("show")) return;
+        window.renderLibrary();
+        let nk = "";
+        seriesGroups.forEach(function(gg, k){ if(gg.members.some(m => ids.indexOf(m.id) >= 0)) nk = k; });
+        if(nk){ curSeriesKey = nk; paintSeries(); }
+      }).catch(function(){});
+    }
+  }
+
+  function openSeries(key){
+    curSeriesKey = key;
+    paintSeries();
+    showOverlay("libSeriesOverlay");
+  }
+  function closeSeries(){ hideOverlay("libSeriesOverlay"); curSeriesKey = ""; }
+  document.getElementById("libSeriesX").addEventListener("click", closeSeries);
+  ov.addEventListener("click", function(ev){ if(ev.target === ov) closeSeries(); });
+  document.getElementById("libSeriesList").addEventListener("click", function(ev){
+    const edit = ev.target.closest("[data-edit]");
+    if(edit){ const id = edit.dataset.edit; closeSeries(); if(typeof window.openEntryModal === "function") window.openEntryModal(id); return; }
+    const item = ev.target.closest(".lib-series-member");
+    if(item){ const id = item.dataset.id; closeSeries(); if(typeof window.openEntryInfo === "function") window.openEntryInfo(id); }
+  });
+
+  const libBody = document.getElementById("libTbody");
+  if(libBody){
+    libBody.addEventListener("click", function(ev){
+      if(ev.target.closest("[data-act]")) return;      
+      const row = ev.target.closest(".lib-series-row");
+      if(!row) return;
+      ev.preventDefault();
+      openSeries(row.dataset.series);
+    });
+  }
+
+  
+  if(libBody){
+    libBody.addEventListener("click", function(ev){
+      if(ev.target.closest("[data-act]")) return;
+      const row = ev.target.closest("tr.lib-card");
+      if(!row || row.classList.contains("lib-series-row")) return;
+      const narrow = window.matchMedia("(max-width:560px)").matches &&
+                     !document.body.classList.contains("rin-framed");
+      if(!narrow) return;
+      const id = row.dataset.id;
+      if(id && typeof window.openEntryInfo === "function") window.openEntryInfo(id);
+    });
+  }
+
+  
+  window.renderLibrary = function(){
+    if(seriesMode) renderSeries();
+    else renderSingles();
+  };
+
+  const head = document.querySelector("#page-library .page-head");
+  if(head && !document.getElementById("libSeriesToggle")){
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.id = "libSeriesToggle";
+    btn.className = "btn sm lib-series-toggle";
+    head.appendChild(btn);
+    const paintBtn = function(){
+      btn.textContent = seriesMode ? "按单部" : "按系列";
+      btn.setAttribute("aria-pressed", seriesMode ? "true" : "false");
+      btn.title = seriesMode ? "切换为单部列表" : "按系列聚合";
+    };
+    btn.addEventListener("click", function(){
+      seriesMode = !seriesMode;
+      if(!seriesMode) relJob = null;      
+      try{ localStorage.setItem(SERIES_KEY, seriesMode ? "1" : "0"); }catch(e){}
+      paintBtn();
+      window.renderLibrary();
+    });
+    paintBtn();
+  }
+  try{ window.renderLibrary(); }catch(e){}
+})();
+
+
+
+(function(){
+  if(document.getElementById("gbSeriesOverlay")) return;
+  const KEY = "rin.books.series";
+  let on = true;                       
+  try{ var saved = localStorage.getItem(KEY); if(saved !== null) on = saved === "1"; }catch(e){}
+  let groups = new Map(), curKey = "";
+
+  const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+
+  const st = document.createElement("style");
+  st.id = "gbSeriesCss";
+  st.textContent = `
+  .gb-serie .gb-stack{display:flex;aspect-ratio:3/4;background:var(--panel2);overflow:hidden}
+  .gb-serie .gb-stack img{width:100%;height:100%;object-fit:cover;flex:1 1 0;min-width:0;display:block}
+  .gb-serie .gb-stack .none{flex:1 1 0;display:flex;align-items:center;justify-content:center;color:var(--faint);font-size:12px}
+  .gb-serie-mark{position:absolute;left:8px;top:8px;font-size:11px;font-weight:600;color:var(--accent2);background:var(--accent-soft);border-radius:5px;padding:1px 6px}
+  .gb-serie .gb-stack{position:relative}
+  .gb-serie-ov{width:560px}
+  .gb-serie-list{display:flex;flex-direction:column;gap:7px}
+  .gb-serie-m{display:flex;align-items:center;gap:9px;padding:7px 9px;border:1px solid var(--border);border-radius:9px;background:var(--panel2);cursor:pointer}
+  .gb-serie-m:hover{border-color:var(--accent)}
+  .gb-serie-m img{width:32px;height:44px;border-radius:5px;object-fit:cover;background:var(--panel3);flex:none;display:block}
+  .gb-serie-m .nm{font-size:.82rem;font-weight:600;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .gb-serie-m .mt{font-size:.68rem;color:var(--muted);white-space:nowrap}
+  .gb-serie-m .btn{flex:none}
+  @media (max-width:560px){
+    .gb-serie-m{flex-wrap:wrap;gap:5px 8px}
+    .gb-serie-m .nm{flex-basis:100%}
+  }
+  `;
+  document.head.appendChild(st);
+
+  const ov = document.createElement("div");
+  ov.className = "overlay";
+  ov.id = "gbSeriesOverlay";
+  ov.innerHTML =
+    '<div class="modal gb-serie-ov">' +
+      '<div class="modal-head"><div><h2 id="gbSerieTitle">系列</h2><div class="sub" id="gbSerieSub" style="font-size:.72rem;color:var(--muted)"></div></div>' +
+        '<button type="button" class="icon-btn" id="gbSerieX" aria-label="关闭">×</button></div>' +
+      '<div class="modal-body"><div class="gb-serie-list" id="gbSerieList"></div></div>' +
+    '</div>';
+  document.body.appendChild(ov);
+
+  function closeOv(){ hideOverlay("gbSeriesOverlay"); curKey = ""; }
+  document.getElementById("gbSerieX").addEventListener("click", closeOv);
+  ov.addEventListener("click", function(ev){ if(ev.target === ov) closeOv(); });
+
+  document.getElementById("gbSerieList").addEventListener("click", function(ev){
+    const row = ev.target.closest(".gb-serie-m");
+    if(!row) return;
+    const id = row.dataset.id;
+    closeOv();
+    if(id && typeof window.rinGbEdit === "function") window.rinGbEdit("books", id);
+  });
+
+  function listBooks(){
+    const all = Array.isArray(state.books) ? state.books : [];
+    const input = document.getElementById("gbSearchBooks");
+    const q = String((input && input.value) || "").trim().toLowerCase();
+    if(!q) return all;
+    return all.filter(function(x){
+      return [x.name, x.jp, x.platform, x.note, (x.tags || []).join(" ")]
+        .join(" ").toLowerCase().indexOf(q) >= 0;
+    });
+  }
+
+  function groupName(ms){
+    const clean = function(v){
+      return String(v || "").replace(/\s*[（(]\s*\d+\s*[)）]\s*$/, "")
+        .replace(/\s*第[一二三四五六七八九十0-9]+[卷册]\s*$/, "").trim();
+    };
+    let best = clean(ms[0] && ms[0].name) || "系列";
+    for(const m of ms){ const n = clean(m.name); if(n && n.length < best.length) best = n; }
+    return best;
+  }
+
+  
+  function volNo(x){
+    const n = String(x && x.name || "");
+    let m = n.match(/[（(]\s*(\d{1,4})\s*[)）]\s*$/);
+    if(m) return Number(m[1]) || 0;
+    m = n.match(/第\s*(\d{1,4})\s*[卷册]/);
+    if(m) return Number(m[1]) || 0;
+    m = n.match(/vol\.?\s*(\d{1,4})/i);
+    return m ? (Number(m[1]) || 0) : 0;
+  }
+  function coverPick(ms){
+    const pool = ms.filter(function(x){ return !!x.cover; }).slice().sort(function(a, b){
+      const va = volNo(a), vb = volNo(b);
+      if(va && vb && va !== vb) return va - vb;
+      if(va && !vb) return -1;
+      if(!va && vb) return 1;
+      return (Number(a.year) || 9999) - (Number(b.year) || 9999);
+    });
+    if(pool.length <= 3) return pool;
+    const mid = pool[Math.floor(pool.length / 2)];
+    const out = [pool[0], mid, pool[pool.length - 1]];
+    return out.filter(function(x, i){ return out.indexOf(x) === i; });
+  }
+
+  function paint(){
+    const box = document.getElementById("gbListBooks");
+    if(!box || !on) return;
+    const cnt = document.getElementById("gbCountBooks");
+    const emp = document.getElementById("gbEmptyBooks");
+    const arr = listBooks();
+    if(typeof window.rinBuildGroups !== "function"){
+      if(cnt) cnt.textContent = "共 " + arr.length + " 条";
+      return;
+    }
+    const gs = window.rinBuildGroups(arr, 1);
+    groups = new Map(gs.map(g => [g.key, g]));
+    box.innerHTML = gs.map(function(g){
+      const ms = g.members.slice();
+      const name = groupName(ms);
+      const years = ms.map(x => Number(x.year)).filter(Boolean);
+      const yr = years.length ? (Math.min(...years) === Math.max(...years) ? String(Math.min(...years)) : Math.min(...years) + "–" + Math.max(...years)) : "";
+      const rated = ms.filter(x => x.rating != null);
+      const avg = rated.length ? Math.round(rated.reduce((a, x) => a + Number(x.rating), 0) / rated.length * 10) / 10 : null;
+      const covers = coverPick(ms)
+        .map(x => '<img src="' + esc(x.cover) + '" alt="" loading="lazy" onerror="this.remove()">').join("");
+      const meta = [ms.length + " 部", yr].filter(Boolean).join(" · ");
+      const mark = ms.length > 1 ? '<span class="gb-serie-mark">系列</span>' : "";
+      return '<div class="gb-card gb-serie" data-key="' + esc(g.key) + '">' +
+        '<div class="gb-stack">' + mark + (covers || '<span class="none">无封面</span>') + '</div>' +
+        '<div class="gb-body">' +
+          '<div class="gb-name">' + esc(name) + '</div>' +
+          '<div class="gb-meta">' + esc(meta) + '</div>' +
+          '<div class="gb-row"><span class="gb-st">' + (avg == null ? "未评分" : esc(String(avg)) + " 分") + '</span>' +
+          '<span class="gb-rt">' + (ms.length > 1 ? "查看" : "") + '</span></div>' +
+        '</div></div>';
+    }).join("");
+    if(cnt) cnt.textContent = "共 " + gs.length + " 个系列 · " + arr.length + " 部";
+    if(emp){
+      emp.style.display = arr.length ? "none" : "block";
+      if(!arr.length) emp.textContent = (state.books || []).length ? "没有匹配的书籍。" : "还没有书籍。点右上角「＋ 添加书籍」搜索添加。";
+    }
+  }
+
+  function openSeries(key){
+    const g = groups.get(key);
+    if(!g) return;
+    curKey = key;
+    const ms = g.members.slice().sort(function(a, b){
+      return (Number(a.year) || 9999) - (Number(b.year) || 9999);
+    });
+    document.getElementById("gbSerieTitle").textContent = groupName(ms);
+    document.getElementById("gbSerieSub").textContent = ms.length + " 部";
+    document.getElementById("gbSerieList").innerHTML = ms.map(function(m){
+      const bits = [m.year ? m.year + " 年" : "", m.platform || "", m.status || ""].filter(Boolean).join(" · ");
+      const cover = m.cover ? '<img src="' + esc(m.cover) + '" alt="" onerror="this.remove()">' : "";
+      const rt = m.rating != null ? esc(String(m.rating)) + " 分" : "";
+      return '<div class="gb-serie-m" data-id="' + esc(m.id) + '">' + cover +
+        '<span class="nm">' + esc(m.name || m.jp || "未命名") + '</span>' +
+        '<span class="mt">' + esc(bits) + '</span>' +
+        (rt ? '<span class="mt" style="color:var(--gold,#d8b04a)">' + rt + '</span>' : "") +
+        '<button type="button" class="btn sm">编辑</button></div>';
+    }).join("");
+    showOverlay("gbSeriesOverlay");
+  }
+
+  const box = document.getElementById("gbListBooks");
+  if(box){
+    box.addEventListener("click", function(ev){
+      if(!on) return;
+      const card = ev.target.closest(".gb-serie");
+      if(!card) return;
+      ev.preventDefault();
+      ev.stopPropagation();
+      if(card.dataset.key) openSeries(card.dataset.key);
+    }, true);
+  }
+
+  
+  let repaintTimer = 0;
+  const schedule = function(){
+    if(!on) return;
+    if(box && box.querySelector(".gb-serie")) return;   
+    clearTimeout(repaintTimer);
+    const page = document.getElementById("page-books");
+    if(page && page.classList.contains("active")){ paint(); return; }
+    repaintTimer = setTimeout(paint, 30);
+  };
+  const inp = document.getElementById("gbSearchBooks");
+  if(inp) inp.addEventListener("input", schedule);
+  if(box) new MutationObserver(schedule).observe(box, { childList: true });
+
+  const head = document.querySelector("#page-books .page-head > div:last-child");
+  if(head && !document.getElementById("gbSeriesToggle")){
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.id = "gbSeriesToggle";
+    btn.className = "btn sm";
+    btn.style.marginLeft = "0";
+    head.insertBefore(btn, head.firstChild);
+    const paintBtn = function(){
+      btn.textContent = on ? "按单部" : "按系列";
+      btn.setAttribute("aria-pressed", on ? "true" : "false");
+    };
+    btn.addEventListener("click", function(){
+      on = !on;
+      try{ localStorage.setItem(KEY, on ? "1" : "0"); }catch(e){}
+      paintBtn();
+      if(on){ paint(); }
+      else if(typeof window.rinGbRender === "function"){ window.rinGbRender("books"); }
+    });
+    paintBtn();
+  }
+  if(on){ setTimeout(paint, 200); }
+})();
+
+
+
 
 
 
@@ -22258,6 +23604,17 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
     var n = Number(bgmId) || 0;
     if(!n) return null;
     return list(kind).filter(function(x){ return Number(x.bgmId) === n; })[0] || null;
+  }
+  
+  function ownBySubject(kind, d){
+    var hit = byBgm(kind, Number(d && d.id) || 0);
+    if(hit) return hit;
+    var names = [d && d.name_cn, d && d.name].map(function(v){ return String(v || "").trim().toLowerCase(); }).filter(Boolean);
+    if(!names.length) return null;
+    return list(kind).filter(function(x){ return !Number(x.bgmId); }).filter(function(x){
+      var xn = String(x.name || "").trim().toLowerCase();
+      return !!xn && names.indexOf(xn) >= 0;
+    })[0] || null;
   }
   function norm(x){
     return {
@@ -22353,6 +23710,8 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
     ".gb-meta{margin-top:6px;font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}" +
     ".gb-row{margin-top:8px;display:flex;align-items:center;justify-content:space-between;gap:8px}" +
     ".gb-st{font-size:12px;color:var(--accent);background:var(--panel2);border-radius:6px;padding:2px 7px;white-space:nowrap}" +
+    ".gb-sr.added{opacity:.55}" +
+    ".gb-sr .gb-added{font-size:12px;color:var(--green);border:1px solid var(--border);border-radius:6px;padding:1px 7px;margin-left:auto;flex:none}" +
     ".gb-rt{font-size:13px;color:var(--gold, #d8b04a)}" +
     ".gb-empty{padding:48px 16px;text-align:center;color:var(--faint);font-size:13px;line-height:1.8}" +
     
@@ -22474,6 +23833,8 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
     paintSummary(kind);
   }
   function cap(k){ return k === "games" ? "Games" : "Books"; }
+  window.rinGbEdit = function(kind, id){ return edit(kind, id); };
+  window.rinGbRender = function(kind){ return render(kind); };
 
   
   function ensure(id, inner){
@@ -22670,9 +24031,11 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
       var c = coverUrl(im.medium || im.large || im.common || "");
       var meta = [String(d.platform || ""), String(d.date || "").slice(0, 4),
         (d.rating && d.rating.score) ? d.rating.score + " 分" : ""].filter(Boolean).join(" · ");
-      return "<div class='gb-sr' data-gbid='" + (Number(d.id) || 0) + "'>" +
+      var own = ownBySubject(kind, d);
+      return "<div class='gb-sr" + (own ? " added" : "") + "' data-gbid='" + (Number(d.id) || 0) + "'>" +
         (c ? "<img src='" + esc(c) + "' alt='' loading='lazy'>" : "<div style='width:42px;height:56px;background:var(--panel2);border-radius:6px;flex:none'></div>") +
         "<div class='t'><b>" + esc(String(d.name_cn || d.name || "")) + "</b><span>" + esc(meta || "—") + "</span></div>" +
+        (own ? "<span class='gb-added'>已在库</span>" : "") +
         "</div>";
     }).join("");
     out.querySelectorAll(".gb-sr").forEach(function(el){
@@ -22737,14 +24100,33 @@ window.rinNsfwBusy = function(){ return rinNsBusy; };
       });
     }
     var add = ov.querySelector("#gbDAdd" + cap(kind));
+    var dupNow = ownBySubject(kind, { id: x.bgmId, name: x.name, name_cn: x.name });
+    if(add && dupNow){
+      add.textContent = "已在" + cfg.label + "库";
+      add.disabled = true;
+    }
     if(add) add.onclick = function(){
+      var c = cap(kind);
       var dup = byBgm(kind, x.bgmId);
       if(dup){ toast("「" + x.name + "」已在" + cfg.label + "库"); close(id); return; }
       var now = Date.now();
       x.id = uid(); x.createdAt = now; x.updatedAt = now;
       list(kind).unshift(norm(x));
-      save(); close(id); close("gbSearchOverlay" + cap(kind));
+      save();
+      close(id);                       
+      var ps = document.getElementById("gbSearch" + c);
+      if(ps) ps.value = "";            
       render(kind);
+      var row = document.querySelector("#gbResults" + c + " .gb-sr[data-gbid='" + x.bgmId + "']");
+      if(row){
+        row.classList.add("added");
+        if(!row.querySelector(".gb-added")){
+          var tag = document.createElement("span");
+          tag.className = "gb-added";
+          tag.textContent = "已在库";
+          row.appendChild(tag);
+        }
+      }
       toast("已加入" + cfg.label + "库");
     };
     ov.classList.add("show");
